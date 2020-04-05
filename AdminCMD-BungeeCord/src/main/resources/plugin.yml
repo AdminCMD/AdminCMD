@@ -1,0 +1,5 @@
+name: ${project.name}
+version: ${project.version}
+author: TheJeterLP
+
+main: com.admincmd.bungeecord.Main

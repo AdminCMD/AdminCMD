@@ -1,0 +1,117 @@
+/*
+ * This file is part of AdminCMD
+ * Copyright (C) 2020 AdminCMD Team
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ */
+package com.admincmd.kits;
+
+import com.admincmd.utils.Utils;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import org.bukkit.configuration.file.YamlConfiguration;
+
+public enum Config {
+
+    STANDARD_DAYS("Settings.Standard.Days", "Day(s)", "The word for days"),
+    STANDARD_HOURS("Settings.Standard.Hours", "Hour(s)", "The word for hours"),
+    STANDARD_MINUTES("Settings.Standard.Minutes", "Minute(s)", "The word for minutes"),
+    STANDARD_SECONDS("Settings.Standard.Seconds", "Second(s)", "The word for seconds"),    
+    ;
+
+    private Config(String path, Object val, String description) {
+        this.path = path;
+        this.value = val;
+        this.description = description;
+    }
+
+    private final Object value;
+    private final String path;
+    private final String description;
+    private static YamlConfiguration cfg;
+    private static final File f = new File(Kits.getInstance().getDataFolder(), "config.yml");
+
+    public String getPath() {
+        return path;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Object getDefaultValue() {
+        return value;
+    }
+    
+    public boolean getBoolean() {
+        return cfg.getBoolean(path);
+    }
+
+    public int getInteger() {
+        return cfg.getInt(path);
+    }
+
+    public double getDouble() {
+        return cfg.getDouble(path);
+    }
+
+    public String getString() {
+        return Utils.replaceColors(cfg.getString(path));
+    }
+
+    public List<String> getStringList() {
+        return cfg.getStringList(path);
+    }
+
+    public static void load() {
+        Kits.getInstance().getDataFolder().mkdirs();
+        reload(false);
+        String header = "";
+        for (Config c : values()) {
+            header += c.getPath() + ": " + c.getDescription() + System.lineSeparator();
+            if (!cfg.contains(c.getPath())) {
+                c.set(c.getDefaultValue(), false);
+            }
+        }
+        cfg.options().header(header);
+        try {
+            cfg.save(f);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void set(Object value, boolean save) {
+        cfg.set(path, value);
+        if (save) {
+            try {
+                cfg.save(f);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            reload(false);
+        }
+    }
+
+    public static void reload(boolean complete) {
+        if (!complete) {
+            cfg = YamlConfiguration.loadConfiguration(f);
+            return;
+        }
+        load();
+    }
+
+}
