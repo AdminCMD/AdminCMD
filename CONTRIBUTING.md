@@ -8,7 +8,7 @@ Unleash the power of Bukkit!
 Developer requirements
 ------------
 
-* The Java 7 or newer JDK
+* The Java 8 or newer JDK
 * Maven
 * Git 
 
