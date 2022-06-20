@@ -1,13 +1,9 @@
-[![AdminCMD](https://www.admincmd.com/static/2016/02/10/admincmd-logo-big.png)](https://admincmd.com)
-
 Unleash the power of Bukkit! ![Java CI with Maven](https://github.com/AdminCMD/AdminCMD/workflows/Java%20CI%20with%20Maven/badge.svg)
 ============================
 
 Information
 -----------
-* [Website](https://admincmd.com)
-* [Wiki](https://wiki.admincmd.com)
-* [Issues](https://bug.admincmd.com)
+
 * [License](https://www.gnu.org/licenses/gpl-2.0.html)
 
 Description
