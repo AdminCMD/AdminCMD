@@ -25,3 +25,4 @@ Developers
 Special Thanks
 --------------
 * [Lathanael](https://github.com/Lathanael) for helping to shape AdminCMD on Bukkit!
+   
