@@ -3,4 +3,4 @@ name: ${project.artifactId}
 version: ${project.version}
 authors: [TheJeterLP]
 api-version: 1.13
-depend: [AdminCMD]
+depend: [AdminCMD-Bukkit]

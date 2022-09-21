@@ -84,10 +84,7 @@ public class TimeCommand {
             msg = msg.replaceAll("%time%", time + "");
             return Messager.sendMessage(se, msg, Messager.MessageType.INFO);
         } else if (args.getString(0).equalsIgnoreCase("pause")) {
-            return CommandResult.ERROR;
-            /*
             WorldManager.pauseTime(target, true);
-
             String msg;
             if (Config.BUNGEECORD.getBoolean()) {
                 msg = Locales.WORLD_TIME_PAUSED.getString().replaceAll("%world%", target.getServer() + ":" + target.getName());
@@ -95,10 +92,7 @@ public class TimeCommand {
                 msg = Locales.WORLD_TIME_PAUSED.getString().replaceAll("%world%", target.getName());
             }
             return Messager.sendMessage(se, msg, Messager.MessageType.INFO);
-             */
         } else if (args.getString(0).equalsIgnoreCase("unpause")) {
-            return CommandResult.ERROR;
-            /*
             WorldManager.pauseTime(target, false);
 
             String msg;
@@ -108,7 +102,6 @@ public class TimeCommand {
                 msg = Locales.WORLD_TIME_UNPAUSED.getString().replaceAll("%world%", target.getName());
             }
             return Messager.sendMessage(se, msg, Messager.MessageType.INFO);
-             */
         }
 
         return CommandResult.ERROR;

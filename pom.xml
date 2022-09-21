@@ -1,37 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.admincmd</groupId>
     <artifactId>AdminCMD</artifactId>
     <version>1.0.0</version>
     <packaging>pom</packaging>
-    
+
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>      
+        <maven.compiler.target>8</maven.compiler.target>
     </properties>
-    
+
     <scm>
         <connection>scm:git:git@github.com:AdminCMD/AdminCMD.git</connection>
         <url>scm:git:git@github.com:AdminCMD/AdminCMD.git</url>
         <developerConnection>scm:git:git@github.com:AdminCMD/AdminCMD.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
-    
+
     <organization>
         <name>AdminCmd Team</name>
-        <url>http://www.admincmd.com</url>
+        <url>https://github.com/AdminCMD</url>
     </organization>
-    
+
     <licenses>
         <license>
             <name>GNU GPL v3</name>
             <url>http://www.gnu.org/licenses/gpl.txt</url>
         </license>
     </licenses>
-    
+
     <modules>
         <module>AdminCMD-Bukkit</module>
         <module>AdminCMD-BungeeCord</module>
@@ -39,14 +40,14 @@
         <module>AdminCMD-Punishments</module>
         <module>AdminCMD-VirtualChest</module>
     </modules>
-    
+
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
-                    <execution>             
+                    <execution>
                         <id>copy-artifact</id>
                         <phase>package</phase>
                         <goals>
@@ -68,32 +69,23 @@
             </plugin>
         </plugins>
     </build>
-    
+
     <repositories>
         <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-        </repository>   
+        </repository>
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
-        </repository>        
+        </repository>
         <repository>
             <id>dmulloy2-repo</id>
-            <url>http://repo.dmulloy2.net/nexus/repository/public/</url>
-        </repository>  
+            <url>https://repo.dmulloy2.net/repository/public/</url>
+        </repository>
         <repository>
-            <id>bungee repo</id>
-            <url>https://oss.sonatype.org/content/groups/public/</url>
-        </repository>      
+            <id>bungeecord-repo</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </repository>
     </repositories>
-    
-    <dependencies>
-        <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.15.2-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
 </project>

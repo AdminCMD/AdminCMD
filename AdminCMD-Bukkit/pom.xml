@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.admincmd</groupId>
     <artifactId>AdminCMD-Bukkit</artifactId>
-    <version>9.2.0</version>
+    <version>9.2.1</version>
     <packaging>jar</packaging>
-    
+
     <parent>
         <groupId>com.admincmd</groupId>
         <artifactId>AdminCMD</artifactId>
         <version>1.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    
+
     <build>
         <defaultGoal>clean install</defaultGoal>
         <finalName>AdminCMD</finalName>
@@ -22,29 +23,31 @@
                 <targetPath>.</targetPath>
                 <filtering>true</filtering>
                 <directory>${basedir}/src/main/resources/</directory>
-                <includes>        
+                <includes>
                     <include>**/*</include>
                 </includes>
             </resource>
         </resources>
     </build>
-    
-    <dependencies>        
+
+    <dependencies>
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>1.19-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>com.github.MilkBowl</groupId>
             <artifactId>VaultAPI</artifactId>
-            <version>1.7</version>
-             <exclusions>
-               <exclusion>
-                  <groupId>org.bukkit</groupId>
-                  <artifactId>bukkit</artifactId>
-               </exclusion>
-            </exclusions>
+            <version>1.7.1</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.comphenix.protocol</groupId>
-            <artifactId>ProtocolLib-API</artifactId>
-            <version>4.4.0</version>
+            <artifactId>ProtocolLib</artifactId>
+            <version>4.7.0</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

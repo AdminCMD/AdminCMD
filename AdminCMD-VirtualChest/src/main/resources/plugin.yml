@@ -3,4 +3,4 @@ name: ${project.name}
 version: ${project.version} (BUILD ${git.build.time})
 authors: [TheJeterLP]
 api-version: 1.15
-depend: [AdminCMD]
+depend: [AdminCMD-Bukkit]
