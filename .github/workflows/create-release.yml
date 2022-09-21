@@ -33,7 +33,7 @@ jobs:
         with:
           name: ChatEx ${{ github.event.head_commit.message }}
           tag_name: ${{ github.event.head_commit.message }}
-          files: target/ChatEx.jar
+          files: target/*.jar
           generate_release_notes: true
           prerelease: true
       - name: Create Release
@@ -45,5 +45,5 @@ jobs:
         with:
           name: ChatEx ${{ github.event.head_commit.message }}
           tag_name: ${{ github.event.head_commit.message }}
-          files: target/ChatEx.jar
+          files: target/*.jar
           generate_release_notes: true
