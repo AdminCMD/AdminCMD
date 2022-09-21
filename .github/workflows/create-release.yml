@@ -1,0 +1,49 @@
+name: Create Release
+
+on:
+  push:
+    branches: 
+      - master
+
+jobs:
+  create-release:
+    if: "startsWith(github.event.head_commit.message, 'v')"
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set up JDK
+        uses: actions/setup-java@v3.3.0
+        with:
+          distribution: 'zulu'
+          java-version: '8'
+          java-package: jdk # optional (jdk or jre) - defaults to jdk
+          cache: 'maven'
+      - name: Build with Maven
+        run: mvn clean install
+      - name: Create Prerelease
+        if: ${{contains(github.event.head_commit.message, '-SNAPSHOT')}}
+        id: create_prerelease
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          name: ChatEx ${{ github.event.head_commit.message }}
+          tag_name: ${{ github.event.head_commit.message }}
+          files: target/ChatEx.jar
+          generate_release_notes: true
+          prerelease: true
+      - name: Create Release
+        if: ${{!contains(github.event.head_commit.message, '-SNAPSHOT')}}
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          name: ChatEx ${{ github.event.head_commit.message }}
+          tag_name: ${{ github.event.head_commit.message }}
+          files: target/ChatEx.jar
+          generate_release_notes: true
