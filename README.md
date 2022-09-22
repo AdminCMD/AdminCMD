@@ -1,7 +1,7 @@
 Unleash the power of Bukkit! ![Java CI with Maven](https://github.com/AdminCMD/AdminCMD/workflows/Java%20CI%20with%20Maven/badge.svg)
 ============================
 
-Information
+Information 
 ----------- 
 
 * [License](https://www.gnu.org/licenses/gpl-2.0.html)
