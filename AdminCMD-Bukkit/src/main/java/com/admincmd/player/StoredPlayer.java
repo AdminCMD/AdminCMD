@@ -21,6 +21,7 @@ package com.admincmd.player;
 import com.admincmd.communication.BungeeCordMessageManager;
 import com.admincmd.database.Database;
 import com.admincmd.database.DatabaseFactory;
+import com.admincmd.utils.ACLogger;
 import com.admincmd.utils.Config;
 import com.admincmd.utils.MultiServerLocation;
 import java.sql.PreparedStatement;
@@ -222,6 +223,7 @@ public class StoredPlayer implements ACPlayer {
 
     @Override
     public void setLastLoc(MultiServerLocation loc) {
+        ACLogger.debug("Location set to: " + loc.toString());
         this.hasChanged = true;
         this.lastLoc = loc;
     }

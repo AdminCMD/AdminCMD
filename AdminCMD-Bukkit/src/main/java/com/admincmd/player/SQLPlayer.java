@@ -300,6 +300,7 @@ public class SQLPlayer implements ACPlayer {
                     st.setInt(2, id);
                     st.executeUpdate();
                     DatabaseFactory.getDatabase().closeStatement(st);
+                    ACLogger.debug("Location set to: " + loc.toString());
                 } catch (SQLException ex) {
                     ACLogger.severe(ex);
                 }
