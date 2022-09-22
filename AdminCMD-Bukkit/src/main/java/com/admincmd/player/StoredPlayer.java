@@ -1,17 +1,17 @@
 /*
  * This file is part of AdminCMD
  * Copyright (C) 2020 AdminCMD Team
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
@@ -21,8 +21,13 @@ package com.admincmd.player;
 import com.admincmd.communication.BungeeCordMessageManager;
 import com.admincmd.database.Database;
 import com.admincmd.database.DatabaseFactory;
+import com.admincmd.utils.ACLogger;
 import com.admincmd.utils.Config;
 import com.admincmd.utils.MultiServerLocation;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,12 +35,10 @@ import java.sql.Statement;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
 public class StoredPlayer implements ACPlayer {
 
+    private final Database db = DatabaseFactory.getDatabase();
     public int id;
     private UUID uuid;
     private boolean fly = false;
@@ -46,7 +49,6 @@ public class StoredPlayer implements ACPlayer {
     private boolean spy = false;
     private MultiServerLocation lastLoc = null;
     private int lastIDFrom = 0;
-    private final Database db = DatabaseFactory.getDatabase();
     private boolean hasChanged = false;
 
     public StoredPlayer(UUID uuid) {
@@ -139,39 +141,14 @@ public class StoredPlayer implements ACPlayer {
     }
 
     @Override
-    public boolean isGod() {
-        return god;
-    }
-
-    @Override
-    public boolean isFreezed() {
-        return freeze;
-    }
-
-    @Override
-    public boolean isInvisible() {
-        return invisible;
-    }
-
-    @Override
-    public boolean isCMDWatcher() {
-        return cmdwatcher;
-    }
-
-    @Override
-    public boolean isSpy() {
-        return spy;
-    }
-
-    @Override
-    public int getLastMSGFrom() {
-        return lastIDFrom;
-    }
-
-    @Override
     public void setFly(boolean fly) {
         this.hasChanged = true;
         this.fly = fly;
+    }
+
+    @Override
+    public boolean isGod() {
+        return god;
     }
 
     @Override
@@ -181,9 +158,19 @@ public class StoredPlayer implements ACPlayer {
     }
 
     @Override
+    public boolean isFreezed() {
+        return freeze;
+    }
+
+    @Override
     public void setFreezed(boolean freeze) {
         this.hasChanged = true;
         this.freeze = freeze;
+    }
+
+    @Override
+    public boolean isInvisible() {
+        return invisible;
     }
 
     @Override
@@ -193,15 +180,30 @@ public class StoredPlayer implements ACPlayer {
     }
 
     @Override
+    public boolean isCMDWatcher() {
+        return cmdwatcher;
+    }
+
+    @Override
     public void setCMDWatcher(boolean cmdwatch) {
         this.hasChanged = true;
         this.cmdwatcher = cmdwatch;
     }
 
     @Override
+    public boolean isSpy() {
+        return spy;
+    }
+
+    @Override
     public void setSpy(boolean spy) {
         this.hasChanged = true;
         this.spy = spy;
+    }
+
+    @Override
+    public int getLastMSGFrom() {
+        return lastIDFrom;
     }
 
     @Override
@@ -222,6 +224,7 @@ public class StoredPlayer implements ACPlayer {
 
     @Override
     public void setLastLoc(MultiServerLocation loc) {
+        ACLogger.debug("Location set to: " + loc.toString());
         this.hasChanged = true;
         this.lastLoc = loc;
     }
@@ -235,7 +238,7 @@ public class StoredPlayer implements ACPlayer {
     public String getServer() {
         return BungeeCordMessageManager.getServerName();
     }
-    
+
     public boolean hasChanged() {
         return this.hasChanged;
     }

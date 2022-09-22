@@ -1,17 +1,17 @@
 /*
  * This file is part of AdminCMD
  * Copyright (C) 2020 AdminCMD Team
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
@@ -19,10 +19,11 @@
 package com.admincmd.utils;
 
 import com.admincmd.Main;
+import org.bukkit.configuration.file.YamlConfiguration;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 public enum Config {
 
@@ -43,19 +44,45 @@ public enum Config {
     MAINTENANCE_FAVICON("Options.Maintenance.Favicon", "maintenance.png", "Which favicon should be used when the maintenance mode is enabled?"),
     MAINTENANCE_MOTD_LINE1("Options.Maintenance.Line1", "&c[AdminCMD] Server is in Maintenance", "Message shown in the motd line 1."),
     MAINTENANCE_MOTD_LINE2("Options.Maintenance.Line2", "&eWe are actually working on the server!", "Message shown in the motd line 2."),
-    MESSAGE_FORMAT("Player.Format", "%prefix%name%suffix", "Here you can add the prefix or suffixes to playernames."),;
+    MESSAGE_FORMAT("Player.Format", "%prefix%name%suffix", "Here you can add the prefix or suffixes to playernames."),
+    ;
 
+    private static final File f = new File(Main.getInstance().getDataFolder(), "config.yml");
+    private static YamlConfiguration cfg;
+    private final Object value;
+    private final String path;
+    private final String description;
     private Config(String path, Object val, String description) {
         this.path = path;
         this.value = val;
         this.description = description;
     }
 
-    private final Object value;
-    private final String path;
-    private final String description;
-    private static YamlConfiguration cfg;
-    private static final File f = new File(Main.getInstance().getDataFolder(), "config.yml");
+    public static void load() {
+        Main.getInstance().getDataFolder().mkdirs();
+        reload(false);
+        String header = "";
+        for (Config c : values()) {
+            header += c.getPath() + ": " + c.getDescription() + System.lineSeparator();
+            if (!cfg.contains(c.getPath())) {
+                c.set(c.getDefaultValue(), false);
+            }
+        }
+        cfg.options().header(header);
+        try {
+            cfg.save(f);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static void reload(boolean complete) {
+        if (!complete) {
+            cfg = YamlConfiguration.loadConfiguration(f);
+            return;
+        }
+        load();
+    }
 
     public String getPath() {
         return path;
@@ -89,24 +116,6 @@ public enum Config {
         return cfg.getStringList(path);
     }
 
-    public static void load() {
-        Main.getInstance().getDataFolder().mkdirs();
-        reload(false);
-        String header = "";
-        for (Config c : values()) {
-            header += c.getPath() + ": " + c.getDescription() + System.lineSeparator();
-            if (!cfg.contains(c.getPath())) {
-                c.set(c.getDefaultValue(), false);
-            }
-        }
-        cfg.options().header(header);
-        try {
-            cfg.save(f);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
-
     public void set(Object value, boolean save) {
         cfg.set(path, value);
         if (save) {
@@ -117,14 +126,6 @@ public enum Config {
             }
             reload(false);
         }
-    }
-
-    public static void reload(boolean complete) {
-        if (!complete) {
-            cfg = YamlConfiguration.loadConfiguration(f);
-            return;
-        }
-        load();
     }
 
 }

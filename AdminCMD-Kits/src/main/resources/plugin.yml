@@ -1,6 +1,6 @@
 main: com.admincmd.kits.Kits
 name: ${project.artifactId}
 version: ${project.version}
-authors: [TheJeterLP]
+authors: [ TheJeterLP ]
 api-version: 1.13
-depend: [AdminCMD-Bukkit]
+depend: [ AdminCMD-Bukkit ]

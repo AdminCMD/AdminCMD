@@ -1,17 +1,17 @@
 /*
  * This file is part of AdminCMD
  * Copyright (C) 2020 AdminCMD Team
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
@@ -22,10 +22,11 @@ import com.admincmd.Main;
 import com.admincmd.communication.BungeeCordMessageManager;
 import com.admincmd.database.DatabaseFactory;
 import com.admincmd.utils.ACLogger;
+import org.bukkit.Bukkit;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import org.bukkit.Bukkit;
 
 public class SQLWorld implements ACWorld {
 
@@ -57,6 +58,25 @@ public class SQLWorld implements ACWorld {
     }
 
     @Override
+    public void setPausedTime(final long time) {
+        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    PreparedStatement st = DatabaseFactory.getDatabase().getPreparedStatement("UPDATE " + DatabaseFactory.WORLD_TABLE + " SET time = ? WHERE name = ? AND servername = ?;");
+                    st.setLong(1, time);
+                    st.setString(2, name);
+                    st.setString(3, server);
+                    st.executeUpdate();
+                    DatabaseFactory.getDatabase().closeStatement(st);
+                } catch (SQLException ex) {
+                    ACLogger.severe(ex);
+                }
+            }
+        });
+    }
+
+    @Override
     public boolean isPaused() {
         boolean ret = false;
         try {
@@ -73,21 +93,6 @@ public class SQLWorld implements ACWorld {
             ACLogger.severe(ex);
         }
         return ret;
-    }
-
-    @Override
-    public String getServer() {
-        return this.server;
-    }
-
-    @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public boolean isOnThisServer() {
-        return this.server.equalsIgnoreCase(BungeeCordMessageManager.getServerName());
     }
 
     @Override
@@ -110,21 +115,17 @@ public class SQLWorld implements ACWorld {
     }
 
     @Override
-    public void setPausedTime(final long time) {
-        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    PreparedStatement st = DatabaseFactory.getDatabase().getPreparedStatement("UPDATE " + DatabaseFactory.WORLD_TABLE + " SET time = ? WHERE name = ? AND servername = ?;");
-                    st.setLong(1, time);
-                    st.setString(2, name);
-                    st.setString(3, server);
-                    st.executeUpdate();
-                    DatabaseFactory.getDatabase().closeStatement(st);
-                } catch (SQLException ex) {
-                    ACLogger.severe(ex);
-                }
-            }
-        });
+    public String getServer() {
+        return this.server;
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
+    }
+
+    @Override
+    public boolean isOnThisServer() {
+        return this.server.equalsIgnoreCase(BungeeCordMessageManager.getServerName());
     }
 }

@@ -19,6 +19,7 @@
 package com.admincmd.utils;
 
 import com.admincmd.Main;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -64,7 +65,7 @@ public class ACLogger {
      * Logs errors and exceptions to console
      *
      * @param message The error to log
-     * @param ex The exception to log
+     * @param ex      The exception to log
      */
     public static void severe(final String message, final Throwable ex) {
         logger.log(Level.SEVERE, PREFIX + message, ex);
@@ -93,7 +94,7 @@ public class ACLogger {
      * Logs debug messages and exceptions to console
      *
      * @param message The debug message to log
-     * @param ex The exception to log
+     * @param ex      The exception to log
      */
     public static void debug(final String message, final Throwable ex) {
         if (!Config.DEBUG.getBoolean()) {

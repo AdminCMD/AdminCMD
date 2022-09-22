@@ -1,17 +1,17 @@
 /*
  * This file is part of AdminCMD
  * Copyright (C) 2020 AdminCMD Team
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
@@ -19,10 +19,11 @@
 package com.admincmd.utils;
 
 import com.admincmd.Main;
-import java.io.File;
-import java.io.IOException;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
+
+import java.io.File;
+import java.io.IOException;
 
 public enum Locales {
 
@@ -99,8 +100,8 @@ public enum Locales {
     HELP_TELEPORT_TPALL_1("Help.Teleport.All.1", "Teleports all players to your location."),
     HELP_TELEPORT_TPALL_2("Help.Teleport.All.2", "Teleports all players to the given players Location"),
     HELP_TPREQUEST_TPA_1("Help.Teleport.Tpa.1", "Accept or deny a teleport request."),
-    HELP_TPREQUEST_TPA_2("Help.Teleport.Tpa.2", "Send a teleport request to teleport yourself to the given Player"),   
-    HELP_TPREQUEST_TPA_3("Help.Teleport.Tpa.3", "Send a teleport request to teleport the given Player to you"),  
+    HELP_TPREQUEST_TPA_2("Help.Teleport.Tpa.2", "Send a teleport request to teleport yourself to the given Player"),
+    HELP_TPREQUEST_TPA_3("Help.Teleport.Tpa.3", "Send a teleport request to teleport the given Player to you"),
     HELP_TELEPORT_TP_1("Help.Teleport.TP.1", "Teleports you to the given coordinates in your current world"),
     HELP_TELEPORT_TP_2("Help.Teleport.TP.2", "Teleports you to the given coordinates in the given world"),
     HELP_TELEPORT_TP_3("Help.Teleport.TP.3", "Teleports you to the given Player"),
@@ -213,30 +214,13 @@ public enum Locales {
     UPDATE_FOUND("Messages.UpdateFound", "&a[AdminCMD]&7 A new update has been found on SpigotMC. Current version: %oldversion New version: %newversion"),
     ;
 
+    private static final File f = new File(Main.getInstance().getDataFolder(), "locales.yml");
+    private static YamlConfiguration cfg;
+    private final Object value;
+    private final String path;
     private Locales(String path, Object val) {
         this.path = path;
         this.value = val;
-    }
-
-    private final Object value;
-    private final String path;
-    private static YamlConfiguration cfg;
-    private static final File f = new File(Main.getInstance().getDataFolder(), "locales.yml");
-
-    public String getPath() {
-        return path;
-    }
-
-    public Object getDefaultValue() {
-        return value;
-    }
-
-    public String getString() {
-        return Utils.replaceColors(cfg.getString(path));
-    }
-
-    public String replacePlayer(OfflinePlayer p) {
-        return getString().replaceAll("%player%", Utils.replacePlayerPlaceholders(p));
     }
 
     public static void load() {
@@ -254,6 +238,30 @@ public enum Locales {
         }
     }
 
+    public static void reload(boolean complete) {
+        if (!complete) {
+            cfg = YamlConfiguration.loadConfiguration(f);
+            return;
+        }
+        load();
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public Object getDefaultValue() {
+        return value;
+    }
+
+    public String getString() {
+        return Utils.replaceColors(cfg.getString(path));
+    }
+
+    public String replacePlayer(OfflinePlayer p) {
+        return getString().replaceAll("%player%", Utils.replacePlayerPlaceholders(p));
+    }
+
     public void set(Object value, boolean save) {
         cfg.set(path, value);
         if (save) {
@@ -264,14 +272,6 @@ public enum Locales {
             }
             reload(false);
         }
-    }
-
-    public static void reload(boolean complete) {
-        if (!complete) {
-            cfg = YamlConfiguration.loadConfiguration(f);
-            return;
-        }
-        load();
     }
 
 }

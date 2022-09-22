@@ -4,26 +4,25 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.bukkit.plugin.java.JavaPlugin;
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.logging.Level;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class UpdateChecker {
 
-    private final String USER_AGENT;
-
-    private final JavaPlugin plugin;
-    private final int id;
-    private final Thread thread;
-
-    private Result result = Result.NO_UPDATE;
-    private String version;
     private static final String VERSIONS = "/updates";
     private static final String FIELDS = "?fields=title";
     private static final String API_RESOURCE = "https://api.spiget.org/v2/resources/";
+    private final String USER_AGENT;
+    private final JavaPlugin plugin;
+    private final int id;
+    private final Thread thread;
+    private Result result = Result.NO_UPDATE;
+    private String version;
 
     public UpdateChecker(JavaPlugin plugin, int id) {
         this.plugin = plugin;
@@ -31,13 +30,6 @@ public class UpdateChecker {
         this.USER_AGENT = plugin.getName() + " UpdateChecker";
         thread = new Thread(new UpdaterRunnable());
         thread.start();
-    }
-
-    public enum Result {
-        UPDATE_FOUND,
-        NO_UPDATE,
-        FAILED,
-        BAD_ID
     }
 
     /**
@@ -158,6 +150,13 @@ public class UpdateChecker {
                 this.plugin.getLogger().log(Level.SEVERE, null, e);
             }
         }
+    }
+
+    public enum Result {
+        UPDATE_FOUND,
+        NO_UPDATE,
+        FAILED,
+        BAD_ID
     }
 
     public class UpdaterRunnable implements Runnable {
