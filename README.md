@@ -2,7 +2,7 @@ Unleash the power of Bukkit! ![Java CI with Maven](https://github.com/AdminCMD/A
 ============================
 
 Information
------------
+----------- 
 
 * [License](https://www.gnu.org/licenses/gpl-2.0.html)
 
