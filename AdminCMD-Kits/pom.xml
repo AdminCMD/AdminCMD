@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.admincmd</groupId>
     <artifactId>AdminCMD-Kits</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
-    
+
     <parent>
         <groupId>com.admincmd</groupId>
         <artifactId>AdminCMD</artifactId>
         <version>1.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    
+
     <build>
         <defaultGoal>clean install</defaultGoal>
         <finalName>${project.name}</finalName>
@@ -22,13 +23,13 @@
                 <targetPath>.</targetPath>
                 <filtering>true</filtering>
                 <directory>${basedir}/src/main/resources/</directory>
-                <includes>        
+                <includes>
                     <include>**/*</include>
                 </includes>
             </resource>
-        </resources>    
+        </resources>
     </build>
-    
+
     <dependencies>
         <dependency>
             <groupId>org.spigotmc</groupId>
@@ -39,7 +40,7 @@
             <groupId>com.admincmd</groupId>
             <artifactId>AdminCMD-Bukkit</artifactId>
             <version>9.2.1</version>
-        </dependency>    
+        </dependency>
     </dependencies>
-      
+
 </project>

@@ -1,28 +1,24 @@
 /*
  * This file is part of AdminCMD
  * Copyright (C) 2020 AdminCMD Team
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 package com.admincmd.commands.player;
 
-import com.admincmd.commandapi.BaseCommand;
-import com.admincmd.commandapi.CommandArgs;
-import com.admincmd.commandapi.CommandHandler;
-import com.admincmd.commandapi.CommandResult;
-import com.admincmd.commandapi.Sender;
+import com.admincmd.commandapi.*;
 import com.admincmd.player.ACPlayer;
 import com.admincmd.player.PlayerManager;
 import com.admincmd.utils.Locales;
@@ -47,11 +43,11 @@ public class ReplyCommand {
             if (target == null) {
                 return CommandResult.NOT_A_PLAYER;
             }
-            
-            if(!target.isOnline()) {
+
+            if (!target.isOnline()) {
                 return CommandResult.NOT_ONLINE;
             }
-                    
+
             String message = "";
             for (String temp : args.getArgs()) {
                 message += temp + " ";
@@ -61,7 +57,7 @@ public class ReplyCommand {
             String msgSpy = Locales.PLAYER_MSG_FORMAT.getString().replaceAll("%sender%", Utils.replacePlayerPlaceholders(sender));
             msgSpy = msgSpy.replaceAll("%target%", Utils.replacePlayerPlaceholders(target.getOfflinePlayer()));
             msgSpy = msgSpy.replaceAll("%message%", message);
-                       
+
             for (ACPlayer acp : PlayerManager.getOnlinePlayers()) {
                 if (acp.isSpy()) {
                     Messager.sendMessage(acp, msgSpy, Messager.MessageType.NONE);

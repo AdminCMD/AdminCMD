@@ -18,13 +18,11 @@
  */
 package com.admincmd.events;
 
-import com.admincmd.Main;
 import com.admincmd.player.ACPlayer;
 import com.admincmd.player.PlayerManager;
 import com.admincmd.utils.ACLogger;
 import com.admincmd.utils.BukkitListener;
 import com.admincmd.utils.MultiServerLocation;
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerTeleportEvent;
 

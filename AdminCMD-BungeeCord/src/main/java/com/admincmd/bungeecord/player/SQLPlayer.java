@@ -1,17 +1,17 @@
 /*
  * This file is part of AdminCMD
  * Copyright (C) 2020 AdminCMD Team
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
@@ -20,12 +20,13 @@ package com.admincmd.bungeecord.player;
 
 import com.admincmd.bungeecord.database.Database;
 import com.admincmd.bungeecord.database.DatabaseFactory;
+import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public class SQLPlayer implements ACPlayer {
 
@@ -67,6 +68,19 @@ public class SQLPlayer implements ACPlayer {
         } catch (SQLException ex) {
             ex.printStackTrace();
             return "unknown";
+        }
+    }
+
+    @Override
+    public void setName(String name) {
+        try {
+            PreparedStatement st = DatabaseFactory.getDatabase().getPreparedStatement("UPDATE " + DatabaseFactory.PLAYER_TABLE + " SET nickname = ? WHERE id = ?;");
+            st.setString(1, name);
+            st.setInt(2, id);
+            st.executeUpdate();
+            DatabaseFactory.getDatabase().closeStatement(st);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
     }
 
@@ -137,19 +151,6 @@ public class SQLPlayer implements ACPlayer {
         try {
             PreparedStatement st = DatabaseFactory.getDatabase().getPreparedStatement("UPDATE " + DatabaseFactory.PLAYER_TABLE + " SET server = ? WHERE id = ?;");
             st.setString(1, server);
-            st.setInt(2, id);
-            st.executeUpdate();
-            DatabaseFactory.getDatabase().closeStatement(st);
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    @Override
-    public void setName(String name) {
-        try {
-            PreparedStatement st = DatabaseFactory.getDatabase().getPreparedStatement("UPDATE " + DatabaseFactory.PLAYER_TABLE + " SET nickname = ? WHERE id = ?;");
-            st.setString(1, name);
             st.setInt(2, id);
             st.executeUpdate();
             DatabaseFactory.getDatabase().closeStatement(st);

@@ -1,17 +1,17 @@
 /*
  * This file is part of AdminCMD
  * Copyright (C) 2020 AdminCMD Team
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
@@ -24,6 +24,7 @@ import com.admincmd.punishments.events.BanEvents;
 import com.admincmd.punishments.events.MuteEvents;
 import com.admincmd.punishments.punishments.PunishmentManager;
 import com.admincmd.utils.ACLogger;
+
 import java.sql.SQLException;
 import java.util.concurrent.TimeUnit;
 
@@ -31,55 +32,8 @@ public class Punishments extends Addon {
 
     private static Punishments INSTANCE;
 
-    @Override
-    public void enable() {
-        INSTANCE = this;
-        Config.load();
-        createTable();
-        PunishmentManager.init();
-        registerEvent(MuteEvents.class);
-        registerEvent(BanEvents.class);
-        registerCommand(PunishmentCommands.class);
-    }
-
-    @Override
-    public void disable() {
-
-    }
-
     public static Punishments getInstance() {
         return INSTANCE;
-    }
-
-    private void createTable() {
-        try {
-            Database db = getDB();
-            String TABLE;
-
-            if (db.getType() == Database.Type.MYSQL) {
-                TABLE = "CREATE TABLE IF NOT EXISTS ac_punishments ("
-                        + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-                        + "target INTEGER NOT NULL,"
-                        + "creator INTEGER NOT NULL,"
-                        + "type varchar(64) NOT NULL,"
-                        + "expires LONG NOT NULL,"
-                        + "reason TEXT NOT NULL"
-                        + ");";
-            } else {
-                TABLE = "CREATE TABLE IF NOT EXISTS ac_punishments ("
-                        + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-                        + "target INTEGER NOT NULL,"
-                        + "creator INTEGER NOT NULL,"
-                        + "type varchar(64) NOT NULL,"
-                        + "expires LONG NOT NULL,"
-                        + "reason TEXT NOT NULL"
-                        + ");";
-            }
-
-            db.executeStatement(TABLE);
-        } catch (SQLException ex) {
-            ACLogger.severe("Error creating Punishments tables.", ex);
-        }
     }
 
     public static long minutesInMiliseconds(int minutes) {
@@ -112,6 +66,53 @@ public class Punishments extends Addon {
         }
         ret += (seconds + " " + Config.STANDARD_SECONDS.getString());
         return ret;
+    }
+
+    @Override
+    public void enable() {
+        INSTANCE = this;
+        Config.load();
+        createTable();
+        PunishmentManager.init();
+        registerEvent(MuteEvents.class);
+        registerEvent(BanEvents.class);
+        registerCommand(PunishmentCommands.class);
+    }
+
+    @Override
+    public void disable() {
+
+    }
+
+    private void createTable() {
+        try {
+            Database db = getDB();
+            String TABLE;
+
+            if (db.getType() == Database.Type.MYSQL) {
+                TABLE = "CREATE TABLE IF NOT EXISTS ac_punishments ("
+                        + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+                        + "target INTEGER NOT NULL,"
+                        + "creator INTEGER NOT NULL,"
+                        + "type varchar(64) NOT NULL,"
+                        + "expires LONG NOT NULL,"
+                        + "reason TEXT NOT NULL"
+                        + ");";
+            } else {
+                TABLE = "CREATE TABLE IF NOT EXISTS ac_punishments ("
+                        + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                        + "target INTEGER NOT NULL,"
+                        + "creator INTEGER NOT NULL,"
+                        + "type varchar(64) NOT NULL,"
+                        + "expires LONG NOT NULL,"
+                        + "reason TEXT NOT NULL"
+                        + ");";
+            }
+
+            db.executeStatement(TABLE);
+        } catch (SQLException ex) {
+            ACLogger.severe("Error creating Punishments tables.", ex);
+        }
     }
 
 }

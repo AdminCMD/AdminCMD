@@ -1,17 +1,17 @@
 /*
  * This file is part of AdminCMD
  * Copyright (C) 2020 AdminCMD Team
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
@@ -23,17 +23,18 @@ import com.admincmd.database.Database;
 import com.admincmd.database.DatabaseFactory;
 import com.admincmd.utils.ACLogger;
 import com.admincmd.utils.MultiServerLocation;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class SQLPlayer implements ACPlayer {
 
-    private int id;
     private final Database db = DatabaseFactory.getDatabase();
+    private int id;
 
     public SQLPlayer(int id) {
         this.id = id;
@@ -111,33 +112,13 @@ public class SQLPlayer implements ACPlayer {
     }
 
     @Override
-    public boolean isGod() {
-        return getFromDB("god");
-    }
-
-    @Override
-    public boolean isFreezed() {
-        return getFromDB("freeze");
-    }
-
-    @Override
-    public boolean isInvisible() {
-        return getFromDB("invisible");
-    }
-
-    @Override
-    public boolean isCMDWatcher() {
-        return getFromDB("commandwatcher");
-    }
-
-    @Override
-    public boolean isSpy() {
-        return getFromDB("spy");
-    }
-
-    @Override
     public void setFly(boolean fly) {
         setInDB("fly", fly);
+    }
+
+    @Override
+    public boolean isGod() {
+        return getFromDB("god");
     }
 
     @Override
@@ -146,8 +127,18 @@ public class SQLPlayer implements ACPlayer {
     }
 
     @Override
+    public boolean isFreezed() {
+        return getFromDB("freeze");
+    }
+
+    @Override
     public void setFreezed(boolean freeze) {
         setInDB("freeze", freeze);
+    }
+
+    @Override
+    public boolean isInvisible() {
+        return getFromDB("invisible");
     }
 
     @Override
@@ -156,8 +147,18 @@ public class SQLPlayer implements ACPlayer {
     }
 
     @Override
+    public boolean isCMDWatcher() {
+        return getFromDB("commandwatcher");
+    }
+
+    @Override
     public void setCMDWatcher(boolean cmdwatch) {
         setInDB("commandwatcher", cmdwatch);
+    }
+
+    @Override
+    public boolean isSpy() {
+        return getFromDB("spy");
     }
 
     @Override

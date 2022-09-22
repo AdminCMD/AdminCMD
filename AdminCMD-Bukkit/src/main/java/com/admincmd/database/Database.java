@@ -1,17 +1,17 @@
 /*
  * This file is part of AdminCMD
  * Copyright (C) 2020 AdminCMD Team
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
@@ -19,24 +19,13 @@
 package com.admincmd.database;
 
 import com.admincmd.utils.ACLogger;
-import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+
+import java.sql.*;
 
 public abstract class Database {
 
-    private Connection conn = null;
     private final Type type;
-
-    public enum Type {
-
-        SQLITE,
-        MYSQL;
-    }
+    private Connection conn = null;
 
     public Database(String driver, Type type) {
         this.type = type;
@@ -155,14 +144,14 @@ public abstract class Database {
     public final PreparedStatement getPreparedStatement(String query) throws SQLException {
         return getConnection().prepareStatement(query);
     }
-    
+
     /**
-     * Creates a new PreparedStatement 
-     * 
+     * Creates a new PreparedStatement
+     *
      * @param query
      * @param options
      * @return
-     * @throws SQLException 
+     * @throws SQLException
      */
     public final PreparedStatement getPreparedStatement(String query, int options) throws SQLException {
         return getConnection().prepareStatement(query, options);
@@ -186,5 +175,11 @@ public abstract class Database {
      * @throws SQLException if connection failed
      */
     public abstract void reactivateConnection() throws SQLException;
+
+    public enum Type {
+
+        SQLITE,
+        MYSQL;
+    }
 
 }

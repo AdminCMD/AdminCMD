@@ -1,17 +1,17 @@
 /*
  * This file is part of AdminCMD
  * Copyright (C) 2020 AdminCMD Team
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
@@ -59,7 +59,7 @@ public enum CommandResult {
      * Tells the sender that the given argument is not a mobname
      */
     NOT_A_MOB(Locales.COMMAND_MESSAGES_NOT_A_MOB.getString()),
-    
+
     NOT_A_GAMEMODE(Locales.COMMAND_MESSAGES_NOT_A_GAMEMODE.getString()),
     /**
      * Tells the sender that the given mob cannot be spawned
@@ -69,12 +69,12 @@ public enum CommandResult {
      * Tells the sender that there is no free space for him to teleport to a location.
      */
     NO_SPACE(Locales.COMMAND_MESSAGES_NO_FREE_SPACE.getString()),
-    
+
     /**
      * Tells the sender that this Command is not made for his sender type
      */
     WRONG_SENDER(Locales.COMMAND_MESSAGES_WRONG_SENDER_TYPE.getString()),
-    
+
     NOT_YOURSELF(Locales.COMMAND_MESSAGES_SELF_PLAYER.getString());
 
     private final String msg;
