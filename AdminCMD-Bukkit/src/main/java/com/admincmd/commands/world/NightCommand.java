@@ -26,10 +26,47 @@ import com.admincmd.utils.Locales;
 import com.admincmd.utils.Messager;
 import com.admincmd.world.ACWorld;
 import com.admincmd.world.WorldManager;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 @CommandHandler
 public class NightCommand {
+
+    @BaseCommand(command = "night", sender = Sender.ALL, permission = "admincmd.world.night", helpArguments = {"", "<-w world>"})
+    public CommandResult executeConsole(CommandSender sender, CommandArgs args) {
+        if (args.isEmpty()) {
+            if (sender instanceof Player) {
+                return executeNight((Player) sender, args);
+            } else {
+                return CommandResult.WRONG_SENDER;
+            }
+        }
+
+        if (args.hasFlag("w")) {
+            CommandArgs.Flag flag = args.getFlag("w");
+            if (!flag.isWorld()) {
+                return CommandResult.NOT_A_WORLD;
+            }
+
+            if (!sender.hasPermission("admincmd.world.night.other")) {
+                return CommandResult.NO_PERMISSION_OTHER;
+            }
+
+            ACWorld world = flag.getWorld();
+            long time = 13100;
+            WorldManager.setTime(world, time);
+            String msg;
+            if (Config.BUNGEECORD.getBoolean()) {
+                msg = Locales.WORLD_NIGHT_SET.getString().replaceAll("%world%", world.getServer() + ":" + world.getName());
+            } else {
+                msg = Locales.WORLD_NIGHT_SET.getString().replaceAll("%world%", world.getName());
+            }
+            sender.sendMessage(Messager.MessageType.INFO.getPrefix() + msg);
+            return CommandResult.SUCCESS;
+        }
+
+        return CommandResult.ERROR;
+    }
 
     @BaseCommand(command = "night", sender = Sender.PLAYER, permission = "admincmd.world.night", helpArguments = {"", "<-w world>"})
     public CommandResult executeNight(Player sender, CommandArgs args) {

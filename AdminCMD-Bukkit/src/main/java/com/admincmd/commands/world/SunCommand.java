@@ -26,10 +26,47 @@ import com.admincmd.utils.Locales;
 import com.admincmd.utils.Messager;
 import com.admincmd.world.ACWorld;
 import com.admincmd.world.WorldManager;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 @CommandHandler
 public class SunCommand {
+
+    @BaseCommand(command = "sun", sender = Sender.ALL, permission = "admincmd.world.sun", helpArguments = {"", "<-w world>"})
+    public CommandResult executeConsole(CommandSender sender, CommandArgs args) {
+        if (args.isEmpty()) {
+            if (sender instanceof Player) {
+                return executeSun((Player) sender, args);
+            } else {
+                return CommandResult.WRONG_SENDER;
+            }
+        }
+
+        if (args.hasFlag("w")) {
+            CommandArgs.Flag flag = args.getFlag("w");
+            if (!flag.isWorld()) {
+                return CommandResult.NOT_A_WORLD;
+            }
+
+            if (!sender.hasPermission("admincmd.world.sun.other")) {
+                return CommandResult.NO_PERMISSION_OTHER;
+            }
+
+            ACWorld world = flag.getWorld();
+            WorldManager.setSun(world);
+
+            String msg;
+            if (Config.BUNGEECORD.getBoolean()) {
+                msg = Locales.WORLD_WEATHER_CLEAR.getString().replaceAll("%world%", world.getServer() + ":" + world.getName());
+            } else {
+                msg = Locales.WORLD_WEATHER_CLEAR.getString().replaceAll("%world%", world.getName());
+            }
+            sender.sendMessage(Messager.MessageType.INFO.getPrefix() + msg);
+            return CommandResult.SUCCESS;
+        }
+
+        return CommandResult.ERROR;
+    }
 
     @BaseCommand(command = "sun", sender = Sender.PLAYER, permission = "admincmd.world.sun", helpArguments = {"", "<-w world>"})
     public CommandResult executeSun(Player sender, CommandArgs args) {

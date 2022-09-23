@@ -18,7 +18,6 @@
  */
 package com.admincmd.commandapi;
 
-import com.admincmd.Main;
 import com.admincmd.home.HomeManager;
 import com.admincmd.player.ACPlayer;
 import com.admincmd.player.PlayerManager;
@@ -281,12 +280,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
      */
     @Override
     public boolean onCommand(final CommandSender cs, final Command cmnd, final String string, final String[] strings) {
-        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                executeCommand(cmnd, cs, strings);
-            }
-        });
+        executeCommand(cmnd, cs, strings);
         return true;
     }
 

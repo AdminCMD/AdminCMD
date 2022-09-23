@@ -76,8 +76,7 @@ public class WorldManager {
                 }
 
                 if (toCheck.isOnThisServer() && toCheck.isPaused()) {
-                    //disabled for now due to performance problems
-                    //Bukkit.getScheduler().runTaskTimer(Main.getInstance(), new ResetTime(toCheck), 20 * 3, 20 * 3);
+                    Bukkit.getScheduler().runTaskTimer(Main.getInstance(), new ResetTime(toCheck), 20 * 3, 20 * 3);
                 }
             }
 
@@ -203,13 +202,8 @@ public class WorldManager {
 
     public static void setTime(final ACWorld world, final long time) {
         if (world.isOnThisServer()) {
-            Bukkit.getScheduler().runTask(Main.getInstance(), new Runnable() {
-                @Override
-                public void run() {
-                    World bukkitworld = Bukkit.getWorld(world.getName());
-                    bukkitworld.setTime(time);
-                }
-            });
+            World bukkitworld = Bukkit.getWorld(world.getName());
+            bukkitworld.setTime(time);
         } else {
             BungeeCordMessageManager.getInstance().sendMessage(null, Channel.WORLD_TIME_SET, MessageCommand.FORWARD, world.getServer() + ":" + world.getName() + ":" + time);
         }
@@ -221,8 +215,7 @@ public class WorldManager {
             World bukkitWorld = Bukkit.getWorld(world.getName());
             world.setPausedTime(bukkitWorld.getTime());
             if (pause) {
-                //DISABLED FOR NOW DUE TO PERFORMANCE PROBLEMS
-                //Bukkit.getScheduler().runTaskTimer(Main.getInstance(), new ResetTime(world), 20 * 3, 20 * 3);
+                Bukkit.getScheduler().runTaskTimer(Main.getInstance(), new ResetTime(world), 20 * 3, 20 * 3);
             }
         } else {
             BungeeCordMessageManager.getInstance().sendMessage(null, Channel.WORLD_TIME_PAUSE, MessageCommand.FORWARD, world.getServer() + ":" + world.getName() + ":" + pause);
@@ -231,14 +224,8 @@ public class WorldManager {
 
     public static void setSun(final ACWorld world) {
         if (world.isOnThisServer()) {
-            Bukkit.getScheduler().runTask(Main.getInstance(), new Runnable() {
-                @Override
-                public void run() {
-                    World bukkitWorld = Bukkit.getWorld(world.getName());
-                    bukkitWorld.setStorm(false);
-                    bukkitWorld.setThundering(false);
-                }
-            });
+            World bukkitWorld = Bukkit.getWorld(world.getName());
+            bukkitWorld.setStorm(false);
         } else {
             BungeeCordMessageManager.getInstance().sendMessage(null, Channel.WORLD_WEATHER_SET, MessageCommand.FORWARD, world.getServer() + ":" + world.getName());
         }
