@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.admincmd</groupId>
     <artifactId>AdminCMD-Bukkit</artifactId>
-    <version>9.2.2</version>
+    <version>9.2.3</version>
     <packaging>jar</packaging>
 
     <parent>
@@ -28,6 +28,33 @@
                 </includes>
             </resource>
         </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.4.0</version>
+                <configuration>
+                    <relocations>
+                        <relocation>
+                            <pattern>org.bstats</pattern>
+                            <shadedPattern>com.admincmd.bstats</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>de.jeter.updatechecker</pattern>
+                            <shadedPattern>com.admincmd.updatechecker</shadedPattern>
+                        </relocation>
+                    </relocations>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 
     <dependencies>
@@ -48,6 +75,18 @@
             <artifactId>ProtocolLib</artifactId>
             <version>4.7.0</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.bstats</groupId>
+            <artifactId>bstats-bukkit</artifactId>
+            <version>3.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.TheJeterLP</groupId>
+            <artifactId>Spigot-Updatechecker</artifactId>
+            <version>2.0.4</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

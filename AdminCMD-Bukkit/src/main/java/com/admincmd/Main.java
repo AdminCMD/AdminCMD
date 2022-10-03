@@ -44,6 +44,9 @@ import com.admincmd.player.PlayerManager;
 import com.admincmd.utils.*;
 import com.admincmd.warp.WarpManager;
 import com.admincmd.world.WorldManager;
+import de.jeter.updatechecker.SpigotUpdateChecker;
+import de.jeter.updatechecker.UpdateChecker;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -54,7 +57,7 @@ public class Main extends JavaPlugin {
 
     private static Main INSTANCE;
     private final CommandManager manager = new CommandManager(this);
-    private UpdateChecker updatechecker = null;
+    private UpdateChecker updatechecker;
 
     /**
      * Returns an instance of this class.
@@ -84,7 +87,12 @@ public class Main extends JavaPlugin {
         Locales.load();
 
         if (Config.CHECK_UPDATE.getBoolean()) {
-            updatechecker = new UpdateChecker(this, 75678);
+            updatechecker = new SpigotUpdateChecker(this, 75678);
+        }
+
+        if (Config.ENABLE_METRICS.getBoolean()) {
+            Metrics metrics = new Metrics(this, 7742);
+            getLogger().info("Thanks for using bstats, it was enabled!");
         }
 
         BungeeCordMessageManager.setup();

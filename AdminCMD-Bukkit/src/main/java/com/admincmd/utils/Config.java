@@ -37,6 +37,8 @@ public enum Config {
     DIRECT_RESPAWN("Options.DirectRespawn", true, "Set to false if you want players to manually click the respawn button."),
     DEBUG("Options.Debug", false, "Enables debugging chat."),
     CHECK_UPDATE("Options.check-for-updates", true, "Should the plugin check for updates by itself?"),
+    ENABLE_METRICS("Options.enable-bstats", true, "Should the plugin pass statistics to bstats?"),
+
     BUNGEECORD("Options.Bungeecord.Enable", false, "This enables the bungeecord mode. In the bungeecord mode everything gets written instantly to the database. makes only sense when using MySQL"),
     BUNGEECORD_SERVERNAME("Options.Bungeecord.Servername", "server1", "If BungeeCord mode is enabled, this has to be the exact same name as in your BungeeCord server configuration!!!"),
     MAINTENANCE_ENABLE("Options.Maintenance.Enable", false, "Enables the maintenance mode. Can alse be enabled by command."),
