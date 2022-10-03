@@ -1,4 +1,4 @@
-Unleash the power of Bukkit! [![Create DevBuild](https://github.com/AdminCMD/AdminCMD/actions/workflows/autobuild.yml/badge.svg)](https://github.com/AdminCMD/AdminCMD/actions/workflows/autobuild.yml)
+Unleash the power of Bukkit! [![Create DevBuild](https://github.com/AdminCMD/AdminCMD/actions/workflows/autobuild.yml/badge.svg)](https://github.com/AdminCMD/AdminCMD/actions/workflows/autobuild.yml) 
 ============================
 
 Information 
