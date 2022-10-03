@@ -1,4 +1,4 @@
-Unleash the power of Bukkit! ![Java CI with Maven](https://github.com/AdminCMD/AdminCMD/workflows/Java%20CI%20with%20Maven/badge.svg)
+Unleash the power of Bukkit! [![Create DevBuild](https://github.com/AdminCMD/AdminCMD/actions/workflows/autobuild.yml/badge.svg)](https://github.com/AdminCMD/AdminCMD/actions/workflows/autobuild.yml)
 ============================
 
 Information 
