@@ -24,7 +24,7 @@ import com.admincmd.player.PlayerManager;
 import com.admincmd.utils.BukkitListener;
 import com.admincmd.utils.Config;
 import com.admincmd.utils.Locales;
-import com.admincmd.utils.UpdateChecker;
+import de.jeter.updatechecker.Result;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -58,8 +58,8 @@ public class PlayerJoinListener extends BukkitListener {
         }
 
         if (Config.CHECK_UPDATE.getBoolean() && e.getPlayer().hasPermission("admincmd.notifyupdate") && Main.getInstance().getUpdateChecker() != null) {
-            if (Main.getInstance().getUpdateChecker().getResult() == UpdateChecker.Result.UPDATE_FOUND) {
-                e.getPlayer().sendMessage(Locales.UPDATE_FOUND.getString().replaceAll("%oldversion", Main.getInstance().getDescription().getVersion()).replaceAll("%newversion", Main.getInstance().getUpdateChecker().getVersion()));
+            if (Main.getInstance().getUpdateChecker().getResult() == Result.UPDATE_FOUND) {
+                e.getPlayer().sendMessage(Locales.UPDATE_FOUND.getString().replaceAll("%oldversion", Main.getInstance().getDescription().getVersion()).replaceAll("%newversion", Main.getInstance().getUpdateChecker().getLatestRemoteVersion()));
             }
         }
 
