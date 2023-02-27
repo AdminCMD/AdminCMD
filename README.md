@@ -1,4 +1,4 @@
-Unleash the power of Bukkit! [![Create DevBuild](https://github.com/AdminCMD/AdminCMD/actions/workflows/autobuild.yml/badge.svg)](https://github.com/AdminCMD/AdminCMD/actions/workflows/autobuild.yml)
+Unleash the power of Bukkit! [![Create DevBuild](https://github.com/AdminCMD/AdminCMD/actions/workflows/autobuild.yml/badge.svg)](https://github.com/AdminCMD/AdminCMD/actions/workflows/autobuild.yml) 
 ============================
 
 Information 
@@ -18,12 +18,11 @@ If you are interested in contributing, please read the [CONTRIBUTING.md](CONTRIB
 
 Developers
 ----------
-* [Belphemur](https://github.com/Belphemur)
 * [TheJeterLP](https://github.com/TheJeterLP)
 * [jkmalan](https://github.com/jkmalan)
 
-Special Thanks
---------------
-* [Lathanael](https://github.com/Lathanael) for helping to shape AdminCMD on Bukkit!
+[![BStats](https://bstats.org/signatures/bukkit/AdminCMD.svg)](https://bstats.org/plugin/bukkit/AdminCMD/7742)
+
+
    
  
