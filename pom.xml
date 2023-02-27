@@ -49,7 +49,7 @@
                 <executions>
                     <execution>
                         <id>copy-artifact</id>
-                        <phase>package</phase>
+                        <phase>install</phase>
                         <goals>
                             <goal>copy</goal>
                         </goals>
