@@ -126,7 +126,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         }
         MethodContainer container = cmds.get(bcmd);
         Method me = container.getMethod(bcmd.sender());
-        return me.getDeclaringClass().newInstance();
+        return me.getDeclaringClass().getDeclaredConstructor().newInstance();
     }
 
     /**
