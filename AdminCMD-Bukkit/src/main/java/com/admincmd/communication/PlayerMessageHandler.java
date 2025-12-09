@@ -242,7 +242,7 @@ public class PlayerMessageHandler {
         ACPlayer target = PlayerManager.getPlayer(targetID);
         Player p = target.getPlayer();
         p.setFoodLevel(15);
-        p.setHealth(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+        p.setHealth(p.getMaxHealth());
     }
 
     protected static void reactPlayerFly(String msg) {

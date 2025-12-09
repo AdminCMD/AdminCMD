@@ -24,7 +24,7 @@ public class EventManager {
 
     public static void registerEvent(Class<? extends BukkitListener> clazz) {
         try {
-            BukkitListener l = clazz.newInstance();
+            BukkitListener l = clazz.getDeclaredConstructor().newInstance();
             l.register();
         } catch (Exception ex) {
             ACLogger.severe("Error registering the listener", ex);
@@ -33,7 +33,7 @@ public class EventManager {
 
     public static void registerEvent(Class<? extends BukkitListener> clazz, Addon a) {
         try {
-            BukkitListener l = clazz.newInstance();
+            BukkitListener l = clazz.getDeclaredConstructor().newInstance();
             l.register(a);
         } catch (Exception ex) {
             ACLogger.severe("Error registering the listener", ex);

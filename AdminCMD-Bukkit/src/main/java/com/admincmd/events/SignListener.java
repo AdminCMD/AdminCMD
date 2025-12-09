@@ -18,7 +18,6 @@
  */
 package com.admincmd.events;
 
-import com.admincmd.Main;
 import com.admincmd.player.ACPlayer;
 import com.admincmd.player.PlayerManager;
 import com.admincmd.utils.BukkitListener;
@@ -27,9 +26,9 @@ import com.admincmd.utils.Messager;
 import com.admincmd.utils.Utils;
 import com.admincmd.warp.ACWarp;
 import com.admincmd.warp.WarpManager;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
@@ -137,46 +136,42 @@ public class SignListener extends BukkitListener {
 
         final Sign s = (Sign) e.getClickedBlock().getState();
 
-        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                ACPlayer acp = PlayerManager.getPlayer(e.getPlayer());
+        ACPlayer acp = PlayerManager.getPlayer(e.getPlayer());
 
-                List<String> lines = new ArrayList<>();
+        List<String> lines = new ArrayList<>();
 
-                for (String string : s.getLines()) {
-                    lines.add(Utils.removeColors(string));
-                }
+        for (String string : s.getSide(Side.FRONT).getLines()) {
+            lines.add(Utils.removeColors(string));
+        }
 
-                if (lines.size() < 2) {
-                    return;
-                }
+        if (lines.size() < 2) {
+            return;
+        }
 
-                if (lines.get(0).equalsIgnoreCase("[command]")) {
-                    if (!e.getPlayer().hasPermission("admincmd.commandsign.use")) {
-                        Messager.sendMessage(acp, Locales.COMMAND_MESSAGES_NO_PERMISSION.getString().replaceAll("%perm%", "admincmd.commandsign.use"), Messager.MessageType.NONE);
-                        return;
-                    }
-
-                    String command = lines.get(1);
-                    e.getPlayer().performCommand(command.replaceFirst("/", ""));
-                    return;
-                }
-
-                if (lines.get(0).equalsIgnoreCase("[warp]")) {
-                    if (!e.getPlayer().hasPermission("admincmd.warpsing.use")) {
-                        Messager.sendMessage(acp, Locales.COMMAND_MESSAGES_NO_PERMISSION.getString().replaceAll("%perm%", "admincmd.warpsing.use"), Messager.MessageType.NONE);
-                        return;
-                    }
-                    String warp = lines.get(1);
-                    ACWarp w = WarpManager.getWarp(warp);
-                    if (w != null) {
-                        PlayerManager.teleport(w.getLocation(), PlayerManager.getPlayer(e.getPlayer()));
-                    } else {
-                        Messager.sendMessage(acp, Locales.WARP_NO_SUCH_WARP, Messager.MessageType.ERROR);
-                    }
-                }
+        if (lines.get(0).equalsIgnoreCase("[command]")) {
+            e.setCancelled(true);
+            if (!e.getPlayer().hasPermission("admincmd.commandsign.use")) {
+                Messager.sendMessage(acp, Locales.COMMAND_MESSAGES_NO_PERMISSION.getString().replaceAll("%perm%", "admincmd.commandsign.use"), Messager.MessageType.NONE);
+                return;
             }
-        });
+
+            String command = lines.get(1);
+            e.getPlayer().performCommand(command.replaceFirst("/", ""));
+
+        } else if (lines.get(0).equalsIgnoreCase("[warp]")) {
+            e.setCancelled(true);
+            if (!e.getPlayer().hasPermission("admincmd.warpsing.use")) {
+                Messager.sendMessage(acp, Locales.COMMAND_MESSAGES_NO_PERMISSION.getString().replaceAll("%perm%", "admincmd.warpsing.use"), Messager.MessageType.NONE);
+                return;
+            }
+            String warp = lines.get(1);
+            ACWarp w = WarpManager.getWarp(warp);
+            if (w != null) {
+                PlayerManager.teleport(w.getLocation(), PlayerManager.getPlayer(e.getPlayer()));
+            } else {
+                Messager.sendMessage(acp, Locales.WARP_NO_SUCH_WARP, Messager.MessageType.ERROR);
+            }
+        }
     }
 }
+

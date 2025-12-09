@@ -31,7 +31,7 @@ public abstract class Database {
         this.type = type;
         try {
             Class d = Class.forName(driver);
-            Object o = d.newInstance();
+            Object o = d.getDeclaredConstructor().newInstance();
             if (!(o instanceof Driver)) {
                 ACLogger.severe("Driver is not an instance of the Driver class!");
             } else {

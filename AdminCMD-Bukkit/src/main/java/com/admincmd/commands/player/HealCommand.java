@@ -36,7 +36,7 @@ public class HealCommand {
     @BaseCommand(command = "heal", sender = Sender.PLAYER, permission = "admincmd.player.heal", aliases = "pheal", helpArguments = {"", "<-p player>"})
     public CommandResult executeHeal(Player sender, CommandArgs args) {
         if (args.isEmpty()) {
-            sender.setHealth(sender.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+            sender.setHealth(sender.getMaxHealth());
             sender.setFoodLevel(15);
             return Messager.sendMessage(PlayerManager.getPlayer(sender), Locales.PLAYER_HEAL_SELF, Messager.MessageType.INFO);
         }
@@ -59,7 +59,7 @@ public class HealCommand {
 
             if (PlayerManager.isOnThisServer(target)) {
                 Player p = target.getPlayer();
-                p.setHealth(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+                p.setHealth(p.getMaxHealth());
                 p.setFoodLevel(15);
             } else {
                 BungeeCordMessageManager.getInstance().sendMessage(target, Channel.HEAL_PLAYER, MessageCommand.FORWARD, "");
