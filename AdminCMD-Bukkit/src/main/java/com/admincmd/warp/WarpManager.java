@@ -18,12 +18,10 @@
  */
 package com.admincmd.warp;
 
-import com.admincmd.Main;
 import com.admincmd.database.DatabaseFactory;
 import com.admincmd.utils.ACLogger;
 import com.admincmd.utils.Config;
 import com.admincmd.utils.MultiServerLocation;
-import org.bukkit.Bukkit;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -39,7 +37,8 @@ public class WarpManager {
     public static ACWarp getWarp(String name) {
         if (!Config.BUNGEECORD.getBoolean()) {
             for (ACWarp w : warps) {
-                if (w.getName().equalsIgnoreCase(name)) {
+
+                if (w.getName() != null && w.getName().equalsIgnoreCase(name)) {
                     return w;
                 }
             }
@@ -69,20 +68,14 @@ public class WarpManager {
                 warps.remove(sw);
             }
         }
-        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    PreparedStatement s = DatabaseFactory.getDatabase().getPreparedStatement("DELETE FROM " + DatabaseFactory.WARP_TABLE + " WHERE id = ?;");
-                    s.setInt(1, w.getID());
-                    s.executeUpdate();
-                    DatabaseFactory.getDatabase().closeStatement(s);
-                } catch (SQLException ex) {
-                    ACLogger.severe("Error deleting warp from Database " + w.getID(), ex);
-                }
-            }
-        });
-
+        try {
+            PreparedStatement s = DatabaseFactory.getDatabase().getPreparedStatement("DELETE FROM " + DatabaseFactory.WARP_TABLE + " WHERE id = ?;");
+            s.setInt(1, w.getID());
+            s.executeUpdate();
+            DatabaseFactory.getDatabase().closeStatement(s);
+        } catch (SQLException ex) {
+            ACLogger.severe("Error deleting warp from Database " + w.getID(), ex);
+        }
     }
 
     public static List<String> getWarps() {
@@ -110,27 +103,22 @@ public class WarpManager {
     }
 
     public static void createWarp(final MultiServerLocation target, final String name) {
-        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                if (getWarp(name) == null) {
-                    if (Config.BUNGEECORD.getBoolean()) {
-                        try {
-                            PreparedStatement sta = DatabaseFactory.getDatabase().getPreparedStatement("INSERT INTO " + DatabaseFactory.WARP_TABLE + " (location, name) VALUES (?, ?);");
-                            sta.setString(1, target.toString());
-                            sta.setString(2, name);
-                            sta.executeUpdate();
-                            DatabaseFactory.getDatabase().closeStatement(sta);
-                        } catch (SQLException ex) {
-                            ACLogger.severe(ex);
-                        }
-                    } else {
-                        StoredWarp warp = new StoredWarp(name, target);
-                        warps.add(warp);
-                    }
+        if (getWarp(name) == null) {
+            if (Config.BUNGEECORD.getBoolean()) {
+                try {
+                    PreparedStatement sta = DatabaseFactory.getDatabase().getPreparedStatement("INSERT INTO " + DatabaseFactory.WARP_TABLE + " (location, name) VALUES (?, ?);");
+                    sta.setString(1, target.toString());
+                    sta.setString(2, name);
+                    sta.executeUpdate();
+                    DatabaseFactory.getDatabase().closeStatement(sta);
+                } catch (SQLException ex) {
+                    ACLogger.severe(ex);
                 }
+            } else {
+                StoredWarp warp = new StoredWarp(name, target);
+                warps.add(warp);
             }
-        });
+        }
     }
 
     public static void init() {

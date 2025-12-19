@@ -59,6 +59,8 @@ public class StoredWarp implements ACWarp {
             ResultSet generatedKeys = sta.getGeneratedKeys();
             if (generatedKeys.next()) {
                 this.id = generatedKeys.getInt(1);
+                this.name = name;
+                this.loc = loc;
             } else {
                 String sql = Config.MYSQL_USE.getBoolean() ? "MySQL" : "SQLite";
                 throw new SQLException("Creating warp failed, no ID obtained. SQL type: " + sql);

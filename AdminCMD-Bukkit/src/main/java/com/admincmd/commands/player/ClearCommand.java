@@ -32,7 +32,7 @@ import org.bukkit.entity.Player;
 @CommandHandler
 public class ClearCommand {
 
-    @BaseCommand(command = "clear", sender = Sender.PLAYER, permission = "admincmd.player.clear", aliases = "pclear", helpArguments = {"", "<-p player>"})
+    @BaseCommand(command = "clear", sender = Sender.PLAYER, permission = "admincmd.player.clear", aliases = "pclear", helpArguments = {"", "<-p player>"}, async = true)
     public CommandResult executeClear(Player sender, CommandArgs args) {
         ACPlayer acp = PlayerManager.getPlayer(sender);
         if (args.isEmpty()) {

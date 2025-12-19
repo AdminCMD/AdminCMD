@@ -25,6 +25,6 @@ public enum Sender {
     COMMANDBLOCK,
     MINECART,
     OTHER,
-    ALL;
+    ALL
 
 }

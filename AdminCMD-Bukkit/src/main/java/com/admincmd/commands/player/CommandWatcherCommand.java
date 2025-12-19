@@ -29,7 +29,7 @@ import org.bukkit.entity.Player;
 @CommandHandler
 public class CommandWatcherCommand {
 
-    @BaseCommand(command = "cw", sender = Sender.PLAYER, permission = "admincmd.player.cw", aliases = "cmdwatcher,commandwatcher", helpArguments = {"", "<-p player>"})
+    @BaseCommand(command = "cw", sender = Sender.PLAYER, permission = "admincmd.player.cw", aliases = "cmdwatcher,commandwatcher", helpArguments = {"", "<-p player>"}, async = true)
     public CommandResult executeCW(Player sender, CommandArgs args) {
         ACPlayer p = PlayerManager.getPlayer(sender);
         if (args.isEmpty()) {

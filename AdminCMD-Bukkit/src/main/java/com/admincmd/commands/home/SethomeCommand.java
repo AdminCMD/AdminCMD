@@ -30,7 +30,7 @@ import org.bukkit.entity.Player;
 @CommandHandler
 public class SethomeCommand {
 
-    @BaseCommand(command = "sethome", sender = Sender.PLAYER, permission = "admincmd.home.set", aliases = "sh", helpArguments = "<name>")
+    @BaseCommand(command = "sethome", sender = Sender.PLAYER, permission = "admincmd.home.set", aliases = "sh", helpArguments = "<name>", async = true)
     public CommandResult executeSethome(Player sender, CommandArgs args) {
         if (args.getLength() != 1) {
             return CommandResult.ERROR;

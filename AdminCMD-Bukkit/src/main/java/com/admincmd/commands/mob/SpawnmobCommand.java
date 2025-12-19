@@ -18,14 +18,12 @@
  */
 package com.admincmd.commands.mob;
 
-import com.admincmd.Main;
 import com.admincmd.commandapi.*;
 import com.admincmd.player.ACPlayer;
 import com.admincmd.player.PlayerManager;
 import com.admincmd.utils.Locales;
 import com.admincmd.utils.Messager;
 import com.admincmd.utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -56,18 +54,12 @@ public class SpawnmobCommand {
         }
 
         final EntityType clone = type;
+        for (int i = 0; i < amount; i++) {
+            target.spawnEntity(Utils.getLocationLooking(sender, 10), clone);
+        }
 
-        Bukkit.getScheduler().runTask(Main.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                for (int i = 0; i < amount; i++) {
-                    target.spawnEntity(Utils.getLocationLooking(sender, 10), clone);
-                }
-
-                String msg = Locales.MOB_SPAWNED.getString().replaceAll("%num%", amount + "");
-                Messager.sendMessage(acp, msg, Messager.MessageType.INFO);
-            }
-        });
+        String msg = Locales.MOB_SPAWNED.getString().replaceAll("%num%", amount + "");
+        Messager.sendMessage(acp, msg, Messager.MessageType.INFO);
         return CommandResult.SUCCESS;
     }
 

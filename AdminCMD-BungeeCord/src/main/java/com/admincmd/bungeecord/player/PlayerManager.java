@@ -70,20 +70,7 @@ public class PlayerManager {
 
     public static void createPlayer(ProxiedPlayer player) {
         try {
-            Database db = DatabaseFactory.getDatabase();
-            PreparedStatement s = db.getPreparedStatement("INSERT INTO " + DatabaseFactory.PLAYER_TABLE + " (uuid, god, invisible, commandwatcher, spy, fly, freeze, nickname, lastmsgfrom, online, server, lastloc) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS);
-            s.setString(1, player.getUniqueId().toString());
-            s.setBoolean(2, false);
-            s.setBoolean(3, false);
-            s.setBoolean(4, false);
-            s.setBoolean(5, false);
-            s.setBoolean(6, false);
-            s.setBoolean(7, false);
-            s.setString(8, player.getName());
-            s.setInt(9, -1);
-            s.setBoolean(10, player.isConnected());
-            s.setString(11, player.getServer().getInfo().getName());
-            s.setString(12, "none");
+            PreparedStatement s = getPreparedStatement(player);
 
             int affectedRows = s.executeUpdate();
 
@@ -104,5 +91,23 @@ public class PlayerManager {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+    }
+
+    private static PreparedStatement getPreparedStatement(ProxiedPlayer player) throws SQLException {
+        Database db = DatabaseFactory.getDatabase();
+        PreparedStatement s = db.getPreparedStatement("INSERT INTO " + DatabaseFactory.PLAYER_TABLE + " (uuid, god, invisible, commandwatcher, spy, fly, freeze, nickname, lastmsgfrom, online, server, lastloc) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS);
+        s.setString(1, player.getUniqueId().toString());
+        s.setBoolean(2, false);
+        s.setBoolean(3, false);
+        s.setBoolean(4, false);
+        s.setBoolean(5, false);
+        s.setBoolean(6, false);
+        s.setBoolean(7, false);
+        s.setString(8, player.getName());
+        s.setInt(9, -1);
+        s.setBoolean(10, player.isConnected());
+        s.setString(11, player.getServer().getInfo().getName());
+        s.setString(12, "none");
+        return s;
     }
 }

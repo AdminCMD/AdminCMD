@@ -79,11 +79,11 @@ public enum CommandResult {
 
     private final String msg;
 
-    private CommandResult(String msg) {
+    CommandResult(String msg) {
         this.msg = msg;
     }
 
-    protected String getMessage() {
+    String getMessage() {
         return this.msg;
     }
 }

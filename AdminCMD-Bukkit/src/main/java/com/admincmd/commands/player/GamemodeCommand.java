@@ -18,7 +18,6 @@
  */
 package com.admincmd.commands.player;
 
-import com.admincmd.Main;
 import com.admincmd.commandapi.*;
 import com.admincmd.communication.BungeeCordMessageManager;
 import com.admincmd.communication.Channel;
@@ -28,25 +27,19 @@ import com.admincmd.player.PlayerManager;
 import com.admincmd.utils.Locales;
 import com.admincmd.utils.Messager;
 import com.admincmd.utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
 @CommandHandler
 public class GamemodeCommand {
 
-    @BaseCommand(command = "gamemode", sender = Sender.PLAYER, permission = "admincmd.player.gamemode", aliases = "gm", helpArguments = {"", "<0|1|2|3>", "<-p player> <0|1|2|3>"})
+    @BaseCommand(command = "gamemode", sender = Sender.PLAYER, permission = "admincmd.player.gamemode", aliases = "gm", helpArguments = {"", "<0|1|2|3>", "<-p player> <0|1|2|3>"}, async = true)
     public CommandResult executeGamemode(final Player sender, CommandArgs args) {
         if (args.isEmpty()) {
-            Bukkit.getScheduler().runTask(Main.getInstance(), new Runnable() {
-                @Override
-                public void run() {
-                    GameMode gm = sender.getGameMode() == GameMode.SURVIVAL ? GameMode.CREATIVE : GameMode.SURVIVAL;
-                    sender.setGameMode(gm);
-                    String msg = Locales.PLAYER_GAMEMODE_CHANGED.getString().replaceAll("%status%", gm.toString());
-                    Messager.sendMessage(PlayerManager.getPlayer(sender), msg, Messager.MessageType.INFO);
-                }
-            });
+            GameMode gm = sender.getGameMode() == GameMode.SURVIVAL ? GameMode.CREATIVE : GameMode.SURVIVAL;
+            sender.setGameMode(gm);
+            String msg = Locales.PLAYER_GAMEMODE_CHANGED.getString().replaceAll("%status%", gm.toString());
+            Messager.sendMessage(PlayerManager.getPlayer(sender), msg, Messager.MessageType.INFO);
             return CommandResult.SUCCESS;
         }
 
@@ -75,13 +68,8 @@ public class GamemodeCommand {
             final GameMode gm = args.getGameMode(2);
 
             if (PlayerManager.isOnThisServer(actarget)) {
-                Bukkit.getScheduler().runTask(Main.getInstance(), new Runnable() {
-                    @Override
-                    public void run() {
-                        Player target = actarget.getPlayer();
-                        target.setGameMode(gm);
-                    }
-                });
+                Player target = actarget.getPlayer();
+                target.setGameMode(gm);
             } else {
                 BungeeCordMessageManager.getInstance().sendMessage(actarget, Channel.GAMEMODE_PLAYER, MessageCommand.FORWARD, gm.toString());
             }
@@ -98,12 +86,7 @@ public class GamemodeCommand {
                 }
 
                 final GameMode gm = args.getGameMode(0);
-                Bukkit.getScheduler().runTask(Main.getInstance(), new Runnable() {
-                    @Override
-                    public void run() {
-                        sender.setGameMode(gm);
-                    }
-                });
+                sender.setGameMode(gm);
                 String msg = Locales.PLAYER_GAMEMODE_CHANGED.getString().replaceAll("%status%", gm.toString());
                 return Messager.sendMessage(PlayerManager.getPlayer(sender), msg, Messager.MessageType.INFO);
             }

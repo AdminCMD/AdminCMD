@@ -29,7 +29,7 @@ import java.util.List;
 @CommandHandler
 public class WorldListCommand {
 
-    @BaseCommand(command = "worlds", sender = Sender.ALL, permission = "admincmd.world.list", helpArguments = {""}, aliases = "wlist")
+    @BaseCommand(command = "worlds", sender = Sender.ALL, permission = "admincmd.world.list", helpArguments = {""}, aliases = "wlist", async = true)
     public CommandResult executeConsole(CommandSender sender, CommandArgs args) {
         if (!args.isEmpty()) {
             return CommandResult.ERROR;

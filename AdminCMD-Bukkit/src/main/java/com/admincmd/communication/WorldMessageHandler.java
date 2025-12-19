@@ -137,8 +137,7 @@ public class WorldMessageHandler {
     }
 
     protected static void reactWeatherSet(String msg) {
-        String worldName = msg;
-        ACWorld target = WorldManager.getWorld(worldName, BungeeCordMessageManager.getServerName());
+        ACWorld target = WorldManager.getWorld(msg, BungeeCordMessageManager.getServerName());
         if (target != null) {
             World bukkitWorld = Bukkit.getWorld(target.getName());
             bukkitWorld.setStorm(false);

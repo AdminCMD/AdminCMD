@@ -22,11 +22,11 @@ import org.bukkit.inventory.Inventory;
 
 public interface ACKit {
 
-    public Inventory getInventory();
+    Inventory getInventory();
 
-    public String getName();
+    String getName();
 
-    public long getTime();
+    long getTime();
 
-    public int getID();
+    int getID();
 }

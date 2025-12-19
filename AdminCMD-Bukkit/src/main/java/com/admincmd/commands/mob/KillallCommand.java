@@ -113,7 +113,7 @@ public class KillallCommand {
             } else {
                 msg = Locales.MOB_KILLALL.getString().replaceAll("%world%", target.getName()).replaceAll("%num%", "unknown");
             }
-            BungeeCordMessageManager.getInstance().sendMessage(PlayerManager.getPlayer(sender), Channel.KILL_MOBS, MessageCommand.FORWARD, target.getServer() + ":" + target.getName() + ":" + mobtype.toString());
+            BungeeCordMessageManager.getInstance().sendMessage(PlayerManager.getPlayer(sender), Channel.KILL_MOBS, MessageCommand.FORWARD, target.getServer() + ":" + target.getName() + ":" + mobtype);
             return Messager.sendMessage(acp, msg, Messager.MessageType.INFO);
         }
     }
@@ -121,7 +121,7 @@ public class KillallCommand {
     public enum MobType {
         MONSTER,
         ANIMAL,
-        ALL;
+        ALL
     }
 
 }

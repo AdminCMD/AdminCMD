@@ -32,7 +32,7 @@ import org.bukkit.entity.Player;
 @CommandHandler
 public class FeedCommand {
 
-    @BaseCommand(command = "feed", sender = Sender.PLAYER, permission = "admincmd.player.feed", helpArguments = {"", "<-p player>"})
+    @BaseCommand(command = "feed", sender = Sender.PLAYER, permission = "admincmd.player.feed", helpArguments = {"", "<-p player>"}, async = true)
     public CommandResult executeFeed(Player sender, CommandArgs args) {
         if (args.isEmpty()) {
             sender.setFoodLevel(15);

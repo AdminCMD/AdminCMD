@@ -31,7 +31,7 @@ import org.bukkit.entity.Player;
 @CommandHandler
 public class WarpCommand {
 
-    @BaseCommand(command = "warp", sender = Sender.PLAYER, permission = "admincmd.warp.tp", helpArguments = {"", "<name>"})
+    @BaseCommand(command = "warp", sender = Sender.PLAYER, permission = "admincmd.warp.tp", helpArguments = {"", "<name>"}, async = true)
     public CommandResult executeWarp(Player p, CommandArgs args) {
         ACPlayer se = PlayerManager.getPlayer(p);
         if (args.getLength() > 1) {

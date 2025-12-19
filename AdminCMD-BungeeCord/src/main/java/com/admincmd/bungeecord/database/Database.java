@@ -31,7 +31,7 @@ public abstract class Database {
         this.type = type;
         try {
             Class d = Class.forName(driver);
-            Object o = d.newInstance();
+            Object o = d.getDeclaredConstructor().newInstance();
             if (!(o instanceof Driver)) {
                 Main.getInstance().getLogger().severe("Driver is not an instance of the Driver class!");
             } else {
@@ -46,7 +46,7 @@ public abstract class Database {
     /**
      * Gets the type of the loaded database.
      *
-     * @return {@link com.admincmd.admincmd.database.Database.Type}
+     * @return {@link com.admincmd.bungeecord.database.Database.Type}
      */
     public Type getType() {
         return type;
@@ -177,7 +177,7 @@ public abstract class Database {
     public abstract void reactivateConnection() throws SQLException;
 
     public enum Type {
-        MYSQL;
+        MYSQL
     }
 
 }

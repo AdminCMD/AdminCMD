@@ -85,7 +85,7 @@ public final class ChestManager {
                 throw new SQLException("Creating chest failed, no rows affected.");
             }
 
-            int id = -1;
+            int id;
 
             ResultSet generatedKeys = st.getGeneratedKeys();
             if (generatedKeys.next()) {

@@ -23,6 +23,7 @@ import com.admincmd.player.ACPlayer;
 import com.admincmd.player.PlayerManager;
 import com.admincmd.utils.Config;
 import com.admincmd.world.ACWorld;
+import com.admincmd.world.StoredWorld;
 import com.admincmd.world.WorldManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -42,11 +43,11 @@ public class CommandArgs {
     }
 
     protected CommandArgs(String[] args, int start) {
-        String newArgs = "";
+        StringBuilder newArgs = new StringBuilder();
         for (int i = start; i < args.length; i++) {
-            newArgs += args[i] + " ";
+            newArgs.append(args[i]).append(" ");
         }
-        this.args = parseArgs(newArgs.split(" "));
+        this.args = parseArgs(newArgs.toString().split(" "));
     }
 
     private List<String> parseArgs(final String[] args) {
@@ -81,6 +82,7 @@ public class CommandArgs {
      * @param flag the param
      * @return {@link com.admincmd.admincmd.commandapi.CommandArgs.Flag}
      */
+    @SuppressWarnings("JavadocReference")
     public Flag getFlag(final String flag) {
         return flags.get(flag);
     }
@@ -152,15 +154,9 @@ public class CommandArgs {
 
     public boolean isGameMode(int index) {
         try {
-            if (isInteger(index)) {
-                int num = getInt(index);
-                GameMode gamemode = GameMode.getByValue(num);
-                return true;
-            } else {
-                String gm = args.get(index);
-                GameMode gamemode = GameMode.valueOf(gm.toUpperCase());
-                return true;
-            }
+            String gm = args.get(index);
+            GameMode gamemode = GameMode.valueOf(gm.toUpperCase());
+            return true;
         } catch (IllegalArgumentException ex) {
             return false;
         }
@@ -169,13 +165,8 @@ public class CommandArgs {
     public GameMode getGameMode(int index) {
         GameMode ret = null;
         try {
-            if (isInteger(index)) {
-                int num = getInt(index);
-                ret = GameMode.getByValue(num);
-            } else {
-                String gm = args.get(index);
-                ret = GameMode.valueOf(gm.toUpperCase());
-            }
+            String gm = args.get(index);
+            ret = GameMode.valueOf(gm.toUpperCase());
         } catch (IllegalArgumentException ex) {
             return ret;
         }
@@ -252,8 +243,7 @@ public class CommandArgs {
             worldname = args.get(index);
         }
 
-        ACWorld ret = WorldManager.getWorld(worldname, servername);
-        return ret;
+        return WorldManager.getWorld(worldname, servername);
     }
 
     /**
@@ -279,20 +269,13 @@ public class CommandArgs {
         return args;
     }
 
-    public class Flag {
-
-        private final String value;
-        private final String flag;
-
-        protected Flag(String value, String flag) {
-            this.value = value;
-            this.flag = flag;
-        }
+    public record Flag(String value, String flag) {
 
         /**
          * @return the param of the flag.
          */
-        public String getFlag() {
+        @Override
+        public String flag() {
             return flag;
         }
 
@@ -309,7 +292,7 @@ public class CommandArgs {
          * @return the value as Integer
          */
         public int getInt() {
-            return Integer.valueOf(value);
+            return Integer.parseInt(value);
         }
 
         /**
@@ -318,7 +301,7 @@ public class CommandArgs {
          * @return the value as Double
          */
         public double getDouble() {
-            return Double.valueOf(value);
+            return Double.parseDouble(value);
         }
 
         /**
@@ -371,15 +354,10 @@ public class CommandArgs {
 
         public boolean isGameMode() {
             try {
-                if (isInteger()) {
-                    int num = getInt();
-                    GameMode gamemode = GameMode.getByValue(num);
-                    return true;
-                } else {
-                    String gm = getString();
-                    GameMode gamemode = GameMode.valueOf(gm.toUpperCase());
-                    return true;
-                }
+
+                String gm = getString();
+                GameMode gamemode = GameMode.valueOf(gm.toUpperCase());
+                return true;
             } catch (IllegalArgumentException ex) {
                 return false;
             }
@@ -388,13 +366,8 @@ public class CommandArgs {
         public GameMode getGameMode() {
             GameMode ret = null;
             try {
-                if (isInteger()) {
-                    int num = getInt();
-                    ret = GameMode.getByValue(num);
-                } else {
-                    String gm = getString();
-                    ret = GameMode.valueOf(gm.toUpperCase());
-                }
+                String gm = getString();
+                ret = GameMode.valueOf(gm.toUpperCase());
             } catch (IllegalArgumentException ex) {
                 return ret;
             }
@@ -425,7 +398,7 @@ public class CommandArgs {
         /**
          * Parses the value to a world.
          *
-         * @return {@link com.admincmd.world.StoredWorld}
+         * @return {@link StoredWorld}
          */
         public ACWorld getWorld() {
             String servername;
@@ -439,8 +412,7 @@ public class CommandArgs {
                 worldname = value;
             }
 
-            ACWorld ret = WorldManager.getWorld(worldname, servername);
-            return ret;
+            return WorldManager.getWorld(worldname, servername);
         }
 
     }

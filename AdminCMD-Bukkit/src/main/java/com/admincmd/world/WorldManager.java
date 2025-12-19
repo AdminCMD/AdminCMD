@@ -145,27 +145,22 @@ public class WorldManager {
     }
 
     public static void createWorld(final ACWorld w) {
-        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    PreparedStatement s = conn.getPreparedStatement("INSERT INTO ac_worlds (name, paused, time, servername) VALUES (?, ?, ?, ?);");
-                    s.setString(1, w.getName());
-                    s.setBoolean(2, w.isPaused());
-                    s.setLong(3, w.getPausedTime());
-                    s.setString(4, w.getServer());
-                    s.executeUpdate();
-                    conn.closeStatement(s);
-                    ACLogger.info("World " + w.getName() + " was put into the database.");
+        try {
+            PreparedStatement s = conn.getPreparedStatement("INSERT INTO ac_worlds (name, paused, time, servername) VALUES (?, ?, ?, ?);");
+            s.setString(1, w.getName());
+            s.setBoolean(2, w.isPaused());
+            s.setLong(3, w.getPausedTime());
+            s.setString(4, w.getServer());
+            s.executeUpdate();
+            conn.closeStatement(s);
+            ACLogger.info("World " + w.getName() + " was put into the database.");
 
-                    if (!Config.BUNGEECORD.getBoolean()) {
-                        worlds.add(w);
-                    }
-                } catch (SQLException ex) {
-                    ACLogger.severe(ex);
-                }
+            if (!Config.BUNGEECORD.getBoolean()) {
+                worlds.add(w);
             }
-        });
+        } catch (SQLException ex) {
+            ACLogger.severe(ex);
+        }
     }
 
     public static void save() {
