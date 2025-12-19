@@ -29,7 +29,7 @@ import org.bukkit.entity.Player;
 @CommandHandler
 public class SetSpawnCommand {
 
-    @BaseCommand(command = "setspawn", sender = Sender.PLAYER, permission = "admincmd.spawn.setspawn", helpArguments = "")
+    @BaseCommand(command = "setspawn", sender = Sender.PLAYER, permission = "admincmd.spawn.setspawn", helpArguments = "", async = true)
     public CommandResult executeSetspawn(Player sender, CommandArgs args) {
         if (!args.isEmpty()) {
             return CommandResult.ERROR;

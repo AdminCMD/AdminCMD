@@ -22,12 +22,12 @@ import com.admincmd.utils.MultiServerLocation;
 
 public interface ACWarp {
 
-    public int getID();
+    int getID();
 
-    public String getName();
+    String getName();
 
-    public MultiServerLocation getLocation();
+    MultiServerLocation getLocation();
 
-    public void setLocation(MultiServerLocation loc);
+    void setLocation(MultiServerLocation loc);
 
 }

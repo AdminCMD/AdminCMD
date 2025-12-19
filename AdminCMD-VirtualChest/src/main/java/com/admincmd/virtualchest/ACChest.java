@@ -23,16 +23,16 @@ import org.bukkit.inventory.Inventory;
 
 public interface ACChest {
 
-    public Inventory getInventory();
+    Inventory getInventory();
 
-    public int getID();
+    int getID();
 
-    public ACPlayer getOwner();
+    ACPlayer getOwner();
 
-    public String getString();
+    String getString();
 
-    public void update(Inventory newInv);
+    void update(Inventory newInv);
 
-    public void clear();
+    void clear();
 
 }

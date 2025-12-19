@@ -30,6 +30,7 @@ import org.bukkit.entity.Player;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 
 public class SQLPlayer implements ACPlayer {
 
@@ -81,7 +82,7 @@ public class SQLPlayer implements ACPlayer {
 
     @Override
     public OfflinePlayer getOfflinePlayer() {
-        return Bukkit.getOfflinePlayer(getName());
+        return Bukkit.getOfflinePlayer(getUUID());
     }
 
     @Override
@@ -103,6 +104,28 @@ public class SQLPlayer implements ACPlayer {
         } catch (SQLException ex) {
             ACLogger.severe("Error getting player name", ex);
             return "unknown";
+        }
+    }
+
+    @Override
+    public UUID getUUID() {
+        try {
+            PreparedStatement getNameStatement = db.getPreparedStatement("SELECT uuid FROM " + DatabaseFactory.PLAYER_TABLE + " WHERE ID = ?;");
+            getNameStatement.setInt(1, id);
+            ResultSet rs = getNameStatement.executeQuery();
+
+            UUID ret = null;
+
+            if (rs.next()) {
+                ret = UUID.fromString(rs.getString("uuid"));
+            }
+
+            db.closeStatement(getNameStatement);
+            db.closeResultSet(rs);
+            return ret;
+        } catch (SQLException ex) {
+            ACLogger.severe("Error getting player uuid", ex);
+            return null;
         }
     }
 
@@ -301,7 +324,7 @@ public class SQLPlayer implements ACPlayer {
                     st.setInt(2, id);
                     st.executeUpdate();
                     DatabaseFactory.getDatabase().closeStatement(st);
-                    ACLogger.debug("Location set to: " + loc.toString());
+                    ACLogger.debug("Location set to: " + loc);
                 } catch (SQLException ex) {
                     ACLogger.severe(ex);
                 }

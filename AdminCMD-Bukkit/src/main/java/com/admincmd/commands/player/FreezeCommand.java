@@ -29,7 +29,7 @@ import org.bukkit.entity.Player;
 @CommandHandler
 public class FreezeCommand {
 
-    @BaseCommand(command = "freeze", sender = Sender.PLAYER, permission = "admincmd.player.freeze", helpArguments = {"", "<-p player>"})
+    @BaseCommand(command = "freeze", sender = Sender.PLAYER, permission = "admincmd.player.freeze", helpArguments = {"", "<-p player>"}, async = true)
     public CommandResult executeFreeze(Player sender, CommandArgs args) {
         if (args.isEmpty()) {
             ACPlayer p = PlayerManager.getPlayer(sender);

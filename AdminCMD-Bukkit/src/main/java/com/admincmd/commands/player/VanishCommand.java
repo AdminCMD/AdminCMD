@@ -34,7 +34,7 @@ import org.bukkit.entity.Player;
 @CommandHandler
 public class VanishCommand {
 
-    @BaseCommand(command = "vanish", sender = Sender.PLAYER, permission = "admincmd.player.vanish", aliases = "invisible,poof,hide", helpArguments = {"", "<-p player>"})
+    @BaseCommand(command = "vanish", sender = Sender.PLAYER, permission = "admincmd.player.vanish", aliases = "invisible,poof,hide", helpArguments = {"", "<-p player>"}, async = true)
     public CommandResult executeVanish(Player sender, CommandArgs args) {
         final ACPlayer se = PlayerManager.getPlayer(sender);
         if (args.isEmpty()) {
@@ -43,20 +43,15 @@ public class VanishCommand {
             String s = se.isInvisible() ? Locales.COMMAND_MESSAGES_ENABLED.getString() : Locales.COMMAND_MESSAGES_DISABLED.getString();
             String msg = Locales.PLAYER_VANISH_TOGGLED_SELF.getString().replaceAll("%status%", s);
             Messager.sendMessage(se, msg, Messager.MessageType.INFO);
-            Bukkit.getScheduler().runTask(Main.getInstance(), new Runnable() {
-                @Override
-                public void run() {
-                    if (value) {
-                        for (Player op : Bukkit.getOnlinePlayers()) {
-                            op.hidePlayer(Main.getInstance(), se.getPlayer());
-                        }
-                    } else {
-                        for (Player op : Bukkit.getOnlinePlayers()) {
-                            op.showPlayer(Main.getInstance(), se.getPlayer());
-                        }
-                    }
+            if (value) {
+                for (Player op : Bukkit.getOnlinePlayers()) {
+                    op.hidePlayer(Main.getInstance(), se.getPlayer());
                 }
-            });
+            } else {
+                for (Player op : Bukkit.getOnlinePlayers()) {
+                    op.showPlayer(Main.getInstance(), se.getPlayer());
+                }
+            }
             return CommandResult.SUCCESS;
         }
 
@@ -76,20 +71,15 @@ public class VanishCommand {
 
             if (p.isOnline()) {
                 if (PlayerManager.isOnThisServer(p)) {
-                    Bukkit.getScheduler().runTask(Main.getInstance(), new Runnable() {
-                        @Override
-                        public void run() {
-                            if (value) {
-                                for (Player op : Bukkit.getOnlinePlayers()) {
-                                    op.hidePlayer(Main.getInstance(), p.getPlayer());
-                                }
-                            } else {
-                                for (Player op : Bukkit.getOnlinePlayers()) {
-                                    op.showPlayer(Main.getInstance(), p.getPlayer());
-                                }
-                            }
+                    if (value) {
+                        for (Player op : Bukkit.getOnlinePlayers()) {
+                            op.hidePlayer(Main.getInstance(), p.getPlayer());
                         }
-                    });
+                    } else {
+                        for (Player op : Bukkit.getOnlinePlayers()) {
+                            op.showPlayer(Main.getInstance(), p.getPlayer());
+                        }
+                    }
                 } else {
                     BungeeCordMessageManager.getInstance().sendMessage(p, Channel.VANISH_PLAYER, MessageCommand.FORWARD, "");
                 }

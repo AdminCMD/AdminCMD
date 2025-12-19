@@ -32,7 +32,7 @@ import org.bukkit.entity.Player;
 @CommandHandler
 public class FlyCommand {
 
-    @BaseCommand(command = "fly", sender = Sender.PLAYER, permission = "admincmd.player.fly", aliases = "f", helpArguments = {"", "<-p player>"})
+    @BaseCommand(command = "fly", sender = Sender.PLAYER, permission = "admincmd.player.fly", aliases = "f", helpArguments = {"", "<-p player>"}, async = true)
     public CommandResult executeFly(Player sender, CommandArgs args) {
         ACPlayer p = PlayerManager.getPlayer(sender);
         if (args.isEmpty()) {

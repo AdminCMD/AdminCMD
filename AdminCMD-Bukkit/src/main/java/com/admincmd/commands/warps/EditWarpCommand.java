@@ -31,7 +31,7 @@ import org.bukkit.entity.Player;
 @CommandHandler
 public class EditWarpCommand {
 
-    @BaseCommand(command = "editwarp", sender = Sender.PLAYER, permission = "admincmd.warp.edit", helpArguments = "<name>")
+    @BaseCommand(command = "editwarp", sender = Sender.PLAYER, permission = "admincmd.warp.edit", helpArguments = "<name>", async = true)
     public CommandResult executeEditwarp(Player sender, CommandArgs args) {
         if (args.getLength() != 1) {
             return CommandResult.ERROR;

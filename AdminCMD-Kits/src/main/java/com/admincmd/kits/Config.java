@@ -23,6 +23,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public enum Config {
@@ -39,7 +40,7 @@ public enum Config {
     private final String path;
     private final String description;
 
-    private Config(String path, Object val, String description) {
+    Config(String path, Object val, String description) {
         this.path = path;
         this.value = val;
         this.description = description;
@@ -48,14 +49,14 @@ public enum Config {
     public static void load() {
         Kits.getInstance().getDataFolder().mkdirs();
         reload(false);
-        String header = "";
+        List<String> header = new ArrayList<>();
         for (Config c : values()) {
-            header += c.getPath() + ": " + c.getDescription() + System.lineSeparator();
+            header.add(c.getPath() + ": " + c.getDescription() + System.lineSeparator());
             if (!cfg.contains(c.getPath())) {
                 c.set(c.getDefaultValue(), false);
             }
         }
-        cfg.options().header(header);
+        cfg.options().setHeader(header);
         try {
             cfg.save(f);
         } catch (IOException ex) {

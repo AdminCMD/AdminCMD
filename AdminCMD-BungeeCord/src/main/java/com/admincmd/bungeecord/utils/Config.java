@@ -49,7 +49,7 @@ public enum Config {
     private final Object value;
     private final String path;
 
-    private Config(String path, Object val) {
+    Config(String path, Object val) {
         this.path = path;
         this.value = val;
     }
@@ -98,8 +98,7 @@ public enum Config {
 
     public Favicon getFavicon() throws IOException {
         File icon = Main.getMaintenanceFavicon();
-        Favicon fav = Favicon.create(ImageIO.read(icon));
-        return fav;
+        return Favicon.create(ImageIO.read(icon));
     }
 
     public int getInteger() {

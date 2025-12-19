@@ -221,15 +221,15 @@ public class ACLogger {
     }
 
     private static String getStackTrace(Throwable t) {
-        String ret = prefix() + ": " + t + ": " + t.getMessage();
+        StringBuilder ret = new StringBuilder(prefix() + ": " + t + ": " + t.getMessage());
 
         StackTraceElement[] elements = t.getStackTrace();
 
         for (StackTraceElement element : elements) {
-            ret += "\n" + prefix() + ": " + element;
+            ret.append("\n").append(prefix()).append(": ").append(element);
         }
 
-        return ret;
+        return ret.toString();
     }
 
 }

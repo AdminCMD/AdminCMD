@@ -18,7 +18,6 @@
  */
 package com.admincmd.commands.player;
 
-import com.admincmd.Main;
 import com.admincmd.commandapi.*;
 import com.admincmd.communication.BungeeCordMessageManager;
 import com.admincmd.communication.Channel;
@@ -28,21 +27,15 @@ import com.admincmd.player.PlayerManager;
 import com.admincmd.utils.Locales;
 import com.admincmd.utils.Messager;
 import com.admincmd.utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 @CommandHandler
 public class KillCommand {
 
-    @BaseCommand(command = "kill", sender = Sender.PLAYER, permission = "admincmd.player.kill", aliases = "pkill", helpArguments = {"", "<-p player>"})
+    @BaseCommand(command = "kill", sender = Sender.PLAYER, permission = "admincmd.player.kill", aliases = "pkill", helpArguments = {"", "<-p player>"}, async = true)
     public CommandResult executeKill(final Player sender, CommandArgs args) {
         if (args.isEmpty()) {
-            Bukkit.getScheduler().runTask(Main.getInstance(), new Runnable() {
-                @Override
-                public void run() {
-                    sender.setHealth(0);
-                }
-            });
+            sender.setHealth(0);
             return Messager.sendMessage(PlayerManager.getPlayer(sender), Locales.PLAYER_KILL_SELF, Messager.MessageType.INFO);
         }
 
@@ -59,12 +52,7 @@ public class KillCommand {
             final ACPlayer target = flag.getPlayer();
 
             if (PlayerManager.isOnThisServer(target)) {
-                Bukkit.getScheduler().runTask(Main.getInstance(), new Runnable() {
-                    @Override
-                    public void run() {
-                        target.getPlayer().setHealth(0);
-                    }
-                });
+                target.getPlayer().setHealth(0);
             } else {
                 BungeeCordMessageManager.getInstance().sendMessage(target, Channel.KILL_PLAYER, MessageCommand.FORWARD, "");
             }

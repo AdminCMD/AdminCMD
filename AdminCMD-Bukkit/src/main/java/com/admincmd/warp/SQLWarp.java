@@ -18,10 +18,8 @@
  */
 package com.admincmd.warp;
 
-import com.admincmd.Main;
 import com.admincmd.database.DatabaseFactory;
 import com.admincmd.utils.MultiServerLocation;
-import org.bukkit.Bukkit;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -86,20 +84,15 @@ public class SQLWarp implements ACWarp {
 
     @Override
     public void setLocation(final MultiServerLocation loc) {
-        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    PreparedStatement st = DatabaseFactory.getDatabase().getPreparedStatement("UPDATE " + DatabaseFactory.WARP_TABLE + " SET location = ? WHERE name = ?;");
-                    st.setString(1, loc.toString());
-                    st.setString(2, name);
-                    st.executeUpdate();
-                    DatabaseFactory.getDatabase().closeStatement(st);
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        });
+        try {
+            PreparedStatement st = DatabaseFactory.getDatabase().getPreparedStatement("UPDATE " + DatabaseFactory.WARP_TABLE + " SET location = ? WHERE name = ?;");
+            st.setString(1, loc.toString());
+            st.setString(2, name);
+            st.executeUpdate();
+            DatabaseFactory.getDatabase().closeStatement(st);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
 
 }

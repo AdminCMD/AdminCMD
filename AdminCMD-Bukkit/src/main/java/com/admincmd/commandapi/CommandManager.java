@@ -18,6 +18,7 @@
  */
 package com.admincmd.commandapi;
 
+import com.admincmd.Main;
 import com.admincmd.home.HomeManager;
 import com.admincmd.player.ACPlayer;
 import com.admincmd.player.PlayerManager;
@@ -33,6 +34,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.minecart.CommandMinecart;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -247,27 +249,60 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                 }
             }
 
-            CommandResult cr;
 
-            try {
-                if (bc.permission() != null && !bc.permission().trim().isEmpty()) {
-                    if (!s.hasPermission(bc.permission())) {
-                        cr = CommandResult.NO_PERMISSION;
+            if (!bc.async()) {
+                CommandResult cr;
+                try {
+                    if (bc.permission() != null && !bc.permission().trim().isEmpty()) {
+                        if (!s.hasPermission(bc.permission())) {
+                            cr = CommandResult.NO_PERMISSION;
+                        } else {
+                            cr = (CommandResult) m.invoke(getCommandObject(c, sender, a), s, a);
+
+                        }
                     } else {
                         cr = (CommandResult) m.invoke(getCommandObject(c, sender, a), s, a);
                     }
-                } else {
-                    cr = (CommandResult) m.invoke(getCommandObject(c, sender, a), s, a);
+
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, "", e);
+                    cr = CommandResult.SUCCESS;
                 }
 
-            } catch (Exception e) {
-                logger.log(Level.SEVERE, "", e);
-                cr = CommandResult.SUCCESS;
-            }
+                if (cr != null && cr.getMessage() != null) {
+                    String perm = bc.permission() != null ? bc.permission() : "";
+                    s.sendMessage(cr.getMessage().replace("%cmd%", bc.command()).replace("%perm%", perm));
+                }
+            } else {
+                Method finalM = m;
+                CommandArgs finalA = a;
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        CommandResult cr;
+                        try {
+                            if (bc.permission() != null && !bc.permission().trim().isEmpty()) {
+                                if (!s.hasPermission(bc.permission())) {
+                                    cr = CommandResult.NO_PERMISSION;
+                                } else {
+                                    cr = (CommandResult) finalM.invoke(getCommandObject(c, sender, finalA), s, finalA);
 
-            if (cr != null && cr.getMessage() != null) {
-                String perm = bc.permission() != null ? bc.permission() : "";
-                s.sendMessage(cr.getMessage().replace("%cmd%", bc.command()).replace("%perm%", perm));
+                                }
+                            } else {
+                                cr = (CommandResult) finalM.invoke(getCommandObject(c, sender, finalA), s, finalA);
+                            }
+
+                        } catch (Exception e) {
+                            logger.log(Level.SEVERE, "", e);
+                            cr = CommandResult.SUCCESS;
+                        }
+
+                        if (cr != null && cr.getMessage() != null) {
+                            String perm = bc.permission() != null ? bc.permission() : "";
+                            s.sendMessage(cr.getMessage().replace("%cmd%", bc.command()).replace("%perm%", perm));
+                        }
+                    }
+                }.runTaskAsynchronously(Main.getInstance());
             }
         } else {
             s.sendMessage(Locales.COMMAND_MESSAGES_WRONG_SENDER_TYPE.getString());
@@ -296,10 +331,11 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         for (String s : strings) {
             if (s.equalsIgnoreCase("-p")) {
                 pla = true;
+                break;
             }
         }
         if (pla) {
-            for (ACPlayer p : PlayerManager.getOnlinePlayers()) {
+            for (ACPlayer p : PlayerManager.getALLPlayers()) {
                 ret.add(p.getName());
             }
         }
@@ -313,16 +349,12 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         if (cmnd.getName().contains("home") || cmnd.getName().equalsIgnoreCase("sh")) {
             if (cs instanceof Player) {
                 ACPlayer acplayer = PlayerManager.getPlayer((Player) cs);
-                for (String h : HomeManager.getHomes(acplayer)) {
-                    ret.add(h);
-                }
+                ret.addAll(HomeManager.getHomes(acplayer));
             }
         }
 
         if (cmnd.getName().contains("warp")) {
-            for (String w : WarpManager.getWarps()) {
-                ret.add(w);
-            }
+            ret.addAll(WarpManager.getWarps());
         }
 
         if (cmnd.getName().equalsIgnoreCase("maintenance")) {
@@ -340,7 +372,6 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
         if (cmnd.getName().equalsIgnoreCase("gamemode") || cmnd.getName().equalsIgnoreCase("gm")) {
             for (GameMode gm : GameMode.values()) {
-                ret.add(gm.getValue() + "");
                 ret.add(gm.toString());
             }
 
