@@ -87,6 +87,30 @@ public class PlayerManager {
         return ret;
     }
 
+    public static List<ACPlayer> getALLPlayers() {
+        List<ACPlayer> ret = new ArrayList<>();
+        if (!Config.BUNGEECORD.getBoolean()) {
+            for (OfflinePlayer p : Bukkit.getOfflinePlayers()) {
+                ret.add(getPlayer(p));
+            }
+        } else {
+            try {
+                PreparedStatement s = conn.getPreparedStatement("SELECT id FROM ac_player;");
+                s.setBoolean(1, true);
+                ResultSet rs = s.executeQuery();
+                while (rs.next()) {
+                    SQLPlayer sp = new SQLPlayer(rs.getInt("ID"));
+                    ret.add(sp);
+                }
+                conn.closeResultSet(rs);
+                conn.closeStatement(s);
+            } catch (SQLException ex) {
+                ACLogger.severe(ex);
+            }
+        }
+        return ret;
+    }
+
     public static void save() {
         if (!Config.BUNGEECORD.getBoolean()) {
             int saved = 0;
@@ -138,8 +162,7 @@ public class PlayerManager {
 
     public static ACPlayer getPlayer(int id) {
         if (Config.BUNGEECORD.getBoolean()) {
-            SQLPlayer ret = new SQLPlayer(id);
-            return ret;
+            return new SQLPlayer(id);
         } else {
             for (StoredPlayer sp : players.values()) {
                 if (sp.getID() == id) {

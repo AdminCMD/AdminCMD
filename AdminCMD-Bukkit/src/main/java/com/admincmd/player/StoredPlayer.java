@@ -38,7 +38,6 @@ import java.util.logging.Logger;
 
 public class StoredPlayer implements ACPlayer {
 
-    private final Database db = DatabaseFactory.getDatabase();
     public int id;
     private UUID uuid;
     private boolean fly = false;
@@ -55,6 +54,7 @@ public class StoredPlayer implements ACPlayer {
         try {
             this.uuid = uuid;
 
+            Database db = DatabaseFactory.getDatabase();
             PreparedStatement s = db.getPreparedStatement("INSERT INTO " + DatabaseFactory.PLAYER_TABLE + " (uuid, god, invisible, commandwatcher, spy, fly, freeze, nickname, lastmsgfrom, lastloc, online, server) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS);
             s.setString(1, uuid.toString());
             s.setBoolean(2, false);
@@ -133,6 +133,11 @@ public class StoredPlayer implements ACPlayer {
     @Override
     public String getName() {
         return getOfflinePlayer().getName();
+    }
+
+    @Override
+    public UUID getUUID() {
+        return uuid;
     }
 
     @Override

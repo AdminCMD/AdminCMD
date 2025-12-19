@@ -26,7 +26,6 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 
 import java.io.ByteArrayOutputStream;
@@ -238,11 +237,13 @@ public class PlayerMessageHandler {
     }
 
     protected static void reactPlayerHeal(String msg) {
-        int targetID = Integer.valueOf(msg);
+        int targetID = Integer.parseInt(msg);
         ACPlayer target = PlayerManager.getPlayer(targetID);
-        Player p = target.getPlayer();
-        p.setFoodLevel(15);
-        p.setHealth(p.getMaxHealth());
+        if (target != null) {
+            Player p = target.getPlayer();
+            p.setFoodLevel(15);
+            p.setHealth(p.getAttribute(Attribute.MAX_HEALTH).getValue());
+        }
     }
 
     protected static void reactPlayerFly(String msg) {

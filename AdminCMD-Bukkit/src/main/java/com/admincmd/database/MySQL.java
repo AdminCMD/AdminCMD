@@ -28,7 +28,7 @@ public class MySQL extends Database {
 
     /**
      * Creates a new instance for MySQL databases.
-     * Statements are done by {@link com.admincmd.admincmd.database.MySQL#executeStatement(java.lang.String) }
+     * Statements are done by {@link com.admincmd.database.MySQL#executeStatement(java.lang.String) }
      *
      * @param host     the host where the mysql server is on.
      * @param user     the username of the database-account

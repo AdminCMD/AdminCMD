@@ -29,7 +29,7 @@ import org.bukkit.entity.Player;
 @CommandHandler
 public class SpyCommand {
 
-    @BaseCommand(command = "spy", sender = Sender.PLAYER, permission = "admincmd.player.spy", aliases = "spymsg", helpArguments = {"", "<-p player>"})
+    @BaseCommand(command = "spy", sender = Sender.PLAYER, permission = "admincmd.player.spy", aliases = "spymsg", helpArguments = {"", "<-p player>"}, async = true)
     public CommandResult executeSpy(Player sender, CommandArgs args) {
         ACPlayer se = PlayerManager.getPlayer(sender);
         if (args.isEmpty()) {

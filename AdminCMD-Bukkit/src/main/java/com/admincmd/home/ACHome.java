@@ -23,14 +23,14 @@ import com.admincmd.utils.MultiServerLocation;
 
 public interface ACHome {
 
-    public int getID();
+    int getID();
 
-    public String getName();
+    String getName();
 
-    public MultiServerLocation getLocation();
+    MultiServerLocation getLocation();
 
-    public void setLocation(MultiServerLocation newLoc);
+    void setLocation(MultiServerLocation newLoc);
 
-    public ACPlayer getOwner();
+    ACPlayer getOwner();
 
 }

@@ -18,10 +18,8 @@
  */
 package com.admincmd.commands.player;
 
-import com.admincmd.Main;
 import com.admincmd.commandapi.*;
 import com.admincmd.player.ACPlayer;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 @CommandHandler
@@ -30,12 +28,7 @@ public class EnderchestCommand {
     @BaseCommand(command = "enderchest", sender = Sender.PLAYER, permission = "admincmd.player.enderchest", aliases = "ec", helpArguments = {"", "<-p player>"})
     public CommandResult executeEnderchest(final Player sender, CommandArgs args) {
         if (args.isEmpty()) {
-            Bukkit.getScheduler().runTask(Main.getInstance(), new Runnable() {
-                @Override
-                public void run() {
-                    sender.openInventory(sender.getEnderChest());
-                }
-            });
+            sender.openInventory(sender.getEnderChest());
             return CommandResult.SUCCESS;
         }
 
@@ -50,12 +43,7 @@ public class EnderchestCommand {
 
             ACPlayer target = flag.getPlayer();
             final Player bTarget = target.getPlayer();
-            Bukkit.getScheduler().runTask(Main.getInstance(), new Runnable() {
-                @Override
-                public void run() {
-                    sender.openInventory(bTarget.getEnderChest());
-                }
-            });
+            sender.openInventory(bTarget.getEnderChest());
             return CommandResult.SUCCESS;
         }
 

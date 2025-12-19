@@ -25,11 +25,10 @@ import com.comphenix.protocol.ProtocolManager;
 public class ProtocolLibManager {
 
     private static ProtocolManager protocolManager;
-    private static PingListener listener;
 
     public static void setup() {
         protocolManager = ProtocolLibrary.getProtocolManager();
-        listener = new PingListener();
+        PingListener listener = new PingListener();
         listener.addPingResponsePacketListener();
     }
 

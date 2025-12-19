@@ -27,7 +27,6 @@ import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.injector.GamePhase;
 import com.comphenix.protocol.wrappers.WrappedServerPing;
 import com.comphenix.protocol.wrappers.WrappedServerPing.CompressedImage;
 
@@ -41,7 +40,7 @@ public class PingListener {
     public void addPingResponsePacketListener() {
         ProtocolManager mgr = ProtocolLibManager.getManager();
         try {
-            mgr.addPacketListener(new PacketAdapter(PacketAdapter.params(main, Server.SERVER_INFO).serverSide().gamePhase(GamePhase.BOTH).listenerPriority(ListenerPriority.HIGHEST).optionAsync()) {
+            mgr.addPacketListener(new PacketAdapter(PacketAdapter.params(main, Server.SERVER_INFO).serverSide().listenerPriority(ListenerPriority.HIGHEST).optionAsync()) {
                                       public void onPacketSending(PacketEvent event) {
                                           try {
                                               if (!Config.MAINTENANCE_ENABLE.getBoolean()) {

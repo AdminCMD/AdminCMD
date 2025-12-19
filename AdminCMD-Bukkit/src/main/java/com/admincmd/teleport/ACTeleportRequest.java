@@ -22,10 +22,10 @@ import com.admincmd.player.ACPlayer;
 
 public interface ACTeleportRequest {
 
-    public ACPlayer getRequester();
+    ACPlayer getRequester();
 
-    public ACPlayer getReceiver();
+    ACPlayer getReceiver();
 
-    public RequestType getType();
+    RequestType getType();
 
 }

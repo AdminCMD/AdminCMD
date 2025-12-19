@@ -35,7 +35,7 @@ public class MaintenanceCommand extends Command {
     @Override
     public void execute(CommandSender cs, String[] strings) {
         if (strings.length != 1) {
-            cs.sendMessage("Wrong usage, Use /maintenance [on|off|check]");
+            cs.sendMessage(new TextComponent("Wrong usage, Use /maintenance [on|off|check]"));
             return;
         }
         if (strings[0].equalsIgnoreCase("on")) {
@@ -66,7 +66,7 @@ public class MaintenanceCommand extends Command {
             message.setColor(ChatColor.GREEN);
             cs.sendMessage(message);
         } else {
-            cs.sendMessage("Wrong usage, Use /maintenance [on|off|check]");
+            cs.sendMessage(new TextComponent("Wrong usage, Use /maintenance [on|off|check]"));
         }
     }
 

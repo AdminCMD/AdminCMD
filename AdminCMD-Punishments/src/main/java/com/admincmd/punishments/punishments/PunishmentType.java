@@ -28,7 +28,7 @@ public enum PunishmentType {
 
     private final Config word;
 
-    private PunishmentType(Config word) {
+    PunishmentType(Config word) {
         this.word = word;
     }
 

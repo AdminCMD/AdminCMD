@@ -31,7 +31,7 @@ import org.bukkit.entity.Player;
 @CommandHandler
 public class SetWarpCommand {
 
-    @BaseCommand(command = "setwarp", sender = Sender.PLAYER, permission = "admincmd.warp.set", helpArguments = "<name>")
+    @BaseCommand(command = "setwarp", sender = Sender.PLAYER, permission = "admincmd.warp.set", helpArguments = "<name>", async = true)
     public CommandResult executeSetwarp(Player sender, CommandArgs args) {
         if (args.getLength() != 1) {
             return CommandResult.ERROR;

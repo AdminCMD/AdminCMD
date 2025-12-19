@@ -31,7 +31,7 @@ import org.bukkit.entity.Player;
 @CommandHandler
 public class TpaCommand {
 
-    @BaseCommand(command = "tpa", sender = Sender.PLAYER, helpArguments = {"[yes|no]", "to -p <player>", "here -p <player>"})
+    @BaseCommand(command = "tpa", sender = Sender.PLAYER, helpArguments = {"[yes|no]", "to -p <player>", "here -p <player>"}, async = true)
     public CommandResult executeTpa(Player sender, CommandArgs args) {
         if (args.isEmpty()) {
             return CommandResult.ERROR;

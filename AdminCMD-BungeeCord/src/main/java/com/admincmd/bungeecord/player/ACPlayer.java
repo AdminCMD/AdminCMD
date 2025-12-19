@@ -22,19 +22,19 @@ import java.util.UUID;
 
 public interface ACPlayer {
 
-    public int getID();
+    int getID();
 
-    public UUID getUUID();
+    UUID getUUID();
 
-    public String getName();
+    String getName();
 
-    public void setName(String name);
+    void setName(String name);
 
-    public boolean isOnline();
+    boolean isOnline();
 
-    public void setOnline(boolean online);
+    void setOnline(boolean online);
 
-    public String getServer();
+    String getServer();
 
-    public void setServer(String server);
+    void setServer(String server);
 }

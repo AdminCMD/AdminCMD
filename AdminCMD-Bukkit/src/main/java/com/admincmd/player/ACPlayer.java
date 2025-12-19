@@ -22,53 +22,57 @@ import com.admincmd.utils.MultiServerLocation;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
+
 public interface ACPlayer {
 
-    public int getID();
+    int getID();
 
-    public MultiServerLocation getLocation();
+    MultiServerLocation getLocation();
 
-    public Player getPlayer();
+    Player getPlayer();
 
-    public OfflinePlayer getOfflinePlayer();
+    OfflinePlayer getOfflinePlayer();
 
-    public String getName();
+    String getName();
 
-    public boolean isFly();
+    UUID getUUID();
 
-    public void setFly(boolean fly);
+    boolean isFly();
 
-    public boolean isGod();
+    void setFly(boolean fly);
 
-    public void setGod(boolean god);
+    boolean isGod();
 
-    public boolean isFreezed();
+    void setGod(boolean god);
 
-    public void setFreezed(boolean freeze);
+    boolean isFreezed();
 
-    public boolean isInvisible();
+    void setFreezed(boolean freeze);
 
-    public void setInvisible(boolean inv);
+    boolean isInvisible();
 
-    public boolean isCMDWatcher();
+    void setInvisible(boolean inv);
 
-    public void setCMDWatcher(boolean cmdwatch);
+    boolean isCMDWatcher();
 
-    public boolean isSpy();
+    void setCMDWatcher(boolean cmdwatch);
 
-    public void setSpy(boolean spy);
+    boolean isSpy();
 
-    public int getLastMSGFrom();
+    void setSpy(boolean spy);
 
-    public void setLastMSGFrom(int userID);
+    int getLastMSGFrom();
 
-    public boolean hasLastLoc();
+    void setLastMSGFrom(int userID);
 
-    public MultiServerLocation getLastLoc();
+    boolean hasLastLoc();
 
-    public void setLastLoc(MultiServerLocation loc);
+    MultiServerLocation getLastLoc();
 
-    public boolean isOnline();
+    void setLastLoc(MultiServerLocation loc);
 
-    public String getServer();
+    boolean isOnline();
+
+    String getServer();
 }

@@ -47,8 +47,7 @@ public class Utils {
     }
 
     public static Block getBlockLooking(Player player, int range) {
-        Block b = player.getTargetBlock((Set<Material>) null, range);
-        return b;
+        return player.getTargetBlock((Set<Material>) null, range);
 
     }
 

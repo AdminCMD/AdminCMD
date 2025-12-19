@@ -27,16 +27,17 @@ import com.admincmd.player.PlayerManager;
 import com.admincmd.utils.Locales;
 import com.admincmd.utils.Messager;
 import com.admincmd.utils.Utils;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
+
+import java.util.Objects;
 
 @CommandHandler
 public class HealCommand {
 
-    @BaseCommand(command = "heal", sender = Sender.PLAYER, permission = "admincmd.player.heal", aliases = "pheal", helpArguments = {"", "<-p player>"})
+    @BaseCommand(command = "heal", sender = Sender.PLAYER, permission = "admincmd.player.heal", aliases = "pheal", helpArguments = {"", "<-p player>"}, async = true)
     public CommandResult executeHeal(Player sender, CommandArgs args) {
         if (args.isEmpty()) {
-            sender.setHealth(sender.getMaxHealth());
+            sender.setHealth(Objects.requireNonNull(sender.getAttribute(Attribute.MAX_HEALTH)).getValue());
             sender.setFoodLevel(15);
             return Messager.sendMessage(PlayerManager.getPlayer(sender), Locales.PLAYER_HEAL_SELF, Messager.MessageType.INFO);
         }
@@ -59,7 +60,7 @@ public class HealCommand {
 
             if (PlayerManager.isOnThisServer(target)) {
                 Player p = target.getPlayer();
-                p.setHealth(p.getMaxHealth());
+                p.setHealth(Objects.requireNonNull(p.getAttribute(Attribute.MAX_HEALTH)).getValue());
                 p.setFoodLevel(15);
             } else {
                 BungeeCordMessageManager.getInstance().sendMessage(target, Channel.HEAL_PLAYER, MessageCommand.FORWARD, "");

@@ -30,7 +30,7 @@ import org.bukkit.entity.Player;
 @CommandHandler
 public class DelWarpCommand {
 
-    @BaseCommand(command = "delwarp", sender = Sender.PLAYER, permission = "admincmd.warp.delete", aliases = "rmwarp", helpArguments = "<name>")
+    @BaseCommand(command = "delwarp", sender = Sender.PLAYER, permission = "admincmd.warp.delete", aliases = "rmwarp", helpArguments = "<name>", async = true)
     public CommandResult executeRemovewarp(Player sender, CommandArgs args) {
         if (args.getLength() != 1) {
             return CommandResult.ERROR;

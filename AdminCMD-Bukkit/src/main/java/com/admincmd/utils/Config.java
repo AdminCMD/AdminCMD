@@ -23,6 +23,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public enum Config {
@@ -36,6 +37,7 @@ public enum Config {
     GLOBAL_SPAWNS("Options.WorldSpawns", false, "Set to true if you want one spawn for every world. false means one spawn for the whole server."),
     DIRECT_RESPAWN("Options.DirectRespawn", true, "Set to false if you want players to manually click the respawn button."),
     DEBUG("Options.Debug", false, "Enables debugging chat."),
+    CHECK_UPDATE("Options.check-for-updates", true, "Should the plugin check for updates by itself?"),
     ENABLE_METRICS("Options.enable-bstats", true, "Should the plugin pass statistics to bstats?"),
 
     BUNGEECORD("Options.Bungeecord.Enable", false, "This enables the bungeecord mode. In the bungeecord mode everything gets written instantly to the database. makes only sense when using MySQL"),
@@ -53,7 +55,8 @@ public enum Config {
     private final Object value;
     private final String path;
     private final String description;
-    private Config(String path, Object val, String description) {
+
+    Config(String path, Object val, String description) {
         this.path = path;
         this.value = val;
         this.description = description;
@@ -62,14 +65,14 @@ public enum Config {
     public static void load() {
         Main.getInstance().getDataFolder().mkdirs();
         reload(false);
-        String header = "";
+        List<String> header = new ArrayList<>();
         for (Config c : values()) {
-            header += c.getPath() + ": " + c.getDescription() + System.lineSeparator();
+            header.add(c.getPath() + ": " + c.getDescription() + System.lineSeparator());
             if (!cfg.contains(c.getPath())) {
                 c.set(c.getDefaultValue(), false);
             }
         }
-        cfg.options().header(header);
+        cfg.options().setHeader(header);
         try {
             cfg.save(f);
         } catch (IOException ex) {

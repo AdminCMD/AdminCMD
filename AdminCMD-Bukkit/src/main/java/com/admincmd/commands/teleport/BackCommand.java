@@ -29,7 +29,7 @@ import org.bukkit.entity.Player;
 @CommandHandler
 public class BackCommand {
 
-    @BaseCommand(command = "back", sender = Sender.PLAYER, permission = "admincmd.teleport.back", helpArguments = {"", "<-p player>"})
+    @BaseCommand(command = "back", sender = Sender.PLAYER, permission = "admincmd.teleport.back", helpArguments = {"", "<-p player>"}, async = true)
     public CommandResult executeBack(Player sender, CommandArgs args) {
         ACPlayer p = PlayerManager.getPlayer(sender);
         if (args.isEmpty()) {

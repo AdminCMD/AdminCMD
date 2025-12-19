@@ -218,7 +218,8 @@ public enum Locales {
     private static YamlConfiguration cfg;
     private final Object value;
     private final String path;
-    private Locales(String path, Object val) {
+
+    Locales(String path, Object val) {
         this.path = path;
         this.value = val;
     }

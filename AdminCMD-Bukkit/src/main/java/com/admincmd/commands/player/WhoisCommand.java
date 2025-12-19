@@ -20,6 +20,7 @@ package com.admincmd.commands.player;
 
 import com.admincmd.commandapi.*;
 import com.admincmd.commandapi.CommandArgs.Flag;
+import com.admincmd.home.HomeManager;
 import com.admincmd.player.ACPlayer;
 import com.admincmd.player.PlayerManager;
 import com.admincmd.utils.Locales;
@@ -33,7 +34,7 @@ import java.util.List;
 @CommandHandler
 public class WhoisCommand {
 
-    @BaseCommand(command = "whois", sender = Sender.PLAYER, permission = "admincmd.player.whois", aliases = "pinfo", helpArguments = {"", "<-p player>"})
+    @BaseCommand(command = "whois", sender = Sender.PLAYER, permission = "admincmd.player.whois", aliases = "pinfo", helpArguments = {"", "<-p player>"}, async = true)
     public CommandResult executePlayer(Player sender, CommandArgs args) {
         if (args.isEmpty()) {
             ACPlayer s = PlayerManager.getPlayer(sender);
@@ -54,6 +55,10 @@ public class WhoisCommand {
             text.add("&7Frozen: " + freeze);
             text.add("&a------------------------------");
 
+            List<String> homes = HomeManager.getHomes(s);
+            text.add("Homes (" + homes.size() + ")");
+            text.addAll(homes);
+
             for (String st : text) {
                 String edit = Utils.replaceColors(st);
                 sender.sendMessage(edit);
@@ -64,7 +69,7 @@ public class WhoisCommand {
         }
     }
 
-    @BaseCommand(command = "whois", sender = Sender.CONSOLE, permission = "admincmd.player.whois", aliases = "pinfo", helpArguments = {"", "<-p player>"})
+    @BaseCommand(command = "whois", sender = Sender.CONSOLE, permission = "admincmd.player.whois", aliases = "pinfo", helpArguments = {"", "<-p player>"}, async = true)
     public CommandResult executeConsole(CommandSender sender, CommandArgs args) {
         if (args.isEmpty()) {
             return CommandResult.WRONG_SENDER;
@@ -100,6 +105,10 @@ public class WhoisCommand {
         text.add("&7SpyMode: " + spy);
         text.add("&7Frozen: " + freeze);
         text.add("&a------------------------------");
+
+        List<String> homes = HomeManager.getHomes(s);
+        text.add("Homes (" + homes.size() + ")");
+        text.addAll(homes);
 
         for (String st : text) {
             String edit = Utils.replaceColors(st);

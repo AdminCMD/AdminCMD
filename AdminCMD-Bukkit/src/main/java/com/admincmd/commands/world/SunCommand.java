@@ -32,7 +32,7 @@ import org.bukkit.entity.Player;
 @CommandHandler
 public class SunCommand {
 
-    @BaseCommand(command = "sun", sender = Sender.ALL, permission = "admincmd.world.sun", helpArguments = {"", "<-w world>"})
+    @BaseCommand(command = "sun", sender = Sender.ALL, permission = "admincmd.world.sun", helpArguments = {"", "<-w world>"}, async = true)
     public CommandResult executeConsole(CommandSender sender, CommandArgs args) {
         if (args.isEmpty()) {
             if (sender instanceof Player) {
@@ -68,7 +68,7 @@ public class SunCommand {
         return CommandResult.ERROR;
     }
 
-    @BaseCommand(command = "sun", sender = Sender.PLAYER, permission = "admincmd.world.sun", helpArguments = {"", "<-w world>"})
+    @BaseCommand(command = "sun", sender = Sender.PLAYER, permission = "admincmd.world.sun", helpArguments = {"", "<-w world>"}, async = true)
     public CommandResult executeSun(Player sender, CommandArgs args) {
         ACPlayer se = PlayerManager.getPlayer(sender);
         if (args.isEmpty()) {
