@@ -31,7 +31,7 @@ import java.text.DecimalFormat;
 @CommandHandler
 public class LocationCommand {
 
-    @BaseCommand(command = "loc", sender = Sender.PLAYER, permission = "admincmd.player.loc", aliases = "location,coords", helpArguments = {"", "<-p player>"})
+    @BaseCommand(command = "loc", sender = Sender.PLAYER, permission = "admincmd.player.loc", aliases = "location,coords", helpArguments = {"", "<-p player>"}, async = true)
     public CommandResult executeLocation(Player sender, CommandArgs args) {
         if (args.isEmpty()) {
             Location loc = sender.getLocation();

@@ -32,7 +32,7 @@ import org.bukkit.entity.Player;
 @CommandHandler
 public class TopCommand {
 
-    @BaseCommand(command = "top", sender = Sender.PLAYER, permission = "admincmd.tp.up", aliases = "up, tpup, tptop", helpArguments = {"", "<-p player>"})
+    @BaseCommand(command = "top", sender = Sender.PLAYER, permission = "admincmd.tp.up", aliases = "up, tpup, tptop", helpArguments = {"", "<-p player>"}, async = true)
     public CommandResult executeUp(Player sender, CommandArgs args) {
         ACPlayer se = PlayerManager.getPlayer(sender);
         if (args.isEmpty()) {

@@ -27,13 +27,12 @@ import com.admincmd.player.PlayerManager;
 import com.admincmd.utils.Locales;
 import com.admincmd.utils.Messager;
 import com.admincmd.utils.Utils;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 
 @CommandHandler
 public class HealCommand {
 
-    @BaseCommand(command = "heal", sender = Sender.PLAYER, permission = "admincmd.player.heal", aliases = "pheal", helpArguments = {"", "<-p player>"})
+    @BaseCommand(command = "heal", sender = Sender.PLAYER, permission = "admincmd.player.heal", aliases = "pheal", helpArguments = {"", "<-p player>"}, async = true)
     public CommandResult executeHeal(Player sender, CommandArgs args) {
         if (args.isEmpty()) {
             sender.setHealth(sender.getMaxHealth());

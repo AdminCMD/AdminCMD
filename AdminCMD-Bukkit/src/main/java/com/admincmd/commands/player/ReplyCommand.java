@@ -29,7 +29,7 @@ import org.bukkit.entity.Player;
 @CommandHandler
 public class ReplyCommand {
 
-    @BaseCommand(command = "reply", sender = Sender.PLAYER, permission = "admincmd.player.reply", aliases = "r", helpArguments = "<message>")
+    @BaseCommand(command = "reply", sender = Sender.PLAYER, permission = "admincmd.player.reply", aliases = "r", helpArguments = "<message>", async = true)
     public CommandResult executeReply(Player sender, CommandArgs args) {
         ACPlayer se = PlayerManager.getPlayer(sender);
         int lastMsg = PlayerManager.getPlayer(sender).getLastMSGFrom();

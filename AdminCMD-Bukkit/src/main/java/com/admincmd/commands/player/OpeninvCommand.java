@@ -18,9 +18,7 @@
  */
 package com.admincmd.commands.player;
 
-import com.admincmd.Main;
 import com.admincmd.commandapi.*;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 @CommandHandler
@@ -44,12 +42,7 @@ public class OpeninvCommand {
             }
 
             final Player target = flag.getPlayer().getPlayer();
-            Bukkit.getScheduler().runTask(Main.getInstance(), new Runnable() {
-                @Override
-                public void run() {
-                    sender.openInventory(target.getInventory());
-                }
-            });
+            sender.openInventory(target.getInventory());
             return CommandResult.SUCCESS;
         }
 

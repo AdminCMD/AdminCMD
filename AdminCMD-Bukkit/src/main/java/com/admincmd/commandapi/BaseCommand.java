@@ -38,6 +38,8 @@ public @interface BaseCommand {
     String aliases() default "";
 
     String[] helpArguments() default "addon";
+
+    boolean async() default false;
 }
 
 
