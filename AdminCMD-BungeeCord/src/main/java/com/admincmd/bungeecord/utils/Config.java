@@ -56,7 +56,7 @@ public enum Config {
     }
 
     public static void load() {
-        if (Main.getInstance().getDataFolder().mkdirs()) {
+        if (Main.getInstance().getDataFolder().exists() || Main.getInstance().getDataFolder().mkdirs()) {
             try {
                 if (!f.exists()) {
                     if (!f.createNewFile()) {

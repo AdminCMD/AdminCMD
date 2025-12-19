@@ -33,7 +33,7 @@ public class SQLite extends Database {
      */
     public SQLite(File dbFile) {
         super("org.sqlite.JDBC", Type.SQLITE);
-        if (dbFile.getParentFile().mkdirs()) {
+        if (dbFile.getParentFile().exists() || dbFile.getParentFile().mkdirs()) {
             this.dbFile = dbFile;
         } else {
             this.dbFile = null;

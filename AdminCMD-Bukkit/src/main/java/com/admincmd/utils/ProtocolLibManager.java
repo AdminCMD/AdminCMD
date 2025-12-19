@@ -18,7 +18,7 @@
  */
 package com.admincmd.utils;
 
-import com.admincmd.events.PingListener;
+import com.admincmd.maintenance.PingListener;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 

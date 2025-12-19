@@ -16,12 +16,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-package com.admincmd.virtualchest;
+package com.admincmd.virtualchest.chest;
 
 import com.admincmd.database.Database;
 import com.admincmd.player.ACPlayer;
 import com.admincmd.utils.ACLogger;
 import com.admincmd.utils.Config;
+import com.admincmd.virtualchest.VirtualChest;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

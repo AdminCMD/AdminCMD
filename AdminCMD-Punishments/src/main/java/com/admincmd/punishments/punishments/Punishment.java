@@ -19,8 +19,8 @@
 package com.admincmd.punishments.punishments;
 
 import com.admincmd.player.ACPlayer;
-import com.admincmd.punishments.Config;
 import com.admincmd.punishments.Punishments;
+import com.admincmd.punishments.utils.Config;
 
 @SuppressWarnings("ClassCanBeRecord")
 public class Punishment {
@@ -74,7 +74,7 @@ public class Punishment {
         this.reason = Config.STANDARD_REASON.getString();
     }
 
-    
+
     public Punishment(ACPlayer target, ACPlayer creator, PunishmentType type, int minutes, String reason) {
         this.target = target;
         this.creator = creator;

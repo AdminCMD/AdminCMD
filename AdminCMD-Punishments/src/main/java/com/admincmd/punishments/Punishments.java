@@ -20,9 +20,8 @@ package com.admincmd.punishments;
 
 import com.admincmd.addon.Addon;
 import com.admincmd.database.Database;
-import com.admincmd.punishments.events.BanEvents;
-import com.admincmd.punishments.events.MuteEvents;
 import com.admincmd.punishments.punishments.PunishmentManager;
+import com.admincmd.punishments.utils.Config;
 import com.admincmd.utils.ACLogger;
 
 import java.sql.SQLException;
@@ -74,9 +73,9 @@ public class Punishments extends Addon {
         Config.load();
         createTable();
         PunishmentManager.init();
-        registerEvent(MuteEvents.class);
-        registerEvent(BanEvents.class);
-        registerCommand(PunishmentCommands.class);
+
+        registerEventListener("com.admincmd.punishments.events");
+        registerCommands("com.admincmd.punishments.commands");
     }
 
     @Override

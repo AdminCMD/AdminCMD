@@ -16,7 +16,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-package com.admincmd.virtualchest;
+package com.admincmd.virtualchest.commands;
 
 import com.admincmd.Main;
 import com.admincmd.commandapi.*;
@@ -24,6 +24,8 @@ import com.admincmd.commandapi.CommandArgs.Flag;
 import com.admincmd.player.ACPlayer;
 import com.admincmd.player.PlayerManager;
 import com.admincmd.utils.Messager;
+import com.admincmd.virtualchest.chest.ACChest;
+import com.admincmd.virtualchest.chest.ChestManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;

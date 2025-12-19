@@ -225,7 +225,7 @@ public enum Locales {
     }
 
     public static void load() {
-        if (Main.getInstance().getDataFolder().mkdirs()) {
+        if (Main.getInstance().getDataFolder().exists() || Main.getInstance().getDataFolder().mkdirs()) {
             reload(false);
             for (Locales c : values()) {
                 if (!cfg.contains(c.getPath())) {

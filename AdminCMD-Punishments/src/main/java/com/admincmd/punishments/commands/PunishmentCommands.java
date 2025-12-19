@@ -16,7 +16,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-package com.admincmd.punishments;
+package com.admincmd.punishments.commands;
 
 import com.admincmd.commandapi.*;
 import com.admincmd.commandapi.CommandArgs.Flag;
@@ -25,6 +25,7 @@ import com.admincmd.player.PlayerManager;
 import com.admincmd.punishments.punishments.Punishment;
 import com.admincmd.punishments.punishments.PunishmentManager;
 import com.admincmd.punishments.punishments.PunishmentType;
+import com.admincmd.punishments.utils.Config;
 import com.admincmd.utils.Messager;
 import com.admincmd.utils.Utils;
 import org.bukkit.command.CommandSender;

@@ -16,11 +16,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-package com.admincmd.virtualchest;
+package com.admincmd.virtualchest.chest;
 
 import com.admincmd.player.ACPlayer;
 import com.admincmd.player.PlayerManager;
 import com.admincmd.utils.ItemSerialization;
+import com.admincmd.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -34,7 +35,7 @@ public final class StoredChest implements ACChest {
     public StoredChest(String inventory, int owner, int ID) {
         this.owner = owner;
         ItemStack[] items = ItemSerialization.loadInventory(inventory);
-        inv = Bukkit.createInventory(null, 54, "§aVirtual Chest of: " + getOwner().getName());
+        inv = Bukkit.createInventory(null, 54, "§aVirtual Chest of: " + Utils.replacePlayerPlaceholders(getOwner().getOfflinePlayer()));
 
         for (ItemStack item : items) {
             if (item != null) {

@@ -16,8 +16,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-package com.admincmd.kits;
+package com.admincmd.kits.utils;
 
+import com.admincmd.kits.Kits;
 import com.admincmd.utils.ACLogger;
 import com.admincmd.utils.Utils;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -48,7 +49,7 @@ public enum Config {
     }
 
     public static void load() {
-        if (Kits.getInstance().getDataFolder().mkdirs()) {
+        if (Kits.getInstance().getDataFolder().exists() || Kits.getInstance().getDataFolder().mkdirs()) {
             reload(false);
             List<String> header = new ArrayList<>();
             for (Config c : values()) {

@@ -20,6 +20,7 @@ package com.admincmd.kits;
 
 import com.admincmd.addon.Addon;
 import com.admincmd.database.Database;
+import com.admincmd.kits.utils.Config;
 import com.admincmd.utils.ACLogger;
 
 import java.sql.SQLException;
@@ -62,7 +63,8 @@ public class Kits extends Addon {
         INSTANCE = this;
         Config.load();
         createTable();
-        registerCommand(KitCommand.class);
+
+        registerCommands("com.admincmd.kits.commands");
     }
 
     @Override

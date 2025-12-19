@@ -23,6 +23,7 @@ import com.admincmd.addon.Addon;
 public class EventManager {
 
     public static void registerEvent(Class<? extends BukkitListener> clazz) {
+        ACLogger.debug("Registering Listener: " + clazz.getName());
         try {
             BukkitListener l = clazz.getDeclaredConstructor().newInstance();
             l.register();
@@ -32,6 +33,7 @@ public class EventManager {
     }
 
     public static void registerEvent(Class<? extends BukkitListener> clazz, Addon a) {
+        ACLogger.debug("Registering Listener " + clazz.getName() + " for Addon " + a.getName());
         try {
             BukkitListener l = clazz.getDeclaredConstructor().newInstance();
             l.register(a);

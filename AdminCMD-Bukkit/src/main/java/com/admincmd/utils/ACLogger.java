@@ -114,7 +114,7 @@ public class ACLogger {
         Main.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(Main.getInstance(), () -> {
             BufferedWriter bw = null;
             File file = new File(Main.getInstance().getDataFolder(), "logs" + File.separator + "debugs");
-            if (file.mkdirs()) {
+            if (file.exists() || file.mkdirs()) {
                 try {
                     DateFormat date = new SimpleDateFormat("dd-MM-yyyy");
                     Calendar cal = Calendar.getInstance();
@@ -143,7 +143,7 @@ public class ACLogger {
         Main.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(Main.getInstance(), () -> {
             BufferedWriter bw = null;
             File file = new File(Main.getInstance().getDataFolder(), "logs" + File.separator + "debugs");
-            if (file.mkdirs()) {
+            if (file.exists() || file.mkdirs()) {
                 try {
                     DateFormat date = new SimpleDateFormat("dd-MM-yyyy");
                     Calendar cal = Calendar.getInstance();
@@ -186,7 +186,7 @@ public class ACLogger {
         Main.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(Main.getInstance(), () -> {
             BufferedWriter bw = null;
             File file = new File(Main.getInstance().getDataFolder(), "logs" + File.separator + "errors");
-            if (file.mkdirs()) {
+            if (file.exists() || file.mkdirs()) {
                 try {
                     DateFormat date = new SimpleDateFormat("dd-MM-yyyy");
                     Calendar cal = Calendar.getInstance();

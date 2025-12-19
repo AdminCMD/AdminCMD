@@ -16,9 +16,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-package com.admincmd.punishments;
+package com.admincmd.punishments.utils;
 
 import com.admincmd.player.ACPlayer;
+import com.admincmd.punishments.Punishments;
 import com.admincmd.punishments.punishments.Punishment;
 import com.admincmd.utils.ACLogger;
 import com.admincmd.utils.Utils;
@@ -63,7 +64,7 @@ public enum Config {
     }
 
     public static void load() {
-        if (Punishments.getInstance().getDataFolder().mkdirs()) {
+        if (Punishments.getInstance().getDataFolder().exists() || Punishments.getInstance().getDataFolder().mkdirs()) {
             reload(false);
             List<String> header = new ArrayList<>();
             for (Config c : values()) {

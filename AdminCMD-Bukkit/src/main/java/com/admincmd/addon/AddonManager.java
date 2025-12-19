@@ -39,7 +39,7 @@ public class AddonManager {
         ACLogger.info("Loading addons...");
         File folder = new File(Main.getInstance().getDataFolder(), "addons");
 
-        if (folder.mkdirs()) {
+        if (folder.exists() || folder.mkdirs()) {
             File[] subFiles = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".jar"));
 
             if (subFiles == null || subFiles.length == 0) {

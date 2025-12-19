@@ -16,10 +16,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-package com.admincmd.virtualchest;
+package com.admincmd.virtualchest.events;
 
 import com.admincmd.player.ACPlayer;
 import com.admincmd.player.PlayerManager;
+import com.admincmd.virtualchest.chest.ACChest;
+import com.admincmd.virtualchest.chest.ChestManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;

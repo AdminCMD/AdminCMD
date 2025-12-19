@@ -21,6 +21,7 @@ package com.admincmd.virtualchest;
 import com.admincmd.addon.Addon;
 import com.admincmd.database.Database;
 import com.admincmd.utils.ACLogger;
+import com.admincmd.virtualchest.chest.ChestManager;
 
 import java.sql.SQLException;
 
@@ -30,8 +31,9 @@ public class VirtualChest extends Addon {
     public void enable() {
         createTable();
         ChestManager.init();
-        getCommandManager().registerClass(ChestCommands.class);
-        getServer().getPluginManager().registerEvents(new ChestCloseListener(), this);
+
+        registerEventListener("com.admincmd.virtualchest.events");
+        registerCommands("com.admincmd.virtualchest.commands");
     }
 
     @Override

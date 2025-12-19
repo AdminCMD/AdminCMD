@@ -20,10 +20,10 @@ package com.admincmd.punishments.events;
 
 import com.admincmd.player.ACPlayer;
 import com.admincmd.player.PlayerManager;
-import com.admincmd.punishments.Config;
 import com.admincmd.punishments.punishments.Punishment;
 import com.admincmd.punishments.punishments.PunishmentManager;
 import com.admincmd.punishments.punishments.PunishmentType;
+import com.admincmd.punishments.utils.Config;
 import com.admincmd.utils.BukkitListener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

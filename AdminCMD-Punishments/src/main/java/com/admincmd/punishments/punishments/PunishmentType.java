@@ -18,7 +18,7 @@
  */
 package com.admincmd.punishments.punishments;
 
-import com.admincmd.punishments.Config;
+import com.admincmd.punishments.utils.Config;
 
 public enum PunishmentType {
 

@@ -19,12 +19,15 @@
 package com.admincmd.addon;
 
 import com.admincmd.Main;
+import com.admincmd.commandapi.CommandHandler;
 import com.admincmd.commandapi.CommandManager;
 import com.admincmd.database.Database;
 import com.admincmd.database.DatabaseFactory;
 import com.admincmd.utils.BukkitListener;
+import com.admincmd.utils.ClassScanner;
 import com.admincmd.utils.EventManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class Addon extends JavaPlugin {
 
@@ -67,12 +70,36 @@ public abstract class Addon extends JavaPlugin {
         return cmdManager;
     }
 
+    /**
+     * Use #registerCommands
+     *
+     * @param clazz Class to register
+     */
+    @Deprecated
     public void registerCommand(Class<?> clazz) {
         cmdManager.registerClass(clazz);
     }
 
+    /**
+     * Use #registerEventListener
+     *
+     * @param clazz Class to register
+     */
+    @Deprecated
     public void registerEvent(Class<? extends BukkitListener> clazz) {
         EventManager.registerEvent(clazz, this);
+    }
+
+    public void registerEventListener(@NotNull String eventsPath) {
+        for (Class<? extends BukkitListener> clazz : ClassScanner.getClassesThatExtendClass(eventsPath, BukkitListener.class, INSTANCE.getClass())) {
+            EventManager.registerEvent(clazz, this);
+        }
+    }
+
+    public void registerCommands(@NotNull String commandsPath) {
+        for (Class<?> clazz : ClassScanner.getClassesFromJarWithAnnotation(commandsPath, CommandHandler.class, INSTANCE.getClass())) {
+            cmdManager.registerClass(clazz);
+        }
     }
 
     @Override

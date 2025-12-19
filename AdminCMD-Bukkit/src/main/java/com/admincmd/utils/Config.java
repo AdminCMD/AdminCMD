@@ -63,7 +63,7 @@ public enum Config {
     }
 
     public static void load() {
-        if (Main.getInstance().getDataFolder().mkdirs()) {
+        if (Main.getInstance().getDataFolder().exists() || Main.getInstance().getDataFolder().mkdirs()) {
             reload(false);
             List<String> header = new ArrayList<>();
             for (Config c : values()) {
