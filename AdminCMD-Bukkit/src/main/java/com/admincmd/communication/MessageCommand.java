@@ -27,7 +27,7 @@ public enum MessageCommand {
 
     private final String command;
 
-    private MessageCommand(String command) {
+    MessageCommand(String command) {
         this.command = command;
     }
 

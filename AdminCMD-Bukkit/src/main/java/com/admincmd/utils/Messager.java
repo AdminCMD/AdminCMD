@@ -41,7 +41,7 @@ public class Messager {
 
         private final String prefix;
 
-        private MessageType(String prefix) {
+        MessageType(String prefix) {
             this.prefix = prefix;
         }
 

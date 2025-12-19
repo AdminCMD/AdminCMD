@@ -98,7 +98,7 @@ public final class HelpPage {
      * @param argument    the argument the message is for
      * @param description the message
      */
-    public final void addPage(String argument, String description) {
+    public void addPage(String argument, String description) {
         helpPages.add(new CommandHelp(command + argument, description));
     }
 
@@ -120,7 +120,7 @@ public final class HelpPage {
         return false;
     }
 
-    private class CommandHelp {
+    private static class CommandHelp {
 
         private final String FULL_TEXT;
 

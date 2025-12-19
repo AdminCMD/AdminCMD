@@ -20,18 +20,18 @@ package com.admincmd.world;
 
 public interface ACWorld {
 
-    public long getPausedTime();
+    long getPausedTime();
 
-    public void setPausedTime(long time);
+    void setPausedTime(long time);
 
-    public boolean isPaused();
+    boolean isPaused();
 
-    public void setPaused(boolean pause);
+    void setPaused(boolean pause);
 
-    public String getServer();
+    String getServer();
 
-    public String getName();
+    String getName();
 
-    public boolean isOnThisServer();
+    boolean isOnThisServer();
 
 }

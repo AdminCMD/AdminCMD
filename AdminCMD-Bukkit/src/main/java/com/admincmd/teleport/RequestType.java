@@ -21,6 +21,6 @@ package com.admincmd.teleport;
 public enum RequestType {
 
     TPTO,
-    TPHERE;
+    TPHERE
 
 }

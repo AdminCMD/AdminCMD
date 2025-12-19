@@ -165,11 +165,11 @@ public class PunishmentCommands {
         } else {
 
             List<String> reason = args.getArgs().subList(1, args.getArgs().size());
-            String reasonMsg = "";
+            StringBuilder reasonMsg = new StringBuilder();
             for (String arg : reason) {
-                reasonMsg += (arg + " ");
+                reasonMsg.append(arg).append(" ");
             }
-            Punishment pu = new Punishment(target, creator, PunishmentType.KICK, reasonMsg);
+            Punishment pu = new Punishment(target, creator, PunishmentType.KICK, reasonMsg.toString());
             PlayerManager.kickPlayer(target, pu.getReasonMessage());
             sender.sendMessage(Config.MESSAGE_CREATOR_KICK.replace(target, pu));
             return CommandResult.SUCCESS;
@@ -217,14 +217,14 @@ public class PunishmentCommands {
                 }
                 int min = minutes.getInt();
 
-                String reason = "";
+                StringBuilder reason = new StringBuilder();
 
                 List<String> reasonArguments = args.getArgsAfter(minutes.getString());
                 for (String r : reasonArguments) {
-                    reason += (r + " ");
+                    reason.append(r).append(" ");
                 }
 
-                Punishment puNeu = new Punishment(target, creator, PunishmentType.BAN, min, reason);
+                Punishment puNeu = new Punishment(target, creator, PunishmentType.BAN, min, reason.toString());
                 PunishmentManager.savePunishment(puNeu);
                 sender.sendMessage(Config.MESSAGE_CREATOR.replace(target, puNeu));
                 PlayerManager.kickPlayer(target, puNeu.getReasonMessage());
@@ -236,16 +236,16 @@ public class PunishmentCommands {
                 }
                 int hr = hours.getInt();
 
-                String reason = "";
+                StringBuilder reason = new StringBuilder();
 
                 List<String> reasonArguments = args.getArgsAfter(hours.getString());
                 for (String r : reasonArguments) {
-                    reason += (r + " ");
+                    reason.append(r).append(" ");
                 }
 
                 int min = hr * 60;
 
-                Punishment puNeu = new Punishment(target, creator, PunishmentType.BAN, min, reason);
+                Punishment puNeu = new Punishment(target, creator, PunishmentType.BAN, min, reason.toString());
                 PunishmentManager.savePunishment(puNeu);
                 sender.sendMessage(Config.MESSAGE_CREATOR.replace(target, puNeu));
                 PlayerManager.kickPlayer(target, puNeu.getReasonMessage());
@@ -257,40 +257,40 @@ public class PunishmentCommands {
                 }
                 int d = days.getInt();
 
-                String reason = "";
+                StringBuilder reason = new StringBuilder();
 
                 List<String> reasonArguments = args.getArgsAfter(days.getString());
                 for (String r : reasonArguments) {
-                    reason += (r + " ");
+                    reason.append(r).append(" ");
                 }
 
                 int min = d * 60 * 24;
-                Punishment puNeu = new Punishment(target, creator, PunishmentType.BAN, min, reason);
+                Punishment puNeu = new Punishment(target, creator, PunishmentType.BAN, min, reason.toString());
                 PunishmentManager.savePunishment(puNeu);
                 sender.sendMessage(Config.MESSAGE_CREATOR.replace(target, puNeu));
                 PlayerManager.kickPlayer(target, puNeu.getReasonMessage());
                 return CommandResult.SUCCESS;
             } else if (args.getString(1).equalsIgnoreCase("forever")) {
-                String reason = "";
+                StringBuilder reason = new StringBuilder();
 
                 List<String> reasonArguments = args.getArgsAfter(args.getString(1));
                 for (String r : reasonArguments) {
-                    reason += (r + " ");
+                    reason.append(r).append(" ");
                 }
-                Punishment puNeu = new Punishment(target, creator, PunishmentType.BAN, -1, reason);
+                Punishment puNeu = new Punishment(target, creator, PunishmentType.BAN, -1, reason.toString());
                 PunishmentManager.savePunishment(puNeu);
                 sender.sendMessage(Config.MESSAGE_CREATOR.replace(target, puNeu));
                 PlayerManager.kickPlayer(target, puNeu.getReasonMessage());
                 return CommandResult.SUCCESS;
             } else {
-                String reason = "";
+                StringBuilder reason = new StringBuilder();
 
                 List<String> reasonArguments = args.getArgsAfter(args.getString(0));
                 for (String r : reasonArguments) {
-                    reason += (r + " ");
+                    reason.append(r).append(" ");
                 }
 
-                Punishment pu = new Punishment(target, creator, PunishmentType.BAN, reason);
+                Punishment pu = new Punishment(target, creator, PunishmentType.BAN, reason.toString());
                 PunishmentManager.savePunishment(pu);
                 sender.sendMessage(Config.MESSAGE_CREATOR.replace(target, pu));
                 PlayerManager.kickPlayer(target, pu.getReasonMessage());
@@ -340,14 +340,14 @@ public class PunishmentCommands {
                 }
                 int min = minutes.getInt();
 
-                String reason = "";
+                StringBuilder reason = new StringBuilder();
 
                 List<String> reasonArguments = args.getArgsAfter(minutes.getString());
                 for (String r : reasonArguments) {
-                    reason += (r + " ");
+                    reason.append(r).append(" ");
                 }
 
-                Punishment puNeu = new Punishment(target, creator, PunishmentType.MUTE, min, reason);
+                Punishment puNeu = new Punishment(target, creator, PunishmentType.MUTE, min, reason.toString());
                 PunishmentManager.savePunishment(puNeu);
                 sender.sendMessage(Config.MESSAGE_CREATOR.replace(target, puNeu));
                 Messager.sendMessage(target, Config.MESSAGE_TARGET.replace(creator, puNeu), Messager.MessageType.NONE);
@@ -359,16 +359,16 @@ public class PunishmentCommands {
                 }
                 int hr = hours.getInt();
 
-                String reason = "";
+                StringBuilder reason = new StringBuilder();
 
                 List<String> reasonArguments = args.getArgsAfter(hours.getString());
                 for (String r : reasonArguments) {
-                    reason += (r + " ");
+                    reason.append(r).append(" ");
                 }
 
                 int min = hr * 60;
 
-                Punishment puNeu = new Punishment(target, creator, PunishmentType.MUTE, min, reason);
+                Punishment puNeu = new Punishment(target, creator, PunishmentType.MUTE, min, reason.toString());
                 PunishmentManager.savePunishment(puNeu);
                 sender.sendMessage(Config.MESSAGE_CREATOR.replace(target, puNeu));
                 Messager.sendMessage(target, Config.MESSAGE_TARGET.replace(creator, puNeu), Messager.MessageType.NONE);
@@ -380,40 +380,40 @@ public class PunishmentCommands {
                 }
                 int d = days.getInt();
 
-                String reason = "";
+                StringBuilder reason = new StringBuilder();
 
                 List<String> reasonArguments = args.getArgsAfter(days.getString());
                 for (String r : reasonArguments) {
-                    reason += (r + " ");
+                    reason.append(r).append(" ");
                 }
 
                 int min = d * 60 * 24;
-                Punishment puNeu = new Punishment(target, creator, PunishmentType.MUTE, min, reason);
+                Punishment puNeu = new Punishment(target, creator, PunishmentType.MUTE, min, reason.toString());
                 PunishmentManager.savePunishment(puNeu);
                 sender.sendMessage(Config.MESSAGE_CREATOR.replace(target, puNeu));
                 Messager.sendMessage(target, Config.MESSAGE_TARGET.replace(creator, puNeu), Messager.MessageType.NONE);
                 return CommandResult.SUCCESS;
             } else if (args.getString(1).equalsIgnoreCase("forever")) {
-                String reason = "";
+                StringBuilder reason = new StringBuilder();
 
                 List<String> reasonArguments = args.getArgsAfter(args.getString(1));
                 for (String r : reasonArguments) {
-                    reason += (r + " ");
+                    reason.append(r).append(" ");
                 }
-                Punishment puNeu = new Punishment(target, creator, PunishmentType.MUTE, -1, reason);
+                Punishment puNeu = new Punishment(target, creator, PunishmentType.MUTE, -1, reason.toString());
                 PunishmentManager.savePunishment(puNeu);
                 sender.sendMessage(Config.MESSAGE_CREATOR.replace(target, puNeu));
                 Messager.sendMessage(target, Config.MESSAGE_TARGET.replace(creator, puNeu), Messager.MessageType.NONE);
                 return CommandResult.SUCCESS;
             } else {
-                String reason = "";
+                StringBuilder reason = new StringBuilder();
 
                 List<String> reasonArguments = args.getArgsAfter(args.getString(0));
                 for (String r : reasonArguments) {
-                    reason += (r + " ");
+                    reason.append(r).append(" ");
                 }
 
-                Punishment pu = new Punishment(target, creator, PunishmentType.MUTE, reason);
+                Punishment pu = new Punishment(target, creator, PunishmentType.MUTE, reason.toString());
                 PunishmentManager.savePunishment(pu);
                 sender.sendMessage(Config.MESSAGE_CREATOR.replace(target, pu));
                 Messager.sendMessage(target, Config.MESSAGE_TARGET.replace(creator, pu), Messager.MessageType.NONE);

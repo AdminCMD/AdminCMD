@@ -35,13 +35,13 @@ public class ListCommand {
     public CommandResult executeList(Player sender, CommandArgs args) {
         ACPlayer se = PlayerManager.getPlayer(sender);
         if (args.isEmpty()) {
-            String playerList = "";
+            StringBuilder playerList = new StringBuilder();
             for (ACPlayer p : PlayerManager.getOnlinePlayers()) {
                 if (!p.isInvisible()) {
-                    playerList += Utils.replacePlayerPlaceholders(p.getOfflinePlayer()) + ", ";
+                    playerList.append(Utils.replacePlayerPlaceholders(p.getOfflinePlayer())).append(", ");
                 }
             }
-            String msg = Locales.PLAYER_LIST_FORMAT.getString().replaceAll("%playerList%", playerList);
+            String msg = Locales.PLAYER_LIST_FORMAT.getString().replaceAll("%playerList%", playerList.toString());
             return Messager.sendMessage(se, msg, Messager.MessageType.NONE);
         }
         return CommandResult.ERROR;
@@ -50,11 +50,11 @@ public class ListCommand {
     @BaseCommand(command = "who", sender = Sender.CONSOLE, permission = "admincmd.player.list", aliases = "plist,online,list", helpArguments = "", async = true)
     public CommandResult executeListConsole(CommandSender sender, CommandArgs args) {
         if (args.isEmpty()) {
-            String playerList = "";
+            StringBuilder playerList = new StringBuilder();
             for (ACPlayer p : PlayerManager.getOnlinePlayers()) {
-                playerList += Utils.replacePlayerPlaceholders(p.getOfflinePlayer()) + ", ";
+                playerList.append(Utils.replacePlayerPlaceholders(p.getOfflinePlayer())).append(", ");
             }
-            String msg = Locales.PLAYER_LIST_FORMAT.getString().replaceAll("%playerList%", playerList);
+            String msg = Locales.PLAYER_LIST_FORMAT.getString().replaceAll("%playerList%", playerList.toString());
             sender.sendMessage(MessageType.INFO.getPrefix() + msg);
             return CommandResult.SUCCESS;
         }

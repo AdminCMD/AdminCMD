@@ -331,6 +331,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         for (String s : strings) {
             if (s.equalsIgnoreCase("-p")) {
                 pla = true;
+                break;
             }
         }
         if (pla) {
@@ -348,16 +349,12 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         if (cmnd.getName().contains("home") || cmnd.getName().equalsIgnoreCase("sh")) {
             if (cs instanceof Player) {
                 ACPlayer acplayer = PlayerManager.getPlayer((Player) cs);
-                for (String h : HomeManager.getHomes(acplayer)) {
-                    ret.add(h);
-                }
+                ret.addAll(HomeManager.getHomes(acplayer));
             }
         }
 
         if (cmnd.getName().contains("warp")) {
-            for (String w : WarpManager.getWarps()) {
-                ret.add(w);
-            }
+            ret.addAll(WarpManager.getWarps());
         }
 
         if (cmnd.getName().equalsIgnoreCase("maintenance")) {
@@ -375,7 +372,6 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
         if (cmnd.getName().equalsIgnoreCase("gamemode") || cmnd.getName().equalsIgnoreCase("gm")) {
             for (GameMode gm : GameMode.values()) {
-                ret.add(gm.getValue() + "");
                 ret.add(gm.toString());
             }
 

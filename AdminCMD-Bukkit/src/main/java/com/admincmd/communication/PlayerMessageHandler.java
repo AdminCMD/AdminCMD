@@ -238,11 +238,13 @@ public class PlayerMessageHandler {
     }
 
     protected static void reactPlayerHeal(String msg) {
-        int targetID = Integer.valueOf(msg);
+        int targetID = Integer.parseInt(msg);
         ACPlayer target = PlayerManager.getPlayer(targetID);
-        Player p = target.getPlayer();
-        p.setFoodLevel(15);
-        p.setHealth(p.getMaxHealth());
+        if (target != null) {
+            Player p = target.getPlayer();
+            p.setFoodLevel(15);
+            p.setHealth(p.getAttribute(Attribute.MAX_HEALTH).getValue());
+        }
     }
 
     protected static void reactPlayerFly(String msg) {

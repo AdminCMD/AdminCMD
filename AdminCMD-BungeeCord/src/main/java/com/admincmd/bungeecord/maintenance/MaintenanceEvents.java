@@ -66,7 +66,7 @@ public class MaintenanceEvents implements Listener {
         if (!hasPerm) {
             TextComponent kickmessage = new TextComponent(Config.KICKMESSAGE.getString().replaceAll("%perm%", "admincmd.maintenance.bypass"));
             kickmessage.setColor(ChatColor.RED);
-            event.setCancelReason(kickmessage);
+            event.setReason(kickmessage);
             event.setCancelled(true);
         }
     }

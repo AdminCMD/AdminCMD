@@ -46,7 +46,7 @@ public abstract class Database {
     /**
      * Gets the type of the loaded database.
      *
-     * @return {@link com.admincmd.admincmd.database.Database.Type}
+     * @return {@link com.admincmd.database.Database.Type}
      */
     public Type getType() {
         return type;
@@ -179,7 +179,7 @@ public abstract class Database {
     public enum Type {
 
         SQLITE,
-        MYSQL;
+        MYSQL
     }
 
 }

@@ -30,8 +30,7 @@ public class MotD {
     }
 
     public TextComponent getMotd() {
-        TextComponent ret = new TextComponent((line1 + "\n" + line2).replaceAll("&((?i)[0-9a-fk-or])", "§$1"));
-        return ret;
+        return new TextComponent((line1 + "\n" + line2).replaceAll("&((?i)[0-9a-fk-or])", "§$1"));
     }
 
 }

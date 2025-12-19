@@ -37,7 +37,7 @@ public enum Channel {
 
     private final String channelName;
 
-    private Channel(String channelName) {
+    Channel(String channelName) {
         this.channelName = channelName;
     }
 

@@ -162,8 +162,7 @@ public class PlayerManager {
 
     public static ACPlayer getPlayer(int id) {
         if (Config.BUNGEECORD.getBoolean()) {
-            SQLPlayer ret = new SQLPlayer(id);
-            return ret;
+            return new SQLPlayer(id);
         } else {
             for (StoredPlayer sp : players.values()) {
                 if (sp.getID() == id) {
