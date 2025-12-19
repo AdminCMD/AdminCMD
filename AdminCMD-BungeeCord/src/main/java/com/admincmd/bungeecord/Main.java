@@ -32,6 +32,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.sql.SQLException;
 
+@SuppressWarnings("CallToPrintStackTrace")
 public class Main extends Plugin {
 
     private static Main INSTANCE;

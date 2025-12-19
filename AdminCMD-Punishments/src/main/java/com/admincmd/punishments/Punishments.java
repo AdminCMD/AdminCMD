@@ -37,7 +37,7 @@ public class Punishments extends Addon {
     }
 
     public static long minutesInMiliseconds(int minutes) {
-        return minutes * 1000 * 60;
+        return (long) minutes * 1000 * 60;
     }
 
     public static String transformReadable(long millis) {

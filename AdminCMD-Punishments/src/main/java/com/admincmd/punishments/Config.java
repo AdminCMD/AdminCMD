@@ -20,6 +20,7 @@ package com.admincmd.punishments;
 
 import com.admincmd.player.ACPlayer;
 import com.admincmd.punishments.punishments.Punishment;
+import com.admincmd.utils.ACLogger;
 import com.admincmd.utils.Utils;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -62,20 +63,21 @@ public enum Config {
     }
 
     public static void load() {
-        Punishments.getInstance().getDataFolder().mkdirs();
-        reload(false);
-        List<String> header = new ArrayList<>();
-        for (Config c : values()) {
-            header.add(c.getPath() + ": " + c.getDescription() + System.lineSeparator());
-            if (!cfg.contains(c.getPath())) {
-                c.set(c.getDefaultValue(), false);
+        if (Punishments.getInstance().getDataFolder().mkdirs()) {
+            reload(false);
+            List<String> header = new ArrayList<>();
+            for (Config c : values()) {
+                header.add(c.getPath() + ": " + c.getDescription() + System.lineSeparator());
+                if (!cfg.contains(c.getPath())) {
+                    c.set(c.getDefaultValue(), false);
+                }
             }
-        }
-        cfg.options().setHeader(header);
-        try {
-            cfg.save(f);
-        } catch (IOException ex) {
-            ex.printStackTrace();
+            cfg.options().setHeader(header);
+            try {
+                cfg.save(f);
+            } catch (IOException ex) {
+                ACLogger.severe(ex);
+            }
         }
     }
 
@@ -121,7 +123,12 @@ public enum Config {
     }
 
     public String getString() {
-        return Utils.replaceColors(cfg.getString(path));
+        String str = cfg.getString(path);
+        if (str != null) {
+            return Utils.replaceColors(str);
+        } else {
+            return "";
+        }
     }
 
     public List<String> getStringList() {
@@ -134,7 +141,7 @@ public enum Config {
             try {
                 cfg.save(f);
             } catch (IOException ex) {
-                ex.printStackTrace();
+                ACLogger.severe(ex);
             }
             reload(false);
         }

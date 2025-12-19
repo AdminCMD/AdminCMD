@@ -29,6 +29,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.UUID;
 
+@SuppressWarnings("CallToPrintStackTrace")
 public class PlayerManager {
 
     private static final Database conn = DatabaseFactory.getDatabase();

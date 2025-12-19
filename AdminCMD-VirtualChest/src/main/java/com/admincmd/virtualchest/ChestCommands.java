@@ -54,7 +54,8 @@ public class ChestCommands {
 
         if (args.isEmpty()) {
             ACChest c = ChestManager.getChest(se);
-            c.clear();
+            if (c != null)
+                c.clear();
             return Messager.sendMessage(se, "Successfully cleared your chest.", Messager.MessageType.INFO);
         } else {
             if (args.hasFlag("p")) {
@@ -69,7 +70,8 @@ public class ChestCommands {
 
                 ACPlayer bp = f.getPlayer();
                 ACChest c = ChestManager.getChest(bp);
-                c.clear();
+                if (c != null)
+                    c.clear();
                 return Messager.sendMessage(se, "Successfully cleared the chest of " + bp.getName(), Messager.MessageType.INFO);
             }
         }
@@ -87,13 +89,10 @@ public class ChestCommands {
 
         if (args.isEmpty()) {
             ACChest c = ChestManager.getChest(se);
-            final Inventory inv = c.getInventory();
-            Bukkit.getScheduler().runTask(Main.getInstance(), new Runnable() {
-                @Override
-                public void run() {
-                    sender.openInventory(inv);
-                }
-            });
+            if (c != null) {
+                final Inventory inv = c.getInventory();
+                Bukkit.getScheduler().runTask(Main.getInstance(), () -> sender.openInventory(inv));
+            }
             return CommandResult.SUCCESS;
         } else {
             if (args.hasFlag("p")) {
@@ -108,13 +107,10 @@ public class ChestCommands {
 
                 ACPlayer bp = f.getPlayer();
                 ACChest c = ChestManager.getChest(bp);
-                final Inventory inv = c.getInventory();
-                Bukkit.getScheduler().runTask(Main.getInstance(), new Runnable() {
-                    @Override
-                    public void run() {
-                        sender.openInventory(inv);
-                    }
-                });
+                if (c != null) {
+                    final Inventory inv = c.getInventory();
+                    Bukkit.getScheduler().runTask(Main.getInstance(), () -> sender.openInventory(inv));
+                }
                 return CommandResult.SUCCESS;
             }
         }

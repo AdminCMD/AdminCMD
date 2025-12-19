@@ -41,86 +41,80 @@ public class PunishmentManager {
 
     public static void init() {
         db = Punishments.getInstance().getDB();
-        Bukkit.getScheduler().runTaskAsynchronously(Punishments.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                punishments.clear();
-                try {
-                    PreparedStatement ps = db.getPreparedStatement("SELECT * FROM ac_punishments;");
-                    ResultSet rs = ps.executeQuery();
-                    while (rs.next()) {
-                        int id = rs.getInt("id");
-                        ACPlayer target = PlayerManager.getPlayer(rs.getInt("target"));
-                        int creatorID = rs.getInt("creator");
-                        String reason = rs.getString("reason");
+        Bukkit.getScheduler().runTaskAsynchronously(Punishments.getInstance(), () -> {
+            punishments.clear();
+            try {
+                PreparedStatement ps = db.getPreparedStatement("SELECT * FROM ac_punishments;");
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    int id = rs.getInt("id");
+                    ACPlayer target = PlayerManager.getPlayer(rs.getInt("target"));
+                    int creatorID = rs.getInt("creator");
+                    String reason = rs.getString("reason");
 
-                        ACPlayer creator = null;
-                        if (creatorID != -1) {
-                            creator = PlayerManager.getPlayer(creatorID);
-                        }
+                    ACPlayer creator = null;
+                    if (creatorID != -1) {
+                        creator = PlayerManager.getPlayer(creatorID);
+                    }
 
-                        PunishmentType type = PunishmentType.valueOf(rs.getString("type"));
-                        long expires = rs.getLong("expires");
-                        Punishment pu = new Punishment(target, creator, type, expires, id, reason);
-                        if (pu.isExpired()) {
-                            deletePunishment(pu);
-                        } else {
-                            if (!Config.BUNGEECORD.getBoolean()) {
-                                punishments.put(target, pu);
-                            }
+                    PunishmentType type = PunishmentType.valueOf(rs.getString("type"));
+                    long expires = rs.getLong("expires");
+                    Punishment pu = new Punishment(target, creator, type, expires, id, reason);
+                    if (pu.isExpired()) {
+                        deletePunishment(pu);
+                    } else {
+                        if (!Config.BUNGEECORD.getBoolean()) {
+                            punishments.put(target, pu);
                         }
                     }
-                    db.closeResultSet(rs);
-                    db.closeStatement(ps);
-                } catch (SQLException ex) {
-                    ACLogger.severe(ex);
                 }
+                db.closeResultSet(rs);
+                db.closeStatement(ps);
+            } catch (SQLException ex) {
+                ACLogger.severe(ex);
             }
         });
     }
 
     public static void savePunishment(Punishment pu) {
-        Bukkit.getScheduler().runTaskAsynchronously(Punishments.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    PreparedStatement st = db.getPreparedStatement("INSERT INTO ac_punishments (target, creator, type, expires, reason) VALUES (?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS);
-                    st.setInt(1, pu.getTarget().getID());
-                    if (pu.getCreator() != null) {
-                        st.setInt(2, pu.getCreator().getID());
-                    } else {
-                        st.setInt(2, -1);
-                    }
-                    st.setString(3, pu.getType().toString());
-                    st.setLong(4, pu.getExpiresAt());
-                    st.setString(5, pu.getReason());
-
-                    int affectedRows = st.executeUpdate();
-
-                    if (affectedRows == 0) {
-                        throw new SQLException("Creating punishment failed, no rows affected.");
-                    }
-
-                    int id = -1;
-
-                    ResultSet generatedKeys = st.getGeneratedKeys();
-                    if (generatedKeys.next()) {
-                        id = generatedKeys.getInt(1);
-                    } else {
-                        String sql = Config.MYSQL_USE.getBoolean() ? "MySQL" : "SQLite";
-                        throw new SQLException("Creating punishment failed, no ID obtained. SQL type: " + sql);
-                    }
-
-                    db.closeResultSet(generatedKeys);
-                    db.closeStatement(st);
-
-                    if (!Config.BUNGEECORD.getBoolean()) {
-                        Punishment newPunish = new Punishment(pu.getTarget(), pu.getCreator(), pu.getType(), pu.getExpiresAt(), id, pu.getReason());
-                        punishments.put(newPunish.getTarget(), newPunish);
-                    }
-                } catch (SQLException ex) {
-                    ACLogger.severe("Error creating Punishment", ex);
+        Bukkit.getScheduler().runTaskAsynchronously(Punishments.getInstance(), () -> {
+            try {
+                PreparedStatement st = db.getPreparedStatement("INSERT INTO ac_punishments (target, creator, type, expires, reason) VALUES (?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS);
+                st.setInt(1, pu.getTarget().getID());
+                if (pu.getCreator() != null) {
+                    st.setInt(2, pu.getCreator().getID());
+                } else {
+                    st.setInt(2, -1);
                 }
+                st.setString(3, pu.getType().toString());
+                st.setLong(4, pu.getExpiresAt());
+                st.setString(5, pu.getReason());
+
+                int affectedRows = st.executeUpdate();
+
+                if (affectedRows == 0) {
+                    throw new SQLException("Creating punishment failed, no rows affected.");
+                }
+
+                int id;
+
+                ResultSet generatedKeys = st.getGeneratedKeys();
+                if (!generatedKeys.next()) {
+                    id = generatedKeys.getInt(1);
+                } else {
+                    String sql = Config.MYSQL_USE.getBoolean() ? "MySQL" : "SQLite";
+                    throw new SQLException("Creating punishment failed, no ID obtained. SQL type: " + sql);
+                }
+
+                db.closeResultSet(generatedKeys);
+                db.closeStatement(st);
+
+                if (!Config.BUNGEECORD.getBoolean()) {
+                    Punishment newPunish = new Punishment(pu.getTarget(), pu.getCreator(), pu.getType(), pu.getExpiresAt(), id, pu.getReason());
+                    punishments.put(newPunish.getTarget(), newPunish);
+                }
+            } catch (SQLException ex) {
+                ACLogger.severe("Error creating Punishment", ex);
             }
         });
     }
@@ -130,17 +124,14 @@ public class PunishmentManager {
             punishments.remove(pu.getTarget());
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(Punishments.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    PreparedStatement ps = db.getPreparedStatement("DELETE FROM ac_punishments WHERE id = ?;");
-                    ps.setInt(1, pu.getID());
-                    ps.executeUpdate();
-                    db.closeStatement(ps);
-                } catch (SQLException ex) {
-                    ACLogger.severe(ex);
-                }
+        Bukkit.getScheduler().runTaskAsynchronously(Punishments.getInstance(), () -> {
+            try {
+                PreparedStatement ps = db.getPreparedStatement("DELETE FROM ac_punishments WHERE id = ?;");
+                ps.setInt(1, pu.getID());
+                ps.executeUpdate();
+                db.closeStatement(ps);
+            } catch (SQLException ex) {
+                ACLogger.severe(ex);
             }
         });
     }

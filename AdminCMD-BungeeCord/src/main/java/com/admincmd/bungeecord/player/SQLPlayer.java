@@ -28,6 +28,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
+@SuppressWarnings("CallToPrintStackTrace")
 public class SQLPlayer implements ACPlayer {
 
     private final int id;

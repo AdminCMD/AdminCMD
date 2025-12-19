@@ -23,6 +23,7 @@ import com.admincmd.bungeecord.utils.Config;
 
 import java.sql.SQLException;
 
+@SuppressWarnings("CallToPrintStackTrace")
 public class DatabaseFactory {
 
     public static final String PLAYER_TABLE = "ac_player";

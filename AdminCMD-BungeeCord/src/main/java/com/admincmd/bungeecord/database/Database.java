@@ -19,9 +19,11 @@
 package com.admincmd.bungeecord.database;
 
 import com.admincmd.bungeecord.Main;
+import org.intellij.lang.annotations.MagicConstant;
 
 import java.sql.*;
 
+@SuppressWarnings("CallToPrintStackTrace")
 public abstract class Database {
 
     private final Type type;
@@ -30,12 +32,11 @@ public abstract class Database {
     public Database(String driver, Type type) {
         this.type = type;
         try {
-            Class d = Class.forName(driver);
+            Class<?> d = Class.forName(driver);
             Object o = d.getDeclaredConstructor().newInstance();
-            if (!(o instanceof Driver)) {
+            if (!(o instanceof Driver dr)) {
                 Main.getInstance().getLogger().severe("Driver is not an instance of the Driver class!");
             } else {
-                Driver dr = (Driver) o;
                 DriverManager.registerDriver(dr);
             }
         } catch (Exception ex) {
@@ -148,12 +149,11 @@ public abstract class Database {
     /**
      * Creates a new PreparedStatement
      *
-     * @param query
-     * @param options
-     * @return
-     * @throws SQLException
+     * @param query   The SQL Query
+     * @param options Either Statement.RETURN_GENERATED_KEYS or Statement.NO_GENERATED_KEYS
+     * @return PreparedStatement
      */
-    public final PreparedStatement getPreparedStatement(String query, int options) throws SQLException {
+    public final PreparedStatement getPreparedStatement(String query, @MagicConstant(intValues = {Statement.RETURN_GENERATED_KEYS, Statement.NO_GENERATED_KEYS}) int options) throws SQLException {
         return getConnection().prepareStatement(query, options);
     }
 

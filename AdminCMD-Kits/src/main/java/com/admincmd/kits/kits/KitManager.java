@@ -48,18 +48,11 @@ public class KitManager {
             return;
         }
 
-        Bukkit.getScheduler().runTask(Kits.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                p.getPlayer().openInventory(kit.getInventory());
-            }
-        });
+        Bukkit.getScheduler().runTask(Kits.getInstance(), () -> p.getPlayer().openInventory(kit.getInventory()));
     }
 
     public static void startCreation(ACPlayer player) {
-        if (holders.containsKey(player.getID())) {
-            holders.remove(player.getID());
-        }
+        holders.remove(player.getID());
 
         holders.put(player.getID(), new CreationHolder());
         player.getPlayer().openInventory(holders.get(player.getID()).getInventory());
@@ -109,16 +102,12 @@ public class KitManager {
                 throw new SQLException("Creating Kit failed, no rows affected.");
             }
 
-            int id = -1;
 
             ResultSet generatedKeys = st.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                id = generatedKeys.getInt(1);
-            } else {
+            if (!generatedKeys.next()) {
                 String sql = Config.MYSQL_USE.getBoolean() ? "MySQL" : "SQLite";
                 throw new SQLException("Creating Kit failed, no ID obtained. SQL type: " + sql);
             }
-
             db.closeResultSet(generatedKeys);
             db.closeStatement(st);
 

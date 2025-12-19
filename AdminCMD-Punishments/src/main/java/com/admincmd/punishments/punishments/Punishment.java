@@ -22,6 +22,7 @@ import com.admincmd.player.ACPlayer;
 import com.admincmd.punishments.Config;
 import com.admincmd.punishments.Punishments;
 
+@SuppressWarnings("ClassCanBeRecord")
 public class Punishment {
 
     private final ACPlayer target, creator;
@@ -39,13 +40,7 @@ public class Punishment {
         this.reason = reason;
     }
 
-    /**
-     * Punish a player with standard time and standard reason
-     *
-     * @param target
-     * @param creator
-     * @param type
-     */
+
     public Punishment(ACPlayer target, ACPlayer creator, PunishmentType type) {
         this.target = target;
         this.creator = creator;
@@ -55,14 +50,7 @@ public class Punishment {
         this.reason = Config.STANDARD_REASON.getString();
     }
 
-    /**
-     * Punish a player with standard time and custom reason
-     *
-     * @param target
-     * @param creator
-     * @param type
-     * @param reason
-     */
+
     public Punishment(ACPlayer target, ACPlayer creator, PunishmentType type, String reason) {
         this.target = target;
         this.creator = creator;
@@ -72,15 +60,7 @@ public class Punishment {
         this.reason = reason;
     }
 
-    /**
-     * punish a player with custom time and standard reason Set time to -1 to
-     * punish forever
-     *
-     * @param target
-     * @param creator
-     * @param type
-     * @param minutes
-     */
+
     public Punishment(ACPlayer target, ACPlayer creator, PunishmentType type, int minutes) {
         this.target = target;
         this.creator = creator;
@@ -94,16 +74,7 @@ public class Punishment {
         this.reason = Config.STANDARD_REASON.getString();
     }
 
-    /**
-     * punish a player with custom time and custom reason Set time to -1 to
-     * punish forever
-     *
-     * @param target
-     * @param creator
-     * @param type
-     * @param minutes
-     * @param reason
-     */
+    
     public Punishment(ACPlayer target, ACPlayer creator, PunishmentType type, int minutes, String reason) {
         this.target = target;
         this.creator = creator;

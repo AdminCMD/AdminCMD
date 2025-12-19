@@ -43,9 +43,10 @@ public final class SQLChest implements ACChest {
 
     @Override
     public Inventory getInventory() {
-        Inventory inv = null;
+        Inventory inv;
         ItemStack[] items = ItemSerialization.loadInventory(getString());
-        inv = Bukkit.createInventory(null, 54, "§aVirtual Chest of: " + getOwner().getName());
+        ACPlayer owner = getOwner();
+        inv = Bukkit.createInventory(null, 54, "§aVirtual Chest of: " + (owner != null ? owner.getName() : "UNKNOWN"));
         for (ItemStack item : items) {
             if (item != null) {
                 inv.addItem(item);

@@ -20,14 +20,7 @@ package com.admincmd.bungeecord.maintenance;
 
 import net.md_5.bungee.api.chat.TextComponent;
 
-public class MotD {
-
-    private final String line1, line2;
-
-    public MotD(String line1, String line2) {
-        this.line1 = line1;
-        this.line2 = line2;
-    }
+public record MotD(String line1, String line2) {
 
     public TextComponent getMotd() {
         return new TextComponent((line1 + "\n" + line2).replaceAll("&((?i)[0-9a-fk-or])", "§$1"));

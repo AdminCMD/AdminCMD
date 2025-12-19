@@ -56,7 +56,7 @@ public class MaintenanceEvents implements Listener {
         boolean hasPerm = false;
 
         for (String s : ProxyServer.getInstance().getConfigurationAdapter().getGroups(event.getConnection().getName())) {
-            Collection perms = ProxyServer.getInstance().getConfigurationAdapter().getList("permissions." + s, null);
+            Collection<?> perms = ProxyServer.getInstance().getConfigurationAdapter().getList("permissions." + s, null);
             if (perms.contains("admincmd.maintenance.bypass") || perms.contains("*")) {
                 hasPerm = true;
                 break;

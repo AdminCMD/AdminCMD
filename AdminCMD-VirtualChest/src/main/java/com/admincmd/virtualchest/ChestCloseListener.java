@@ -36,7 +36,8 @@ public class ChestCloseListener implements Listener {
         String owningPlayerName = split[1];
         ACPlayer owner = PlayerManager.getPlayer(owningPlayerName);
         ACChest chest = ChestManager.getChest(owner);
-        chest.update(e.getInventory());
+        if (chest != null)
+            chest.update(e.getInventory());
     }
 
 }

@@ -12,13 +12,13 @@ Developer requirements
 * Maven
 * Git
 
-Developer Informations
+Developer Information
 ------------
 If you want to contribute, feel free to fork the project and create pull requests. Your help is really appreciated!
 Every developer of the AdminCMD team is able to create branches and merge it into master. Once the development of a
 feature has started, the developer creates a new branch named after the feature. Once a feature is finished, the branch
 becomes merged to the master branch to prevent commit conflicts.
-Everybody who is not from the developer team, can make pull requests to the main branch and we will review them and
+Everybody who is not from the developer team, can make pull requests to the main branch, and we will review them and
 maybe merge them.
 
 To clone:
@@ -27,7 +27,7 @@ To clone:
 git clone https://github.com/AdminCMD/AdminCMD.git
 ```
 
-To create a new branch, go to [Github](https://github.com/AdminCMD/AdminCMD), click on branch master and create a new
+To create a new branch, go to [GitHub](https://github.com/AdminCMD/AdminCMD), click on branch master and create a new
 branch.
 
 To switch to a branch

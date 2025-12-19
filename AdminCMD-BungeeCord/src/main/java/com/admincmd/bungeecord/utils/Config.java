@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+@SuppressWarnings("CallToPrintStackTrace")
 public enum Config {
 
     MYSQL_IP("MySQL.IP", "127.0.0.1"),
@@ -55,23 +56,25 @@ public enum Config {
     }
 
     public static void load() {
-        try {
-            Main.getInstance().getDataFolder().mkdirs();
-            if (!f.exists()) {
-                f.createNewFile();
-            }
-
-            cfg = ConfigurationProvider.getProvider(YamlConfiguration.class).load(f);
-
-            for (Config c : values()) {
-                if (!cfg.contains(c.getPath())) {
-                    c.set(c.getDefaultValue());
+        if (Main.getInstance().getDataFolder().mkdirs()) {
+            try {
+                if (!f.exists()) {
+                    if (!f.createNewFile()) {
+                        return;
+                    }
                 }
-            }
 
-            reload();
-        } catch (IOException ex) {
-            ex.printStackTrace();
+                cfg = ConfigurationProvider.getProvider(YamlConfiguration.class).load(f);
+
+                for (Config c : values()) {
+                    if (!cfg.contains(c.getPath())) {
+                        c.set(c.getDefaultValue());
+                    }
+                }
+                reload();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
