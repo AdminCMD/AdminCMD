@@ -44,7 +44,7 @@ public class RequestManager {
     public static boolean receiverHasRequest(ACPlayer receiver) {
         if (!Config.BUNGEECORD.getBoolean()) {
             for (ACTeleportRequest request : tpList.values()) {
-                if (request.getReceiver().getID() == receiver.getID()) {
+                if (request.receiver().getID() == receiver.getID()) {
                     return true;
                 }
             }
@@ -89,21 +89,16 @@ public class RequestManager {
         if (!Config.BUNGEECORD.getBoolean()) {
             tpList.put(requester.getID(), toAdd);
         } else {
-            Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        PreparedStatement s = db.getPreparedStatement("INSERT INTO " + DatabaseFactory.TP_REQUEST_TABLE + " (requester, receiver, type) VALUES (?, ?, ?);");
-                        s.setInt(1, requester.getID());
-                        s.setInt(2, receiver.getID());
-                        s.setString(3, type.toString());
-                        s.executeUpdate();
-                        db.closeStatement(s);
-                    } catch (SQLException ex) {
-                        ACLogger.severe(ex);
-                    }
-                }
-            });
+            try {
+                PreparedStatement s = db.getPreparedStatement("INSERT INTO " + DatabaseFactory.TP_REQUEST_TABLE + " (requester, receiver, type) VALUES (?, ?, ?);");
+                s.setInt(1, requester.getID());
+                s.setInt(2, receiver.getID());
+                s.setString(3, type.toString());
+                s.executeUpdate();
+                db.closeStatement(s);
+            } catch (SQLException ex) {
+                ACLogger.severe(ex);
+            }
         }
 
         Messager.sendMessage(requester, Locales.TELEPORT_TPA_SENT_REQUESTER.replacePlayer(receiver.getOfflinePlayer()), Messager.MessageType.INFO);
@@ -113,18 +108,13 @@ public class RequestManager {
             Messager.sendMessage(receiver, Locales.TELEPORT_TPA_SENT_TARGET.replacePlayer(requester.getOfflinePlayer()), Messager.MessageType.INFO);
         }
 
-        Bukkit.getScheduler().runTaskLaterAsynchronously(Main.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                denyAfterTime(toAdd);
-            }
-        }, 5 * 20 * 60);
+        Bukkit.getScheduler().runTaskLaterAsynchronously(Main.getInstance(), () -> denyAfterTime(toAdd), 5 * 20 * 60);
     }
 
     public static ACTeleportRequest getRequestFromReceiver(ACPlayer receiver) {
         if (!Config.BUNGEECORD.getBoolean()) {
             for (ACTeleportRequest request : tpList.values()) {
-                if (request.getReceiver().getID() == receiver.getID()) {
+                if (request.receiver().getID() == receiver.getID()) {
                     return request;
                 }
             }
@@ -175,88 +165,76 @@ public class RequestManager {
         ACTeleportRequest request = getRequestFromReceiver(receiver);
         if (!Config.BUNGEECORD.getBoolean()) {
             if (request != null) {
-                tpList.remove(request.getRequester().getID());
+                tpList.remove(request.requester().getID());
             }
         } else {
-            Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        PreparedStatement s = db.getPreparedStatement("DELETE FROM " + DatabaseFactory.TP_REQUEST_TABLE + " WHERE receiver = ?;");
-                        s.setInt(1, receiver.getID());
-                        s.executeUpdate();
-                        db.closeStatement(s);
-                    } catch (SQLException ex) {
-                        ACLogger.severe(ex);
-                    }
-                }
-            });
+            try {
+                PreparedStatement s = db.getPreparedStatement("DELETE FROM " + DatabaseFactory.TP_REQUEST_TABLE + " WHERE receiver = ?;");
+                s.setInt(1, receiver.getID());
+                s.executeUpdate();
+                db.closeStatement(s);
+            } catch (SQLException ex) {
+                ACLogger.severe(ex);
+            }
         }
-        Messager.sendMessage(receiver, Locales.TELEPORT_TPA_DENY_RECEIVER.replacePlayer(request.getRequester().getOfflinePlayer()), Messager.MessageType.INFO);
-        Messager.sendMessage(request.getRequester(), Locales.TELEPORT_TPA_DENY_REQUESTER.replacePlayer(receiver.getOfflinePlayer()), Messager.MessageType.INFO);
+
+        if (request != null) {
+            Messager.sendMessage(receiver, Locales.TELEPORT_TPA_DENY_RECEIVER.replacePlayer(request.requester().getOfflinePlayer()), Messager.MessageType.INFO);
+            Messager.sendMessage(request.requester(), Locales.TELEPORT_TPA_DENY_REQUESTER.replacePlayer(receiver.getOfflinePlayer()), Messager.MessageType.INFO);
+        }
     }
 
     public static void denyRequestFromCreator(final ACPlayer creator) {
         ACTeleportRequest request = getRequestFromCreator(creator);
         if (!Config.BUNGEECORD.getBoolean()) {
-            if (tpList.containsKey(creator.getID())) {
-                tpList.remove(creator.getID());
-            }
+            tpList.remove(creator.getID());
         } else {
-            Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        PreparedStatement s = db.getPreparedStatement("DELETE FROM " + DatabaseFactory.TP_REQUEST_TABLE + " WHERE requester = ?;");
-                        s.setInt(1, creator.getID());
-                        s.executeUpdate();
-                        db.closeStatement(s);
-                    } catch (SQLException ex) {
-                        ACLogger.severe(ex);
-                    }
-                }
-            });
+            try {
+                PreparedStatement s = db.getPreparedStatement("DELETE FROM " + DatabaseFactory.TP_REQUEST_TABLE + " WHERE requester = ?;");
+                s.setInt(1, creator.getID());
+                s.executeUpdate();
+                db.closeStatement(s);
+            } catch (SQLException ex) {
+                ACLogger.severe(ex);
+            }
         }
-        Messager.sendMessage(request.getReceiver(), Locales.TELEPORT_TPA_DENY_RECEIVER.replacePlayer(creator.getOfflinePlayer()), Messager.MessageType.INFO);
-        Messager.sendMessage(creator, Locales.TELEPORT_TPA_DENY_REQUESTER.replacePlayer(request.getReceiver().getOfflinePlayer()), Messager.MessageType.INFO);
+        if (request != null) {
+            Messager.sendMessage(request.receiver(), Locales.TELEPORT_TPA_DENY_RECEIVER.replacePlayer(creator.getOfflinePlayer()), Messager.MessageType.INFO);
+            Messager.sendMessage(creator, Locales.TELEPORT_TPA_DENY_REQUESTER.replacePlayer(request.receiver().getOfflinePlayer()), Messager.MessageType.INFO);
+        }
     }
 
     public static void acceptRequest(final ACPlayer receiver) {
         final ACTeleportRequest request = getRequestFromReceiver(receiver);
         if (request != null) {
-            if (!request.getRequester().isOnline()) {
+            if (!request.requester().isOnline()) {
                 Messager.sendMessage(receiver, Locales.COMMAND_MESSAGES_NOT_ONLINE, Messager.MessageType.ERROR);
                 denyRequestFromReceiver(receiver);
                 return;
             }
 
-            if (request.getType() == RequestType.TPHERE) {
-                Messager.sendMessage(receiver, Locales.TELEPORT_TPA_ACCEPT_REQUEST.replacePlayer(request.getRequester().getOfflinePlayer()), Messager.MessageType.INFO);
-                Messager.sendMessage(request.getRequester(), Locales.TELEPORT_TPA_ACCEPT_TARGET.replacePlayer(request.getReceiver().getOfflinePlayer()), Messager.MessageType.INFO);
-                PlayerManager.teleport(request.getRequester(), receiver);
+            if (request.type() == RequestType.TPHERE) {
+                Messager.sendMessage(receiver, Locales.TELEPORT_TPA_ACCEPT_REQUEST.replacePlayer(request.requester().getOfflinePlayer()), Messager.MessageType.INFO);
+                Messager.sendMessage(request.requester(), Locales.TELEPORT_TPA_ACCEPT_TARGET.replacePlayer(request.receiver().getOfflinePlayer()), Messager.MessageType.INFO);
+                PlayerManager.teleport(request.requester(), receiver);
             } else {
-                Messager.sendMessage(request.getRequester(), Locales.TELEPORT_TPA_ACCEPT_REQUEST.replacePlayer(request.getReceiver().getOfflinePlayer()), Messager.MessageType.INFO);
-                Messager.sendMessage(receiver, Locales.TELEPORT_TPA_ACCEPT_TARGET.replacePlayer(request.getRequester().getOfflinePlayer()), Messager.MessageType.INFO);
-                PlayerManager.teleport(receiver, request.getRequester());
+                Messager.sendMessage(request.requester(), Locales.TELEPORT_TPA_ACCEPT_REQUEST.replacePlayer(request.receiver().getOfflinePlayer()), Messager.MessageType.INFO);
+                Messager.sendMessage(receiver, Locales.TELEPORT_TPA_ACCEPT_TARGET.replacePlayer(request.requester().getOfflinePlayer()), Messager.MessageType.INFO);
+                PlayerManager.teleport(receiver, request.requester());
             }
 
             if (!Config.BUNGEECORD.getBoolean()) {
-                tpList.remove(request.getRequester().getID());
+                tpList.remove(request.requester().getID());
             } else {
-                Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            PreparedStatement s = db.getPreparedStatement("DELETE FROM " + DatabaseFactory.TP_REQUEST_TABLE + " WHERE requester = ? AND receiver = ?;");
-                            s.setInt(1, request.getRequester().getID());
-                            s.setInt(2, request.getReceiver().getID());
-                            s.executeUpdate();
-                            db.closeStatement(s);
-                        } catch (SQLException ex) {
-                            ACLogger.severe(ex);
-                        }
-                    }
-                });
+                try {
+                    PreparedStatement s = db.getPreparedStatement("DELETE FROM " + DatabaseFactory.TP_REQUEST_TABLE + " WHERE requester = ? AND receiver = ?;");
+                    s.setInt(1, request.requester().getID());
+                    s.setInt(2, request.receiver().getID());
+                    s.executeUpdate();
+                    db.closeStatement(s);
+                } catch (SQLException ex) {
+                    ACLogger.severe(ex);
+                }
             }
         }
     }
@@ -267,26 +245,21 @@ public class RequestManager {
         }
 
         if (!Config.BUNGEECORD.getBoolean()) {
-            tpList.remove(request.getRequester().getID());
+            tpList.remove(request.requester().getID());
         } else {
-            Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        PreparedStatement s = db.getPreparedStatement("DELETE FROM " + DatabaseFactory.TP_REQUEST_TABLE + " WHERE requester = ? AND receiver = ?;");
-                        s.setInt(1, request.getRequester().getID());
-                        s.setInt(2, request.getReceiver().getID());
-                        s.executeUpdate();
-                        db.closeStatement(s);
-                    } catch (SQLException ex) {
-                        ACLogger.severe(ex);
-                    }
-                }
-            });
+            try {
+                PreparedStatement s = db.getPreparedStatement("DELETE FROM " + DatabaseFactory.TP_REQUEST_TABLE + " WHERE requester = ? AND receiver = ?;");
+                s.setInt(1, request.requester().getID());
+                s.setInt(2, request.receiver().getID());
+                s.executeUpdate();
+                db.closeStatement(s);
+            } catch (SQLException ex) {
+                ACLogger.severe(ex);
+            }
         }
 
-        Messager.sendMessage(request.getReceiver(), Locales.TELEPORT_TPA_TIMEOUT_TARGET.replacePlayer(request.getRequester().getOfflinePlayer()), Messager.MessageType.INFO);
-        Messager.sendMessage(request.getRequester(), Locales.TELEPORT_TPA_TIMEOUT_REQUEST.replacePlayer(request.getReceiver().getOfflinePlayer()), Messager.MessageType.INFO);
+        Messager.sendMessage(request.receiver(), Locales.TELEPORT_TPA_TIMEOUT_TARGET.replacePlayer(request.requester().getOfflinePlayer()), Messager.MessageType.INFO);
+        Messager.sendMessage(request.requester(), Locales.TELEPORT_TPA_TIMEOUT_REQUEST.replacePlayer(request.receiver().getOfflinePlayer()), Messager.MessageType.INFO);
     }
 
 }

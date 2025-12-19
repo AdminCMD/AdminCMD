@@ -116,9 +116,9 @@ public class WorldManager {
         List<String> names = new ArrayList<>();
         for (ACWorld world : getWorlds()) {
             if (Config.BUNGEECORD.getBoolean()) {
-                names.add(world.getServer() + ":" + world.getName());
+                names.add(world.server() + ":" + world.name());
             } else {
-                names.add(world.getName());
+                names.add(world.name());
             }
         }
         return names;
@@ -126,7 +126,7 @@ public class WorldManager {
 
     public static ACWorld getWorld(String name, String server) {
         for (ACWorld w : getWorlds()) {
-            if (w.getServer().equalsIgnoreCase(server) && w.getName().equalsIgnoreCase(name)) {
+            if (w.server().equalsIgnoreCase(server) && w.name().equalsIgnoreCase(name)) {
                 return w;
             }
         }
@@ -135,8 +135,8 @@ public class WorldManager {
 
     public static ACWorld getWorld(World w) {
         for (ACWorld world : getWorlds()) {
-            if (world.getServer().equalsIgnoreCase(BungeeCordMessageManager.getServerName())) {
-                if (world.getName().equalsIgnoreCase(w.getName())) {
+            if (world.server().equalsIgnoreCase(BungeeCordMessageManager.getServerName())) {
+                if (world.name().equalsIgnoreCase(w.getName())) {
                     return world;
                 }
             }
@@ -147,13 +147,13 @@ public class WorldManager {
     public static void createWorld(final ACWorld w) {
         try {
             PreparedStatement s = conn.getPreparedStatement("INSERT INTO ac_worlds (name, paused, time, servername) VALUES (?, ?, ?, ?);");
-            s.setString(1, w.getName());
+            s.setString(1, w.name());
             s.setBoolean(2, w.isPaused());
             s.setLong(3, w.getPausedTime());
-            s.setString(4, w.getServer());
+            s.setString(4, w.server());
             s.executeUpdate();
             conn.closeStatement(s);
-            ACLogger.info("World " + w.getName() + " was put into the database.");
+            ACLogger.info("World " + w.name() + " was put into the database.");
 
             if (!Config.BUNGEECORD.getBoolean()) {
                 worlds.add(w);
@@ -167,8 +167,7 @@ public class WorldManager {
         if (!Config.BUNGEECORD.getBoolean()) {
             int saved = 0;
             for (ACWorld w : worlds) {
-                if (w instanceof StoredWorld) {
-                    StoredWorld sw = (StoredWorld) w;
+                if (w instanceof StoredWorld sw) {
                     if (!sw.hasChanged()) {
                         continue;
                     }
@@ -176,8 +175,8 @@ public class WorldManager {
                         PreparedStatement st = conn.getPreparedStatement("UPDATE " + DatabaseFactory.WORLD_TABLE + " SET paused = ?, time = ? WHERE name = ? AND servername = ?;");
                         st.setBoolean(1, w.isPaused());
                         st.setLong(2, w.getPausedTime());
-                        st.setString(3, w.getName());
-                        st.setString(4, w.getServer());
+                        st.setString(3, w.name());
+                        st.setString(4, w.server());
                         st.executeUpdate();
                         conn.closeStatement(st);
                         saved++;
@@ -197,32 +196,32 @@ public class WorldManager {
 
     public static void setTime(final ACWorld world, final long time) {
         if (world.isOnThisServer()) {
-            World bukkitworld = Bukkit.getWorld(world.getName());
-            bukkitworld.setTime(time);
+            World bukkitworld = Bukkit.getWorld(world.name());
+            if (bukkitworld != null) bukkitworld.setTime(time);
         } else {
-            BungeeCordMessageManager.getInstance().sendMessage(null, Channel.WORLD_TIME_SET, MessageCommand.FORWARD, world.getServer() + ":" + world.getName() + ":" + time);
+            BungeeCordMessageManager.getInstance().sendMessage(null, Channel.WORLD_TIME_SET, MessageCommand.FORWARD, world.server() + ":" + world.name() + ":" + time);
         }
     }
 
     public static void pauseTime(ACWorld world, boolean pause) {
         world.setPaused(pause);
         if (world.isOnThisServer()) {
-            World bukkitWorld = Bukkit.getWorld(world.getName());
-            world.setPausedTime(bukkitWorld.getTime());
+            World bukkitWorld = Bukkit.getWorld(world.name());
+            if (bukkitWorld != null) world.setPausedTime(bukkitWorld.getTime());
             if (pause) {
                 Bukkit.getScheduler().runTaskTimer(Main.getInstance(), new ResetTime(world), 20 * 3, 20 * 3);
             }
         } else {
-            BungeeCordMessageManager.getInstance().sendMessage(null, Channel.WORLD_TIME_PAUSE, MessageCommand.FORWARD, world.getServer() + ":" + world.getName() + ":" + pause);
+            BungeeCordMessageManager.getInstance().sendMessage(null, Channel.WORLD_TIME_PAUSE, MessageCommand.FORWARD, world.server() + ":" + world.name() + ":" + pause);
         }
     }
 
     public static void setSun(final ACWorld world) {
         if (world.isOnThisServer()) {
-            World bukkitWorld = Bukkit.getWorld(world.getName());
-            bukkitWorld.setStorm(false);
+            World bukkitWorld = Bukkit.getWorld(world.name());
+            if (bukkitWorld != null) bukkitWorld.setStorm(false);
         } else {
-            BungeeCordMessageManager.getInstance().sendMessage(null, Channel.WORLD_WEATHER_SET, MessageCommand.FORWARD, world.getServer() + ":" + world.getName());
+            BungeeCordMessageManager.getInstance().sendMessage(null, Channel.WORLD_WEATHER_SET, MessageCommand.FORWARD, world.server() + ":" + world.name());
         }
     }
 }

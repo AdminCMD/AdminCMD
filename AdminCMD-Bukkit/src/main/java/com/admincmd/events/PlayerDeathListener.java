@@ -36,11 +36,10 @@ public class PlayerDeathListener extends BukkitListener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onRespawn(final PlayerRespawnEvent e) {
-        Bukkit.getScheduler().runTaskLaterAsynchronously(Main.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                final ACPlayer acp = PlayerManager.getPlayer(e.getPlayer());
-                MultiServerLocation s = SpawnManager.getSpawn(acp);
+        Bukkit.getScheduler().runTaskLaterAsynchronously(Main.getInstance(), () -> {
+            final ACPlayer acp = PlayerManager.getPlayer(e.getPlayer());
+            MultiServerLocation s = SpawnManager.getSpawn(acp);
+            if (s != null) {
                 PlayerManager.teleport(s, acp);
             }
         }, 10);
@@ -50,24 +49,14 @@ public class PlayerDeathListener extends BukkitListener {
     public void onDeath(final PlayerDeathEvent e) {
         ACPlayer p = PlayerManager.getPlayer(e.getEntity());
         MultiServerLocation loc = MultiServerLocation.fromLocation(e.getEntity().getLocation());
-
-        Main.getInstance().getServer().getScheduler().runTaskLaterAsynchronously(Main.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                ACLogger.debug("Player death location set.");
-                p.setLastLoc(loc);
-            }
+        Main.getInstance().getServer().getScheduler().runTaskLaterAsynchronously(Main.getInstance(), () -> {
+            ACLogger.debug("Player death location set.");
+            p.setLastLoc(loc);
         }, 20);
 
         if (Config.DIRECT_RESPAWN.getBoolean()) {
-            Main.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {
-                @Override
-                public void run() {
-                    e.getEntity().spigot().respawn();
-                }
-            });
+            Main.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(Main.getInstance(), () -> e.getEntity().spigot().respawn());
         }
-
     }
 
 }

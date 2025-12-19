@@ -28,6 +28,7 @@ import com.google.common.io.ByteStreams;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -68,90 +69,88 @@ public class BungeeCordMessageManager implements PluginMessageListener {
             return;
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                switch (cmd) {
-                    case SWITCH_SERVER: {
-                        ServerMessageHandler.sendSwitchServer(p, args, cmd);
-                        return;
-                    }
-                    case MESSAGE: {
-                        ServerMessageHandler.sendMessage(p, args, cmd);
-                        return;
-                    }
-                    case KICK: {
-                        ServerMessageHandler.sendKickPlayer(p, args, cmd);
-                        return;
-                    }
-                    case FORWARD: {
-                        switch (channel) {
-                            case TELEPORT: {
-                                PlayerMessageHandler.sendTeleport(p, args, channel);
-                                return;
-                            }
-                            case TELEPORT_PLAYER_TO_PLAYER: {
-                                ACPlayer to = PlayerManager.getPlayer(Integer.valueOf(args));
+        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
+            switch (cmd) {
+                case SWITCH_SERVER: {
+                    ServerMessageHandler.sendSwitchServer(p, args, cmd);
+                    return;
+                }
+                case MESSAGE: {
+                    ServerMessageHandler.sendMessage(p, args, cmd);
+                    return;
+                }
+                case KICK: {
+                    ServerMessageHandler.sendKickPlayer(p, args, cmd);
+                    return;
+                }
+                case FORWARD: {
+                    switch (channel) {
+                        case TELEPORT: {
+                            PlayerMessageHandler.sendTeleport(p, args, channel);
+                            return;
+                        }
+                        case TELEPORT_PLAYER_TO_PLAYER: {
+                            ACPlayer to = PlayerManager.getPlayer(Integer.parseInt(args));
+                            if (to != null) {
                                 PlayerMessageHandler.sendTeleportToPlayer(p, to, channel);
                                 return;
                             }
-                            case WORLD_TIME_SET: {
-                                WorldMessageHandler.setTime(args, channel);
-                                return;
-                            }
-                            case WORLD_TIME_PAUSE: {
-                                WorldMessageHandler.setTimePause(args, channel);
-                                return;
-                            }
-                            case WORLD_WEATHER_SET: {
-                                WorldMessageHandler.setWeatherSun(args, channel);
-                                return;
-                            }
-                            case KILL_MOBS: {
-                                WorldMessageHandler.setKillMobs(args, channel);
-                                return;
-                            }
-                            case CLEAR_INVENTORY: {
-                                PlayerMessageHandler.sendClearInventory(p, channel);
-                                return;
-                            }
-                            case FEED_PLAYER: {
-                                PlayerMessageHandler.sendPlayerFeed(p, channel);
-                                return;
-                            }
-                            case FLY_PLAYER: {
-                                PlayerMessageHandler.sendPlayerFly(p, channel, args);
-                                return;
-                            }
-                            case HEAL_PLAYER:
-                                PlayerMessageHandler.sendPlayerHeal(p, channel);
-                                return;
-                            case KILL_PLAYER:
-                                PlayerMessageHandler.sendPlayerKill(p, channel);
-                                return;
-                            case VANISH_PLAYER:
-                                PlayerMessageHandler.sendPlayerVanish(p, channel);
-                                return;
-                            case GAMEMODE_PLAYER:
-                                PlayerMessageHandler.sendPlayerGamemode(p, channel, args);
-                                return;
-                            default:
-                                ACLogger.warn("Tried to send a message, but no method was made yet for channel " + channel);
-                                return;
                         }
-
+                        case WORLD_TIME_SET: {
+                            WorldMessageHandler.setTime(args, channel);
+                            return;
+                        }
+                        case WORLD_TIME_PAUSE: {
+                            WorldMessageHandler.setTimePause(args, channel);
+                            return;
+                        }
+                        case WORLD_WEATHER_SET: {
+                            WorldMessageHandler.setWeatherSun(args, channel);
+                            return;
+                        }
+                        case KILL_MOBS: {
+                            WorldMessageHandler.setKillMobs(args, channel);
+                            return;
+                        }
+                        case CLEAR_INVENTORY: {
+                            PlayerMessageHandler.sendClearInventory(p, channel);
+                            return;
+                        }
+                        case FEED_PLAYER: {
+                            PlayerMessageHandler.sendPlayerFeed(p, channel);
+                            return;
+                        }
+                        case FLY_PLAYER: {
+                            PlayerMessageHandler.sendPlayerFly(p, channel, args);
+                            return;
+                        }
+                        case HEAL_PLAYER:
+                            PlayerMessageHandler.sendPlayerHeal(p, channel);
+                            return;
+                        case KILL_PLAYER:
+                            PlayerMessageHandler.sendPlayerKill(p, channel);
+                            return;
+                        case VANISH_PLAYER:
+                            PlayerMessageHandler.sendPlayerVanish(p, channel);
+                            return;
+                        case GAMEMODE_PLAYER:
+                            PlayerMessageHandler.sendPlayerGamemode(p, channel, args);
+                            return;
+                        default:
+                            ACLogger.warn("Tried to send a message, but no method was made yet for channel " + channel);
+                            return;
                     }
-                    default:
-                        ACLogger.warn("Tried to send a message, but no method was made yet for command " + cmd);
-                        return;
+
                 }
+                default:
+                    ACLogger.warn("Tried to send a message, but no method was made yet for command " + cmd);
             }
         });
 
     }
 
     @Override
-    public void onPluginMessageReceived(String channel, Player player, final byte[] message) {
+    public void onPluginMessageReceived(String channel, @NotNull Player player, final byte[] message) {
         if (!channel.equals("BungeeCord")) {
             return;
         }
@@ -160,62 +159,59 @@ public class BungeeCordMessageManager implements PluginMessageListener {
             return;
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                ByteArrayDataInput in = ByteStreams.newDataInput(message);
-                String subChannel = in.readUTF();
+        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
+            ByteArrayDataInput in = ByteStreams.newDataInput(message);
+            String subChannel = in.readUTF();
 
-                ACLogger.debug(subChannel);
+            ACLogger.debug(subChannel);
 
-                if (subChannel.startsWith("AdminCMD")) {
-                    short len = in.readShort();
-                    byte[] msgbytes = new byte[len];
-                    in.readFully(msgbytes);
+            if (subChannel.startsWith("AdminCMD")) {
+                short len = in.readShort();
+                byte[] msgbytes = new byte[len];
+                in.readFully(msgbytes);
 
-                    DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
-                    String msg;
+                DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
+                String msg;
 
-                    try {
-                        msg = msgin.readUTF();
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                        msg = null;
-                    }
+                try {
+                    msg = msgin.readUTF();
+                } catch (IOException ex) {
+                    ACLogger.severe(ex);
+                    msg = null;
+                }
 
-                    if (msg == null) {
-                        return;
-                    }
+                if (msg == null) {
+                    return;
+                }
 
-                    if (subChannel.equals(Channel.TELEPORT.getCompleteChannelName())) {
-                        PlayerMessageHandler.reactTeleport(msg);
-                    } else if (subChannel.equals(Channel.TELEPORT_PLAYER_TO_PLAYER.getCompleteChannelName())) {
-                        PlayerMessageHandler.reactTeleportToPlayer(msg);
-                    } else if (subChannel.equals(Channel.WORLD_TIME_SET.getCompleteChannelName())) {
-                        WorldMessageHandler.reactTimeSet(msg);
-                    } else if (subChannel.equals(Channel.WORLD_TIME_PAUSE.getCompleteChannelName())) {
-                        WorldMessageHandler.reactTimePause(msg);
-                    } else if (subChannel.equals(Channel.WORLD_WEATHER_SET.getCompleteChannelName())) {
-                        WorldMessageHandler.reactWeatherSet(msg);
-                    } else if (subChannel.equals(Channel.KILL_MOBS.getCompleteChannelName())) {
-                        WorldMessageHandler.reactKillMobs(msg);
-                    } else if (subChannel.equals(Channel.CLEAR_INVENTORY.getCompleteChannelName())) {
-                        PlayerMessageHandler.reactClearInventory(msg);
-                    } else if (subChannel.equals(Channel.FEED_PLAYER.getCompleteChannelName())) {
-                        PlayerMessageHandler.reactPlayerFeed(msg);
-                    } else if (subChannel.equals(Channel.FLY_PLAYER.getCompleteChannelName())) {
-                        PlayerMessageHandler.reactPlayerFly(msg);
-                    } else if (subChannel.equals(Channel.HEAL_PLAYER.getCompleteChannelName())) {
-                        PlayerMessageHandler.reactPlayerHeal(msg);
-                    } else if (subChannel.equals(Channel.KILL_PLAYER.getCompleteChannelName())) {
-                        PlayerMessageHandler.reactPlayerKill(msg);
-                    } else if (subChannel.equals(Channel.VANISH_PLAYER.getCompleteChannelName())) {
-                        PlayerMessageHandler.reactPlayerVanish(msg);
-                    } else if (subChannel.equals(Channel.GAMEMODE_PLAYER.getCompleteChannelName())) {
-                        PlayerMessageHandler.reactPlayerGamemode(msg);
-                    } else {
-                        ACLogger.warn("Unknown message channel: " + subChannel);
-                    }
+                if (subChannel.equals(Channel.TELEPORT.getCompleteChannelName())) {
+                    PlayerMessageHandler.reactTeleport(msg);
+                } else if (subChannel.equals(Channel.TELEPORT_PLAYER_TO_PLAYER.getCompleteChannelName())) {
+                    PlayerMessageHandler.reactTeleportToPlayer(msg);
+                } else if (subChannel.equals(Channel.WORLD_TIME_SET.getCompleteChannelName())) {
+                    WorldMessageHandler.reactTimeSet(msg);
+                } else if (subChannel.equals(Channel.WORLD_TIME_PAUSE.getCompleteChannelName())) {
+                    WorldMessageHandler.reactTimePause(msg);
+                } else if (subChannel.equals(Channel.WORLD_WEATHER_SET.getCompleteChannelName())) {
+                    WorldMessageHandler.reactWeatherSet(msg);
+                } else if (subChannel.equals(Channel.KILL_MOBS.getCompleteChannelName())) {
+                    WorldMessageHandler.reactKillMobs(msg);
+                } else if (subChannel.equals(Channel.CLEAR_INVENTORY.getCompleteChannelName())) {
+                    PlayerMessageHandler.reactClearInventory(msg);
+                } else if (subChannel.equals(Channel.FEED_PLAYER.getCompleteChannelName())) {
+                    PlayerMessageHandler.reactPlayerFeed(msg);
+                } else if (subChannel.equals(Channel.FLY_PLAYER.getCompleteChannelName())) {
+                    PlayerMessageHandler.reactPlayerFly(msg);
+                } else if (subChannel.equals(Channel.HEAL_PLAYER.getCompleteChannelName())) {
+                    PlayerMessageHandler.reactPlayerHeal(msg);
+                } else if (subChannel.equals(Channel.KILL_PLAYER.getCompleteChannelName())) {
+                    PlayerMessageHandler.reactPlayerKill(msg);
+                } else if (subChannel.equals(Channel.VANISH_PLAYER.getCompleteChannelName())) {
+                    PlayerMessageHandler.reactPlayerVanish(msg);
+                } else if (subChannel.equals(Channel.GAMEMODE_PLAYER.getCompleteChannelName())) {
+                    PlayerMessageHandler.reactPlayerGamemode(msg);
+                } else {
+                    ACLogger.warn("Unknown message channel: " + subChannel);
                 }
             }
         });

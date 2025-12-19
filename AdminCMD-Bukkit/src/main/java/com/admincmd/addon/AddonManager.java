@@ -38,31 +38,30 @@ public class AddonManager {
     public static void loadAddons() {
         ACLogger.info("Loading addons...");
         File folder = new File(Main.getInstance().getDataFolder(), "addons");
-        folder.mkdirs();
-        if (folder.listFiles().length == 0) {
-            ACLogger.info("No Addons installed.");
-            return;
-        }
 
-        for (File f : folder.listFiles()) {
-            if (!f.getName().toLowerCase().endsWith(".jar") || !f.isFile()) {
-                continue;
+        if (folder.mkdirs()) {
+            File[] subFiles = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".jar"));
+
+            if (subFiles == null || subFiles.length == 0) {
+                ACLogger.info("No Addons installed.");
+                return;
             }
 
-            ACLogger.info("Loading addon " + f.getName());
-            try {
-                Plugin p = manager.loadPlugin(f);
-                if (!(p instanceof Addon)) {
-                    ACLogger.severe("Jar File is not an official AdminCMD Addon.");
-                    continue;
-                }
+            for (File f : subFiles) {
+                ACLogger.info("Loading addon " + f.getName());
+                try {
+                    Plugin p = manager.loadPlugin(f);
+                    if (!(p instanceof Addon a)) {
+                        ACLogger.severe("Jar File is not an official AdminCMD Addon.");
+                        continue;
+                    }
 
-                Addon a = (Addon) p;
-                manager.enablePlugin(a);
-                ACLogger.info("Loaded Addon " + a.getName());
-                addons.put(a.getName(), a);
-            } catch (Exception ex) {
-                ACLogger.severe("Jar File could not be loaded!", ex);
+                    manager.enablePlugin(a);
+                    ACLogger.info("Loaded Addon " + a.getName());
+                    addons.put(a.getName(), a);
+                } catch (Exception ex) {
+                    ACLogger.severe("Jar File could not be loaded!", ex);
+                }
             }
         }
     }

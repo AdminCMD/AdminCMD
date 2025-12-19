@@ -40,7 +40,7 @@ public class WhoisCommand {
             ACPlayer s = PlayerManager.getPlayer(sender);
             List<String> text = new ArrayList<>();
             text.add("&a---------- " + Utils.replacePlayerPlaceholders(sender) + " &a----------");
-            text.add("&7Database ID: " + s.getID() + "");
+            text.add("&7Database ID: " + s.getID());
             String flying = s.isFly() ? ("&a" + Locales.COMMAND_MESSAGES_ENABLED.getString()) : ("&c" + Locales.COMMAND_MESSAGES_DISABLED.getString());
             String god = s.isGod() ? ("&a" + Locales.COMMAND_MESSAGES_ENABLED.getString()) : ("&c" + Locales.COMMAND_MESSAGES_DISABLED.getString());
             String invisible = s.isInvisible() ? ("&a" + Locales.COMMAND_MESSAGES_ENABLED.getString()) : ("&c" + Locales.COMMAND_MESSAGES_DISABLED.getString());
@@ -91,7 +91,7 @@ public class WhoisCommand {
         ACPlayer s = f.getPlayer();
         List<String> text = new ArrayList<>();
         text.add("&a---------- " + Utils.replacePlayerPlaceholders(s.getOfflinePlayer()) + " &a----------");
-        text.add("&7Database ID: " + s.getID() + "");
+        text.add("&7Database ID: " + s.getID());
         String flying = s.isFly() ? ("&a" + Locales.COMMAND_MESSAGES_ENABLED.getString()) : ("&c" + Locales.COMMAND_MESSAGES_DISABLED.getString());
         String god = s.isGod() ? ("&a" + Locales.COMMAND_MESSAGES_ENABLED.getString()) : ("&c" + Locales.COMMAND_MESSAGES_DISABLED.getString());
         String invisible = s.isInvisible() ? ("&a" + Locales.COMMAND_MESSAGES_ENABLED.getString()) : ("&c" + Locales.COMMAND_MESSAGES_DISABLED.getString());

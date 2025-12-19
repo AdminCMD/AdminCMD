@@ -35,6 +35,7 @@ import org.bukkit.entity.minecart.CommandMinecart;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -75,7 +76,6 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         BukkitCommand cmd = new BukkitCommand(name, aliases);
         cmap.register(plugin.getName().toLowerCase(), cmd);
         cmd.setExecutor(this);
-
     }
 
     private BaseCommand getCommand(Command c, CommandArgs args, Sender sender) {
@@ -109,26 +109,20 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         BaseCommand bcmd = getCommand(c, args, sender);
         if (bcmd == null) {
             for (BaseCommand bc : cmds.keySet()) {
-                if (bc.sender() == Sender.ALL) {
-                    if (bc.command().equalsIgnoreCase(c.getName()) && bc.subCommand().trim().isEmpty()) {
-                        bcmd = bc;
-                        sender = Sender.ALL;
-                        break;
-                    }
-                } else {
-                    if (bc.sender() != sender) {
-                        continue;
-                    }
-                    if (bc.command().equalsIgnoreCase(c.getName()) && bc.subCommand().trim().isEmpty()) {
-                        bcmd = bc;
-                        break;
-                    }
+                if (bc.command().equalsIgnoreCase(c.getName()) && bc.subCommand().trim().isEmpty()) {
+                    bcmd = bc;
+                    break;
                 }
             }
         }
-        MethodContainer container = cmds.get(bcmd);
-        Method me = container.getMethod(bcmd.sender());
-        return me.getDeclaringClass().getDeclaredConstructor().newInstance();
+
+        if (bcmd != null) {
+            MethodContainer container = cmds.get(bcmd);
+            Method me = container.getMethod(bcmd.sender());
+            return me.getDeclaringClass().getDeclaredConstructor().newInstance();
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -160,7 +154,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                 registerCommand(bc.command(), aliases);
 
                 if (!list.containsKey(bc)) {
-                    list.put(bc, new HashMap<Sender, Method>());
+                    list.put(bc, new HashMap<>());
                 }
 
                 HashMap<Sender, Method> map = list.get(bc);
@@ -213,6 +207,31 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         }
     }
 
+    private void runCommand(BaseCommand bc, Method m, Sender sender, CommandSender s, Command c, CommandArgs a) {
+        CommandResult cr;
+        try {
+            if (bc.permission() != null && !bc.permission().trim().isEmpty()) {
+                if (!s.hasPermission(bc.permission())) {
+                    cr = CommandResult.NO_PERMISSION;
+                } else {
+                    cr = (CommandResult) m.invoke(getCommandObject(c, sender, a), s, a);
+
+                }
+            } else {
+                cr = (CommandResult) m.invoke(getCommandObject(c, sender, a), s, a);
+            }
+
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "", e);
+            cr = CommandResult.SUCCESS;
+        }
+
+        if (cr != null && cr.getMessage() != null) {
+            String perm = bc.permission() != null ? bc.permission() : "";
+            s.sendMessage(cr.getMessage().replace("%cmd%", bc.command()).replace("%perm%", perm));
+        }
+    }
+
     private void executeCommand(Command c, CommandSender s, String[] args) {
         CommandArgs a = new CommandArgs(args);
         Sender sender;
@@ -249,58 +268,16 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                 }
             }
 
+            Method finalM = m;
+            CommandArgs finalA = a;
 
             if (!bc.async()) {
-                CommandResult cr;
-                try {
-                    if (bc.permission() != null && !bc.permission().trim().isEmpty()) {
-                        if (!s.hasPermission(bc.permission())) {
-                            cr = CommandResult.NO_PERMISSION;
-                        } else {
-                            cr = (CommandResult) m.invoke(getCommandObject(c, sender, a), s, a);
-
-                        }
-                    } else {
-                        cr = (CommandResult) m.invoke(getCommandObject(c, sender, a), s, a);
-                    }
-
-                } catch (Exception e) {
-                    logger.log(Level.SEVERE, "", e);
-                    cr = CommandResult.SUCCESS;
-                }
-
-                if (cr != null && cr.getMessage() != null) {
-                    String perm = bc.permission() != null ? bc.permission() : "";
-                    s.sendMessage(cr.getMessage().replace("%cmd%", bc.command()).replace("%perm%", perm));
-                }
+                runCommand(bc, finalM, sender, s, c, finalA);
             } else {
-                Method finalM = m;
-                CommandArgs finalA = a;
                 new BukkitRunnable() {
                     @Override
                     public void run() {
-                        CommandResult cr;
-                        try {
-                            if (bc.permission() != null && !bc.permission().trim().isEmpty()) {
-                                if (!s.hasPermission(bc.permission())) {
-                                    cr = CommandResult.NO_PERMISSION;
-                                } else {
-                                    cr = (CommandResult) finalM.invoke(getCommandObject(c, sender, finalA), s, finalA);
-
-                                }
-                            } else {
-                                cr = (CommandResult) finalM.invoke(getCommandObject(c, sender, finalA), s, finalA);
-                            }
-
-                        } catch (Exception e) {
-                            logger.log(Level.SEVERE, "", e);
-                            cr = CommandResult.SUCCESS;
-                        }
-
-                        if (cr != null && cr.getMessage() != null) {
-                            String perm = bc.permission() != null ? bc.permission() : "";
-                            s.sendMessage(cr.getMessage().replace("%cmd%", bc.command()).replace("%perm%", perm));
-                        }
+                        runCommand(bc, finalM, sender, s, c, finalA);
                     }
                 }.runTaskAsynchronously(Main.getInstance());
             }
@@ -314,13 +291,13 @@ public class CommandManager implements CommandExecutor, TabCompleter {
      * Commands will be executed by itself.
      */
     @Override
-    public boolean onCommand(final CommandSender cs, final Command cmnd, final String string, final String[] strings) {
+    public boolean onCommand(final @NotNull CommandSender cs, final @NotNull Command cmnd, final @NotNull String string, final String[] strings) {
         executeCommand(cmnd, cs, strings);
         return true;
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender cs, Command cmnd, String string, String[] strings) {
+    public @NotNull List<String> onTabComplete(@NotNull CommandSender cs, @NotNull Command cmnd, @NotNull String string, String[] strings) {
         List<String> ret = new ArrayList<>();
 
         if (strings.length == 1 && strings[0].isEmpty()) {

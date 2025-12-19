@@ -33,8 +33,11 @@ public class SQLite extends Database {
      */
     public SQLite(File dbFile) {
         super("org.sqlite.JDBC", Type.SQLITE);
-        dbFile.getParentFile().mkdirs();
-        this.dbFile = dbFile;
+        if (dbFile.getParentFile().mkdirs()) {
+            this.dbFile = dbFile;
+        } else {
+            this.dbFile = null;
+        }
     }
 
     @Override

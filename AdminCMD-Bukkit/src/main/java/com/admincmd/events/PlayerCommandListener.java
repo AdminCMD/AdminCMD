@@ -32,27 +32,24 @@ public class PlayerCommandListener extends BukkitListener {
 
     @EventHandler(ignoreCancelled = true)
     public void onCommand(final PlayerCommandPreprocessEvent e) {
-        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                ACPlayer p = PlayerManager.getPlayer(e.getPlayer());
-                String name = p.getName();
+        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
+            ACPlayer p = PlayerManager.getPlayer(e.getPlayer());
+            String name = p.getName();
 
-                for (ACPlayer act : PlayerManager.getOnlinePlayers()) {
-                    if (!act.isCMDWatcher()) {
-                        continue;
-                    }
-
-                    if (act.getID() == p.getID()) {
-                        continue;
-                    }
-
-                    String message = Locales.PLAYER_CW_RAN.getString();
-                    message = message.replaceAll("%player%", name);
-                    message = message.replaceAll("%command%", e.getMessage());
-
-                    Messager.sendMessage(act, message, Messager.MessageType.INFO);
+            for (ACPlayer act : PlayerManager.getOnlinePlayers()) {
+                if (!act.isCMDWatcher()) {
+                    continue;
                 }
+
+                if (act.getID() == p.getID()) {
+                    continue;
+                }
+
+                String message = Locales.PLAYER_CW_RAN.getString();
+                message = message.replaceAll("%player%", name);
+                message = message.replaceAll("%command%", e.getMessage());
+
+                Messager.sendMessage(act, message, Messager.MessageType.INFO);
             }
         });
 

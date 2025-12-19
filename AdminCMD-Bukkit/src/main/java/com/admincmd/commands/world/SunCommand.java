@@ -57,9 +57,9 @@ public class SunCommand {
 
             String msg;
             if (Config.BUNGEECORD.getBoolean()) {
-                msg = Locales.WORLD_WEATHER_CLEAR.getString().replaceAll("%world%", world.getServer() + ":" + world.getName());
+                msg = Locales.WORLD_WEATHER_CLEAR.getString().replaceAll("%world%", world.server() + ":" + world.name());
             } else {
-                msg = Locales.WORLD_WEATHER_CLEAR.getString().replaceAll("%world%", world.getName());
+                msg = Locales.WORLD_WEATHER_CLEAR.getString().replaceAll("%world%", world.name());
             }
             sender.sendMessage(Messager.MessageType.INFO.getPrefix() + msg);
             return CommandResult.SUCCESS;
@@ -73,6 +73,7 @@ public class SunCommand {
         ACPlayer se = PlayerManager.getPlayer(sender);
         if (args.isEmpty()) {
             ACWorld world = WorldManager.getWorld(sender.getWorld());
+            if (world == null) return CommandResult.NOT_A_WORLD;
             WorldManager.setSun(world);
             String msg = Locales.WORLD_WEATHER_CLEAR.getString().replaceAll("%world%", sender.getWorld().getName());
             return Messager.sendMessage(se, msg, Messager.MessageType.INFO);
@@ -93,9 +94,9 @@ public class SunCommand {
 
             String msg;
             if (Config.BUNGEECORD.getBoolean()) {
-                msg = Locales.WORLD_WEATHER_CLEAR.getString().replaceAll("%world%", world.getServer() + ":" + world.getName());
+                msg = Locales.WORLD_WEATHER_CLEAR.getString().replaceAll("%world%", world.server() + ":" + world.name());
             } else {
-                msg = Locales.WORLD_WEATHER_CLEAR.getString().replaceAll("%world%", world.getName());
+                msg = Locales.WORLD_WEATHER_CLEAR.getString().replaceAll("%world%", world.name());
             }
             return Messager.sendMessage(se, msg, Messager.MessageType.INFO);
         }

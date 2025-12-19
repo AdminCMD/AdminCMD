@@ -63,20 +63,21 @@ public enum Config {
     }
 
     public static void load() {
-        Main.getInstance().getDataFolder().mkdirs();
-        reload(false);
-        List<String> header = new ArrayList<>();
-        for (Config c : values()) {
-            header.add(c.getPath() + ": " + c.getDescription() + System.lineSeparator());
-            if (!cfg.contains(c.getPath())) {
-                c.set(c.getDefaultValue(), false);
+        if (Main.getInstance().getDataFolder().mkdirs()) {
+            reload(false);
+            List<String> header = new ArrayList<>();
+            for (Config c : values()) {
+                header.add(c.getPath() + ": " + c.getDescription() + System.lineSeparator());
+                if (!cfg.contains(c.getPath())) {
+                    c.set(c.getDefaultValue(), false);
+                }
             }
-        }
-        cfg.options().setHeader(header);
-        try {
-            cfg.save(f);
-        } catch (IOException ex) {
-            ex.printStackTrace();
+            cfg.options().setHeader(header);
+            try {
+                cfg.save(f);
+            } catch (IOException ex) {
+                ACLogger.severe(ex);
+            }
         }
     }
 
@@ -126,7 +127,7 @@ public enum Config {
             try {
                 cfg.save(f);
             } catch (IOException ex) {
-                ex.printStackTrace();
+                ACLogger.severe(ex);
             }
             reload(false);
         }

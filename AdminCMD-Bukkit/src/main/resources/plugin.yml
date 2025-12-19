@@ -4,4 +4,4 @@ version: ${project.version}
 authors: [ TheJeterLP, JKMalan, Balor ]
 description: This plugin implements the basic commands for running a server.
 softdepend: [ ProtocolLib, Vault, MultiVerse, Multiverse-Core, Multiworld ]
-api-version: 1.13
+api-version: 1.21

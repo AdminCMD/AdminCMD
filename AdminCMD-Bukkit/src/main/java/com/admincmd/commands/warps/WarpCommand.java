@@ -45,7 +45,7 @@ public class WarpCommand {
             ACWarp w = WarpManager.getWarp(args.getString(0));
             if (w != null) {
 
-                String permission = "admincmd.warp.tp." + w.getName();
+                String permission = "admincmd.warp.tp." + w.name();
                 if (!p.hasPermission(permission)) {
                     return Messager.sendMessage(se, Locales.COMMAND_MESSAGES_NO_PERMISSION.getString().replaceAll("%perm%", permission), Messager.MessageType.ERROR);
                 }

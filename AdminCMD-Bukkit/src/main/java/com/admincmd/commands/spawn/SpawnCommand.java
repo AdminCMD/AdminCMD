@@ -24,6 +24,7 @@ import com.admincmd.player.PlayerManager;
 import com.admincmd.spawn.SpawnManager;
 import com.admincmd.utils.Locales;
 import com.admincmd.utils.Messager;
+import com.admincmd.utils.MultiServerLocation;
 import com.admincmd.utils.Utils;
 import org.bukkit.entity.Player;
 
@@ -34,7 +35,11 @@ public class SpawnCommand {
     public CommandResult executeSpawn(Player sender, CommandArgs args) {
         ACPlayer acp = PlayerManager.getPlayer(sender);
         if (args.isEmpty()) {
-            PlayerManager.teleport(SpawnManager.getSpawn(acp), acp);
+            MultiServerLocation loc = SpawnManager.getSpawn(acp);
+            if (loc == null) {
+                return CommandResult.ERROR;
+            }
+            PlayerManager.teleport(loc, acp);
             return Messager.sendMessage(acp, Locales.SPAWN_TP, Messager.MessageType.INFO);
         } else if (args.getLength() == 1) {
             if (!args.hasFlag("p")) {
@@ -55,7 +60,12 @@ public class SpawnCommand {
                 return CommandResult.NOT_ONLINE;
             }
 
-            PlayerManager.teleport(SpawnManager.getSpawn(target), target);
+            MultiServerLocation loc = SpawnManager.getSpawn(target);
+            if (loc == null) {
+                return CommandResult.ERROR;
+            }
+
+            PlayerManager.teleport(loc, target);
             Messager.sendMessage(target, Locales.SPAWN_TP, Messager.MessageType.INFO);
             Messager.sendMessage(acp, Locales.SPAWN_TP_OTHER.getString().replaceAll("%player%", Utils.replacePlayerPlaceholders(target.getOfflinePlayer())), Messager.MessageType.INFO);
             return CommandResult.SUCCESS;

@@ -18,25 +18,15 @@
  */
 package com.admincmd.world;
 
-import com.admincmd.Main;
 import com.admincmd.communication.BungeeCordMessageManager;
 import com.admincmd.database.DatabaseFactory;
 import com.admincmd.utils.ACLogger;
-import org.bukkit.Bukkit;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class SQLWorld implements ACWorld {
-
-    private final String name;
-    private final String server;
-
-    public SQLWorld(String name, String server) {
-        this.name = name;
-        this.server = server;
-    }
+public record SQLWorld(String name, String server) implements ACWorld {
 
     @Override
     public long getPausedTime() {
@@ -59,21 +49,16 @@ public class SQLWorld implements ACWorld {
 
     @Override
     public void setPausedTime(final long time) {
-        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    PreparedStatement st = DatabaseFactory.getDatabase().getPreparedStatement("UPDATE " + DatabaseFactory.WORLD_TABLE + " SET time = ? WHERE name = ? AND servername = ?;");
-                    st.setLong(1, time);
-                    st.setString(2, name);
-                    st.setString(3, server);
-                    st.executeUpdate();
-                    DatabaseFactory.getDatabase().closeStatement(st);
-                } catch (SQLException ex) {
-                    ACLogger.severe(ex);
-                }
-            }
-        });
+        try {
+            PreparedStatement st = DatabaseFactory.getDatabase().getPreparedStatement("UPDATE " + DatabaseFactory.WORLD_TABLE + " SET time = ? WHERE name = ? AND servername = ?;");
+            st.setLong(1, time);
+            st.setString(2, name);
+            st.setString(3, server);
+            st.executeUpdate();
+            DatabaseFactory.getDatabase().closeStatement(st);
+        } catch (SQLException ex) {
+            ACLogger.severe(ex);
+        }
     }
 
     @Override
@@ -97,31 +82,16 @@ public class SQLWorld implements ACWorld {
 
     @Override
     public void setPaused(final boolean pause) {
-        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    PreparedStatement st = DatabaseFactory.getDatabase().getPreparedStatement("UPDATE " + DatabaseFactory.WORLD_TABLE + " SET paused = ? WHERE name = ? AND servername = ?;");
-                    st.setBoolean(1, pause);
-                    st.setString(2, name);
-                    st.setString(3, server);
-                    st.executeUpdate();
-                    DatabaseFactory.getDatabase().closeStatement(st);
-                } catch (SQLException ex) {
-                    ACLogger.severe(ex);
-                }
-            }
-        });
-    }
-
-    @Override
-    public String getServer() {
-        return this.server;
-    }
-
-    @Override
-    public String getName() {
-        return this.name;
+        try {
+            PreparedStatement st = DatabaseFactory.getDatabase().getPreparedStatement("UPDATE " + DatabaseFactory.WORLD_TABLE + " SET paused = ? WHERE name = ? AND servername = ?;");
+            st.setBoolean(1, pause);
+            st.setString(2, name);
+            st.setString(3, server);
+            st.executeUpdate();
+            DatabaseFactory.getDatabase().closeStatement(st);
+        } catch (SQLException ex) {
+            ACLogger.severe(ex);
+        }
     }
 
     @Override

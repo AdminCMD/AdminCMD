@@ -75,12 +75,15 @@ public class Main extends JavaPlugin {
         INSTANCE = this;
 
         //test
-        getDataFolder().mkdirs();
-        File f = new File(getDataFolder(), "admincmd.db");
-        if (f.exists()) {
-            //Old AdminCMD version found
-            ACLogger.warn("Old AdminCMD version was found! Renaming the AdminCMd folder to AdminCMD-Old!");
-            getDataFolder().renameTo(new File(getDataFolder().getParentFile(), "AdminCMD-Old"));
+        if (getDataFolder().mkdirs()) {
+            File f = new File(getDataFolder(), "admincmd.db");
+            if (f.exists()) {
+                //Old AdminCMD version found
+                ACLogger.warn("Old AdminCMD version was found! Renaming the AdminCMd folder to AdminCMD-Old!");
+                if (!getDataFolder().renameTo(new File(getDataFolder().getParentFile(), "AdminCMD-Old"))) {
+                    ACLogger.warn("DataFolder of old AdminCMD Version could not be renamed!");
+                }
+            }
         }
 
         Config.load();

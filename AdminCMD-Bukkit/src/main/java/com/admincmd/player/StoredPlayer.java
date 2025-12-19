@@ -56,35 +56,37 @@ public class StoredPlayer implements ACPlayer {
 
             Database db = DatabaseFactory.getDatabase();
             PreparedStatement s = db.getPreparedStatement("INSERT INTO " + DatabaseFactory.PLAYER_TABLE + " (uuid, god, invisible, commandwatcher, spy, fly, freeze, nickname, lastmsgfrom, lastloc, online, server) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS);
-            s.setString(1, uuid.toString());
-            s.setBoolean(2, false);
-            s.setBoolean(3, false);
-            s.setBoolean(4, false);
-            s.setBoolean(5, false);
-            s.setBoolean(6, false);
-            s.setBoolean(7, false);
-            s.setString(8, Bukkit.getOfflinePlayer(uuid).getName());
-            s.setInt(9, -1);
-            s.setString(10, "none");
-            s.setBoolean(11, false);
-            s.setString(12, BungeeCordMessageManager.getServerName());
+            if (s != null) {
+                s.setString(1, uuid.toString());
+                s.setBoolean(2, false);
+                s.setBoolean(3, false);
+                s.setBoolean(4, false);
+                s.setBoolean(5, false);
+                s.setBoolean(6, false);
+                s.setBoolean(7, false);
+                s.setString(8, Bukkit.getOfflinePlayer(uuid).getName());
+                s.setInt(9, -1);
+                s.setString(10, "none");
+                s.setBoolean(11, false);
+                s.setString(12, BungeeCordMessageManager.getServerName());
 
-            int affectedRows = s.executeUpdate();
+                int affectedRows = s.executeUpdate();
 
-            if (affectedRows == 0) {
-                throw new SQLException("Creating Player failed, no rows affected.");
+                if (affectedRows == 0) {
+                    throw new SQLException("Creating Player failed, no rows affected.");
+                }
+
+                ResultSet generatedKeys = s.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    this.id = generatedKeys.getInt(1);
+                } else {
+                    String sql = Config.MYSQL_USE.getBoolean() ? "MySQL" : "SQLite";
+                    throw new SQLException("Creating player failed, no ID obtained. SQL type: " + sql);
+                }
+
+                DatabaseFactory.getDatabase().closeResultSet(generatedKeys);
+                DatabaseFactory.getDatabase().closeStatement(s);
             }
-
-            ResultSet generatedKeys = s.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                this.id = generatedKeys.getInt(1);
-            } else {
-                String sql = Config.MYSQL_USE.getBoolean() ? "MySQL" : "SQLite";
-                throw new SQLException("Creating player failed, no ID obtained. SQL type: " + sql);
-            }
-
-            DatabaseFactory.getDatabase().closeResultSet(generatedKeys);
-            DatabaseFactory.getDatabase().closeStatement(s);
         } catch (SQLException ex) {
             Logger.getLogger(StoredPlayer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -103,7 +105,7 @@ public class StoredPlayer implements ACPlayer {
             this.lastIDFrom = rs.getInt("lastmsgfrom");
             this.lastLoc = rs.getString("lastloc").equalsIgnoreCase("none") ? null : MultiServerLocation.fromString(rs.getString("lastloc"));
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            ACLogger.severe(ex);
         }
     }
 
@@ -114,8 +116,9 @@ public class StoredPlayer implements ACPlayer {
 
     @Override
     public MultiServerLocation getLocation() {
-        if (Bukkit.getPlayer(uuid) != null) {
-            return MultiServerLocation.fromLocation(Bukkit.getPlayer(uuid).getLocation());
+        Player bp = Bukkit.getPlayer(uuid);
+        if (bp != null) {
+            return MultiServerLocation.fromLocation(bp.getLocation());
         }
         return null;
     }

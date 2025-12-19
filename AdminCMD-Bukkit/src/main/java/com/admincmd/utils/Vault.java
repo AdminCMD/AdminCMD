@@ -58,9 +58,9 @@ public class Vault {
     public static boolean setupChat() {
         try {
             RegisteredServiceProvider<Chat> chatProvider = Bukkit.getServer().getServicesManager().getRegistration(net.milkbowl.vault.chat.Chat.class);
-            if (chatProvider != null && chatProvider.getProvider() != null) {
+            if (chatProvider != null) {
                 chat = chatProvider.getProvider();
-                return chat != null && chat.isEnabled();
+                return chat.isEnabled();
             }
             return false;
         } catch (Throwable e) {

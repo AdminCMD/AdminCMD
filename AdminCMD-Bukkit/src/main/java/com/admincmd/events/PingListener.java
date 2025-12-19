@@ -19,6 +19,7 @@
 package com.admincmd.events;
 
 import com.admincmd.Main;
+import com.admincmd.utils.ACLogger;
 import com.admincmd.utils.Config;
 import com.admincmd.utils.MotD;
 import com.admincmd.utils.ProtocolLibManager;
@@ -59,13 +60,13 @@ public class PingListener {
                                               }
                                               event.getPacket().getServerPings().getValues().set(0, ping);
                                           } catch (Exception e) {
-                                              e.printStackTrace();
+                                              ACLogger.severe(e);
                                           }
                                       }
                                   }
             );
         } catch (Exception e) {
-            e.printStackTrace();
+            ACLogger.severe(e);
         }
     }
 }

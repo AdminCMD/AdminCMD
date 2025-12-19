@@ -47,14 +47,11 @@ public class MaintenanceCommand {
 
             Config.MAINTENANCE_ENABLE.set(true, true);
             if (Config.MAINTENANCE_KICK.getBoolean()) {
-                Bukkit.getScheduler().runTask(Main.getInstance(), new Runnable() {
-                    @Override
-                    public void run() {
-                        for (Player p : Main.getInstance().getServer().getOnlinePlayers()) {
-                            if (!p.hasPermission("admincmd.maintenance.bypass")) {
-                                String msg = Locales.MESSAGE_PREFIX_ERROR.getString() + Locales.MAINTENANCE_KICK.getString().replaceAll("%perm%", "admincmd.maintenance.bypass");
-                                p.kickPlayer(msg);
-                            }
+                Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
+                    for (Player p : Main.getInstance().getServer().getOnlinePlayers()) {
+                        if (!p.hasPermission("admincmd.maintenance.bypass")) {
+                            String msg = Locales.MESSAGE_PREFIX_ERROR.getString() + Locales.MAINTENANCE_KICK.getString().replaceAll("%perm%", "admincmd.maintenance.bypass");
+                            p.kickPlayer(msg);
                         }
                     }
                 });

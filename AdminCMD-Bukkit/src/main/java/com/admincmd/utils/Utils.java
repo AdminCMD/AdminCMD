@@ -19,12 +19,9 @@
 package com.admincmd.utils;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-
-import java.util.Set;
 
 public class Utils {
 
@@ -41,13 +38,13 @@ public class Utils {
 
         result = result.replace("%prefix", Vault.getPrefix(player));
         result = result.replace("%suffix", Vault.getSuffix(player));
-        result = result.replace("%name", player.getName());
+        result = result.replace("%name", player.getName() != null ? player.getName() : "UNKNOWN");
         result = replaceColors(result);
         return result;
     }
 
     public static Block getBlockLooking(Player player, int range) {
-        return player.getTargetBlock((Set<Material>) null, range);
+        return player.getTargetBlock(null, range);
 
     }
 

@@ -22,23 +22,17 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
 
-public class MethodContainer {
+public record MethodContainer(HashMap<Sender, Method> methods) {
 
-    private final HashMap<Sender, Method> methods;
-
-    public MethodContainer(HashMap<Sender, Method> map) {
-        methods = map;
-    }
-
-    protected Method getMethod(Sender s) {
+    Method getMethod(Sender s) {
         return methods.get(s);
     }
 
-    protected Collection<Method> getMethods() {
+    private Collection<Method> getMethods() {
         return methods.values();
     }
 
-    protected HashMap<Sender, Method> getMethodMap() {
+    HashMap<Sender, Method> getMethodMap() {
         return methods;
     }
 

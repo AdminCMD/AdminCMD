@@ -19,19 +19,14 @@
 package com.admincmd.warp;
 
 import com.admincmd.database.DatabaseFactory;
+import com.admincmd.utils.ACLogger;
 import com.admincmd.utils.MultiServerLocation;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class SQLWarp implements ACWarp {
-
-    private final String name;
-
-    public SQLWarp(String name) {
-        this.name = name;
-    }
+public record SQLWarp(String name) implements ACWarp {
 
     @Override
     public int getID() {
@@ -50,14 +45,9 @@ public class SQLWarp implements ACWarp {
             DatabaseFactory.getDatabase().closeResultSet(rs);
             return ret;
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            ACLogger.severe(ex);
             return -1;
         }
-    }
-
-    @Override
-    public String getName() {
-        return name;
     }
 
     @Override
@@ -77,7 +67,7 @@ public class SQLWarp implements ACWarp {
             DatabaseFactory.getDatabase().closeResultSet(rs);
             return ret;
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            ACLogger.severe(ex);
             return null;
         }
     }
@@ -91,7 +81,7 @@ public class SQLWarp implements ACWarp {
             st.executeUpdate();
             DatabaseFactory.getDatabase().closeStatement(st);
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            ACLogger.severe(ex);
         }
     }
 

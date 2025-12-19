@@ -52,7 +52,7 @@ public class StoredWorld implements ACWorld {
     }
 
     @Override
-    public String getName() {
+    public String name() {
         return this.name;
     }
 
@@ -79,7 +79,7 @@ public class StoredWorld implements ACWorld {
     }
 
     @Override
-    public String getServer() {
+    public String server() {
         return this.serverName;
     }
 

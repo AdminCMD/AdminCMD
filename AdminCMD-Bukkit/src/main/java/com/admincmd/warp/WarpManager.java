@@ -38,7 +38,7 @@ public class WarpManager {
         if (!Config.BUNGEECORD.getBoolean()) {
             for (ACWarp w : warps) {
 
-                if (w.getName() != null && w.getName().equalsIgnoreCase(name)) {
+                if (w.name() != null && w.name().equalsIgnoreCase(name)) {
                     return w;
                 }
             }
@@ -62,11 +62,8 @@ public class WarpManager {
     }
 
     public static void deleteWarp(final ACWarp w) {
-        if (!Config.BUNGEECORD.getBoolean() && w instanceof StoredWarp) {
-            StoredWarp sw = (StoredWarp) w;
-            if (warps.contains(sw)) {
-                warps.remove(sw);
-            }
+        if (!Config.BUNGEECORD.getBoolean() && w instanceof StoredWarp sw) {
+            warps.remove(sw);
         }
         try {
             PreparedStatement s = DatabaseFactory.getDatabase().getPreparedStatement("DELETE FROM " + DatabaseFactory.WARP_TABLE + " WHERE id = ?;");
@@ -96,7 +93,7 @@ public class WarpManager {
         } else {
             List<String> ret = new ArrayList<>();
             for (ACWarp w : warps) {
-                ret.add(w.getName());
+                ret.add(w.name());
             }
             return ret;
         }

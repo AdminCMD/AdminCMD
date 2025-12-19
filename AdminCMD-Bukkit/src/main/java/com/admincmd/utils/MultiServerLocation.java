@@ -46,13 +46,13 @@ public class MultiServerLocation {
         this.z = z;
         this.pitch = 0;
         this.yaw = 0;
-        this.worldname = world.getName();
-        this.severname = world.getServer();
+        this.worldname = world.name();
+        this.severname = world.server();
     }
 
     public static String serialLocation(MultiServerLocation loc) {
-        int pitch = Integer.valueOf(String.valueOf(loc.getPitch()).split("\\.")[0]);
-        int yaw = Integer.valueOf(String.valueOf(loc.getYaw()).split("\\.")[0]);
+        int pitch = Integer.parseInt(String.valueOf(loc.getPitch()).split("\\.")[0]);
+        int yaw = Integer.parseInt(String.valueOf(loc.getYaw()).split("\\.")[0]);
         return loc.getX() + ";" + loc.getY() + ";" + loc.getZ() + ";" + loc.getWorldname() + ";" + yaw + ";" + pitch + ";" + loc.getServername();
     }
 
@@ -69,7 +69,11 @@ public class MultiServerLocation {
     }
 
     public static MultiServerLocation fromLocation(Location loc) {
-        return new MultiServerLocation(loc.getX(), loc.getY(), loc.getZ(), loc.getPitch(), loc.getYaw(), loc.getWorld().getName(), BungeeCordMessageManager.getServerName());
+        if (loc != null && loc.getWorld() != null) {
+            return new MultiServerLocation(loc.getX(), loc.getY(), loc.getZ(), loc.getPitch(), loc.getYaw(), loc.getWorld().getName(), BungeeCordMessageManager.getServerName());
+        } else {
+            return null;
+        }
     }
 
     public double getX() {

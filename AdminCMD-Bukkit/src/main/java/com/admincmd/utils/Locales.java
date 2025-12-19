@@ -225,17 +225,18 @@ public enum Locales {
     }
 
     public static void load() {
-        Main.getInstance().getDataFolder().mkdirs();
-        reload(false);
-        for (Locales c : values()) {
-            if (!cfg.contains(c.getPath())) {
-                c.set(c.getDefaultValue(), false);
+        if (Main.getInstance().getDataFolder().mkdirs()) {
+            reload(false);
+            for (Locales c : values()) {
+                if (!cfg.contains(c.getPath())) {
+                    c.set(c.getDefaultValue(), false);
+                }
             }
-        }
-        try {
-            cfg.save(f);
-        } catch (IOException ex) {
-            ACLogger.severe("Failed loading Locales file!", ex);
+            try {
+                cfg.save(f);
+            } catch (IOException ex) {
+                ACLogger.severe("Failed loading Locales file!", ex);
+            }
         }
     }
 
@@ -256,7 +257,12 @@ public enum Locales {
     }
 
     public String getString() {
-        return Utils.replaceColors(cfg.getString(path));
+        String str = cfg.getString(path);
+        if (str != null) {
+            return Utils.replaceColors(str);
+        } else {
+            return "";
+        }
     }
 
     public String replacePlayer(OfflinePlayer p) {

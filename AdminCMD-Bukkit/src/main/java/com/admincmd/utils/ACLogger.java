@@ -111,12 +111,10 @@ public class ACLogger {
     }
 
     private static void writeToDebug(final String message) {
-        Main.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                BufferedWriter bw = null;
-                File file = new File(Main.getInstance().getDataFolder(), "logs" + File.separator + "debugs");
-                file.mkdirs();
+        Main.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(Main.getInstance(), () -> {
+            BufferedWriter bw = null;
+            File file = new File(Main.getInstance().getDataFolder(), "logs" + File.separator + "debugs");
+            if (file.mkdirs()) {
                 try {
                     DateFormat date = new SimpleDateFormat("dd-MM-yyyy");
                     Calendar cal = Calendar.getInstance();
@@ -126,6 +124,7 @@ public class ACLogger {
                     bw.write(prefix() + ":" + message);
                     bw.newLine();
                 } catch (Exception ex) {
+                    ACLogger.severe(ex);
                 } finally {
                     try {
                         if (bw != null) {
@@ -133,6 +132,7 @@ public class ACLogger {
                             bw.close();
                         }
                     } catch (Exception ex) {
+                        ACLogger.severe(ex);
                     }
                 }
             }
@@ -140,12 +140,10 @@ public class ACLogger {
     }
 
     private static void writeToDebug(final String message, final Throwable t) {
-        Main.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                BufferedWriter bw = null;
-                File file = new File(Main.getInstance().getDataFolder(), "logs" + File.separator + "debugs");
-                file.mkdirs();
+        Main.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(Main.getInstance(), () -> {
+            BufferedWriter bw = null;
+            File file = new File(Main.getInstance().getDataFolder(), "logs" + File.separator + "debugs");
+            if (file.mkdirs()) {
                 try {
                     DateFormat date = new SimpleDateFormat("dd-MM-yyyy");
                     Calendar cal = Calendar.getInstance();
@@ -168,6 +166,7 @@ public class ACLogger {
                     bw.newLine();
                     bw.newLine();
                 } catch (Exception ex) {
+                    ACLogger.severe(ex);
                 } finally {
                     try {
                         if (bw != null) {
@@ -175,21 +174,20 @@ public class ACLogger {
                             bw.close();
                         }
                     } catch (Exception ex) {
+                        ACLogger.severe(ex);
                     }
                 }
             }
         }, 0);
     }
 
+    @SuppressWarnings("CallToPrintStackTrace")
     private static void printError(final String message, final Throwable t) {
-        Main.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                BufferedWriter bw = null;
-                File file = new File(Main.getInstance().getDataFolder(), "logs" + File.separator + "errors");
-                file.mkdirs();
+        Main.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(Main.getInstance(), () -> {
+            BufferedWriter bw = null;
+            File file = new File(Main.getInstance().getDataFolder(), "logs" + File.separator + "errors");
+            if (file.mkdirs()) {
                 try {
-
                     DateFormat date = new SimpleDateFormat("dd-MM-yyyy");
                     Calendar cal = Calendar.getInstance();
                     String d = "Errors - " + date.format(cal.getTime());
@@ -206,6 +204,7 @@ public class ACLogger {
                     bw.newLine();
                     bw.newLine();
                 } catch (Exception ex) {
+                    ex.printStackTrace();
                 } finally {
                     try {
                         if (bw != null) {
@@ -213,11 +212,11 @@ public class ACLogger {
                             bw.close();
                         }
                     } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
                 }
             }
         }, 0);
-
     }
 
     private static String getStackTrace(Throwable t) {

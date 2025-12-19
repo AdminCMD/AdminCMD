@@ -20,31 +20,7 @@ package com.admincmd.teleport;
 
 import com.admincmd.player.ACPlayer;
 
-public class StoredRequest implements ACTeleportRequest {
+public record StoredRequest(ACPlayer requester, ACPlayer receiver, RequestType type) implements ACTeleportRequest {
 
-    private final ACPlayer requester;
-    private final ACPlayer receiver;
-    private final RequestType type;
-
-    public StoredRequest(ACPlayer requester, ACPlayer receiver, RequestType type) {
-        this.requester = requester;
-        this.receiver = receiver;
-        this.type = type;
-    }
-
-    @Override
-    public ACPlayer getRequester() {
-        return requester;
-    }
-
-    @Override
-    public ACPlayer getReceiver() {
-        return receiver;
-    }
-
-    @Override
-    public RequestType getType() {
-        return this.type;
-    }
-
+    
 }

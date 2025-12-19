@@ -48,25 +48,27 @@ public class StoredWarp implements ACWarp {
     public StoredWarp(String name, MultiServerLocation loc) {
         try {
             PreparedStatement sta = DatabaseFactory.getDatabase().getPreparedStatement("INSERT INTO " + DatabaseFactory.WARP_TABLE + " (location, name) VALUES (?, ?);", Statement.RETURN_GENERATED_KEYS);
-            sta.setString(1, loc.toString());
-            sta.setString(2, name);
-            int affectedRows = sta.executeUpdate();
+            if (sta != null) {
+                sta.setString(1, loc.toString());
+                sta.setString(2, name);
+                int affectedRows = sta.executeUpdate();
 
-            if (affectedRows == 0) {
-                throw new SQLException("Creating warp failed, no rows affected.");
-            }
+                if (affectedRows == 0) {
+                    throw new SQLException("Creating warp failed, no rows affected.");
+                }
 
-            ResultSet generatedKeys = sta.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                this.id = generatedKeys.getInt(1);
-                this.name = name;
-                this.loc = loc;
-            } else {
-                String sql = Config.MYSQL_USE.getBoolean() ? "MySQL" : "SQLite";
-                throw new SQLException("Creating warp failed, no ID obtained. SQL type: " + sql);
+                ResultSet generatedKeys = sta.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    this.id = generatedKeys.getInt(1);
+                    this.name = name;
+                    this.loc = loc;
+                } else {
+                    String sql = Config.MYSQL_USE.getBoolean() ? "MySQL" : "SQLite";
+                    throw new SQLException("Creating warp failed, no ID obtained. SQL type: " + sql);
+                }
+                DatabaseFactory.getDatabase().closeStatement(sta);
+                DatabaseFactory.getDatabase().closeResultSet(generatedKeys);
             }
-            DatabaseFactory.getDatabase().closeStatement(sta);
-            DatabaseFactory.getDatabase().closeResultSet(generatedKeys);
         } catch (SQLException ex) {
             ACLogger.severe(ex);
         }
@@ -78,7 +80,7 @@ public class StoredWarp implements ACWarp {
     }
 
     @Override
-    public String getName() {
+    public String name() {
         return name;
     }
 

@@ -49,22 +49,24 @@ public class TimeCommand {
             target = args.getFlag("w").getWorld();
         }
 
+        if (target == null) return CommandResult.NOT_A_WORLD;
+
         if (args.getString(0).equalsIgnoreCase("day")) {
             WorldManager.setTime(target, 0);
             String msg;
             if (Config.BUNGEECORD.getBoolean()) {
-                msg = Locales.WORLD_DAY_SET.getString().replaceAll("%world%", target.getServer() + ":" + target.getName());
+                msg = Locales.WORLD_DAY_SET.getString().replaceAll("%world%", target.server() + ":" + target.name());
             } else {
-                msg = Locales.WORLD_DAY_SET.getString().replaceAll("%world%", target.getName());
+                msg = Locales.WORLD_DAY_SET.getString().replaceAll("%world%", target.name());
             }
             return Messager.sendMessage(se, msg, Messager.MessageType.INFO);
         } else if (args.getString(0).equalsIgnoreCase("night")) {
             WorldManager.setTime(target, 13100);
             String msg;
             if (Config.BUNGEECORD.getBoolean()) {
-                msg = Locales.WORLD_NIGHT_SET.getString().replaceAll("%world%", target.getServer() + ":" + target.getName());
+                msg = Locales.WORLD_NIGHT_SET.getString().replaceAll("%world%", target.server() + ":" + target.name());
             } else {
-                msg = Locales.WORLD_NIGHT_SET.getString().replaceAll("%world%", target.getName());
+                msg = Locales.WORLD_NIGHT_SET.getString().replaceAll("%world%", target.name());
             }
             return Messager.sendMessage(se, msg, Messager.MessageType.INFO);
         } else if (args.isInteger(0)) {
@@ -73,9 +75,9 @@ public class TimeCommand {
 
             String msg;
             if (Config.BUNGEECORD.getBoolean()) {
-                msg = Locales.WORLD_TIME_SET.getString().replaceAll("%world%", target.getServer() + ":" + target.getName());
+                msg = Locales.WORLD_TIME_SET.getString().replaceAll("%world%", target.server() + ":" + target.name());
             } else {
-                msg = Locales.WORLD_TIME_SET.getString().replaceAll("%world%", target.getName());
+                msg = Locales.WORLD_TIME_SET.getString().replaceAll("%world%", target.name());
             }
             msg = msg.replaceAll("%time%", time + "");
             return Messager.sendMessage(se, msg, Messager.MessageType.INFO);
@@ -83,9 +85,9 @@ public class TimeCommand {
             WorldManager.pauseTime(target, true);
             String msg;
             if (Config.BUNGEECORD.getBoolean()) {
-                msg = Locales.WORLD_TIME_PAUSED.getString().replaceAll("%world%", target.getServer() + ":" + target.getName());
+                msg = Locales.WORLD_TIME_PAUSED.getString().replaceAll("%world%", target.server() + ":" + target.name());
             } else {
-                msg = Locales.WORLD_TIME_PAUSED.getString().replaceAll("%world%", target.getName());
+                msg = Locales.WORLD_TIME_PAUSED.getString().replaceAll("%world%", target.name());
             }
             return Messager.sendMessage(se, msg, Messager.MessageType.INFO);
         } else if (args.getString(0).equalsIgnoreCase("unpause")) {
@@ -93,9 +95,9 @@ public class TimeCommand {
 
             String msg;
             if (Config.BUNGEECORD.getBoolean()) {
-                msg = Locales.WORLD_TIME_UNPAUSED.getString().replaceAll("%world%", target.getServer() + ":" + target.getName());
+                msg = Locales.WORLD_TIME_UNPAUSED.getString().replaceAll("%world%", target.server() + ":" + target.name());
             } else {
-                msg = Locales.WORLD_TIME_UNPAUSED.getString().replaceAll("%world%", target.getName());
+                msg = Locales.WORLD_TIME_UNPAUSED.getString().replaceAll("%world%", target.name());
             }
             return Messager.sendMessage(se, msg, Messager.MessageType.INFO);
         }

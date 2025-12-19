@@ -48,15 +48,15 @@ public class ReplyCommand {
                 return CommandResult.NOT_ONLINE;
             }
 
-            String message = "";
+            StringBuilder message = new StringBuilder();
             for (String temp : args.getArgs()) {
-                message += temp + " ";
+                message.append(temp).append(" ");
             }
 
             target.setLastMSGFrom(se.getID());
             String msgSpy = Locales.PLAYER_MSG_FORMAT.getString().replaceAll("%sender%", Utils.replacePlayerPlaceholders(sender));
             msgSpy = msgSpy.replaceAll("%target%", Utils.replacePlayerPlaceholders(target.getOfflinePlayer()));
-            msgSpy = msgSpy.replaceAll("%message%", message);
+            msgSpy = msgSpy.replaceAll("%message%", message.toString());
 
             for (ACPlayer acp : PlayerManager.getOnlinePlayers()) {
                 if (acp.isSpy()) {
@@ -66,10 +66,10 @@ public class ReplyCommand {
 
             String msgSender = Locales.PLAYER_MSG_FORMAT.getString().replaceAll("%sender%", Utils.replacePlayerPlaceholders(sender));
             msgSender = msgSender.replaceAll("%target%", Utils.replacePlayerPlaceholders(target.getOfflinePlayer()));
-            msgSender = msgSender.replaceAll("%message%", message);
+            msgSender = msgSender.replaceAll("%message%", message.toString());
             String msgTarget = Locales.PLAYER_MSG_FORMAT.getString().replaceAll("%target%", Utils.replacePlayerPlaceholders(target.getOfflinePlayer()));
             msgTarget = msgTarget.replaceAll("%sender%", Utils.replacePlayerPlaceholders(sender));
-            msgTarget = msgTarget.replaceAll("%message%", message);
+            msgTarget = msgTarget.replaceAll("%message%", message.toString());
             Messager.sendMessage(target, msgTarget, Messager.MessageType.NONE);
             return Messager.sendMessage(se, msgSender, Messager.MessageType.NONE);
         }

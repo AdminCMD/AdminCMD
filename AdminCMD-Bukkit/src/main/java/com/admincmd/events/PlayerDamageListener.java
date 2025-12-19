@@ -30,10 +30,9 @@ public class PlayerDamageListener extends BukkitListener {
 
     @EventHandler(ignoreCancelled = true)
     public void onDamage(final EntityDamageEvent e) {
-        if (!(e.getEntity() instanceof Player)) {
+        if (!(e.getEntity() instanceof Player p)) {
             return;
         }
-        Player p = (Player) e.getEntity();
         ACPlayer bp = PlayerManager.getPlayer(p);
 
         if (bp.isGod()) {
@@ -44,11 +43,9 @@ public class PlayerDamageListener extends BukkitListener {
 
     @EventHandler(ignoreCancelled = true)
     public void onHunger(final FoodLevelChangeEvent e) {
-        if (!(e.getEntity() instanceof Player)) {
+        if (!(e.getEntity() instanceof Player p)) {
             return;
         }
-
-        Player p = (Player) e.getEntity();
 
         ACPlayer bp = PlayerManager.getPlayer(p);
         if (bp.isGod()) {

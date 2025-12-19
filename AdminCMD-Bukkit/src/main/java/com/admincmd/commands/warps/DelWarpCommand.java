@@ -43,7 +43,7 @@ public class DelWarpCommand {
             return Messager.sendMessage(se, Locales.WARP_NO_SUCH_WARP, Messager.MessageType.ERROR);
         }
         WarpManager.deleteWarp(w);
-        String msg = Locales.WARP_DELETED.getString().replaceAll("%warp%", w.getName());
+        String msg = Locales.WARP_DELETED.getString().replaceAll("%warp%", w.name());
         return Messager.sendMessage(se, msg, Messager.MessageType.INFO);
     }
 

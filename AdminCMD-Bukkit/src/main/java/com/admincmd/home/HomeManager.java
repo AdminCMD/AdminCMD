@@ -18,13 +18,11 @@
  */
 package com.admincmd.home;
 
-import com.admincmd.Main;
 import com.admincmd.database.DatabaseFactory;
 import com.admincmd.player.ACPlayer;
 import com.admincmd.player.PlayerManager;
 import com.admincmd.utils.ACLogger;
 import com.admincmd.utils.Config;
-import org.bukkit.Bukkit;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -69,34 +67,27 @@ public class HomeManager {
     }
 
     public static void deleteHome(final ACHome h) {
-        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                if (Config.BUNGEECORD.getBoolean()) {
-                    try {
-                        PreparedStatement s = DatabaseFactory.getDatabase().getPreparedStatement("DELETE FROM " + DatabaseFactory.HOME_TABLE + " WHERE id = ?;");
-                        s.setInt(1, h.getID());
-                        s.executeUpdate();
-                        DatabaseFactory.getDatabase().closeStatement(s);
-                    } catch (SQLException ex) {
-                        ACLogger.severe("Error deleting home from Database " + h.getID(), ex);
-                    }
-                } else {
-                    StoredHome sh = (StoredHome) h;
-                    if (homes.contains(sh)) {
-                        homes.remove(sh);
-                    }
-                    try {
-                        PreparedStatement s = DatabaseFactory.getDatabase().getPreparedStatement("DELETE FROM " + DatabaseFactory.HOME_TABLE + " WHERE id = ?;");
-                        s.setInt(1, h.getID());
-                        s.executeUpdate();
-                        DatabaseFactory.getDatabase().closeStatement(s);
-                    } catch (SQLException ex) {
-                        ACLogger.severe("Error deleting home from Database " + h.getID(), ex);
-                    }
-                }
+        if (Config.BUNGEECORD.getBoolean()) {
+            try {
+                PreparedStatement s = DatabaseFactory.getDatabase().getPreparedStatement("DELETE FROM " + DatabaseFactory.HOME_TABLE + " WHERE id = ?;");
+                s.setInt(1, h.ID());
+                s.executeUpdate();
+                DatabaseFactory.getDatabase().closeStatement(s);
+            } catch (SQLException ex) {
+                ACLogger.severe("Error deleting home from Database " + h.ID(), ex);
             }
-        });
+        } else {
+            StoredHome sh = (StoredHome) h;
+            homes.remove(sh);
+            try {
+                PreparedStatement s = DatabaseFactory.getDatabase().getPreparedStatement("DELETE FROM " + DatabaseFactory.HOME_TABLE + " WHERE id = ?;");
+                s.setInt(1, h.ID());
+                s.executeUpdate();
+                DatabaseFactory.getDatabase().closeStatement(s);
+            } catch (SQLException ex) {
+                ACLogger.severe("Error deleting home from Database " + h.ID(), ex);
+            }
+        }
     }
 
     public static List<String> getHomes(ACPlayer p) {
@@ -127,49 +118,39 @@ public class HomeManager {
     }
 
     public static void createHome(final ACPlayer owner, final String name) {
-        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                if (Config.BUNGEECORD.getBoolean()) {
-                    StoredHome stored = new StoredHome(owner, name);
-                    String test = stored.getName();
-                } else {
-                    StoredHome stored = new StoredHome(owner, name);
-                    homes.add(stored);
-                }
-            }
-        });
+        if (Config.BUNGEECORD.getBoolean()) {
+            StoredHome stored = new StoredHome(owner, name);
+            String test = stored.getName();
+        } else {
+            StoredHome stored = new StoredHome(owner, name);
+            homes.add(stored);
+        }
     }
 
     public static void init() {
         if (!Config.BUNGEECORD.getBoolean()) {
-            Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        homes.clear();
-                        Statement s = DatabaseFactory.getDatabase().getStatement();
-                        ResultSet rs = s.executeQuery("SELECT * FROM ac_homes");
+            try {
+                homes.clear();
+                Statement s = DatabaseFactory.getDatabase().getStatement();
+                ResultSet rs = s.executeQuery("SELECT * FROM ac_homes");
 
-                        while (rs.next()) {
-                            ACPlayer player = PlayerManager.getPlayer(rs.getInt("playerid"));
-                            if (player == null) {
-                                continue;
-                            }
-                            StoredHome h = new StoredHome(rs.getString("location"), player, rs.getString("name"), rs.getInt("id"));
-                            if (h.getLocation().isOnThisServer()) {
-                                homes.add(h);
-                            }
-                        }
-
-                        DatabaseFactory.getDatabase().closeStatement(s);
-                        DatabaseFactory.getDatabase().closeResultSet(rs);
-                        ACLogger.info("Loaded " + homes.size() + " homes!");
-                    } catch (SQLException ex) {
-                        ACLogger.severe("Error loading the homes", ex);
+                while (rs.next()) {
+                    ACPlayer player = PlayerManager.getPlayer(rs.getInt("playerid"));
+                    if (player == null) {
+                        continue;
+                    }
+                    StoredHome h = new StoredHome(rs.getString("location"), player, rs.getString("name"), rs.getInt("id"));
+                    if (h.getLocation().isOnThisServer()) {
+                        homes.add(h);
                     }
                 }
-            });
+
+                DatabaseFactory.getDatabase().closeStatement(s);
+                DatabaseFactory.getDatabase().closeResultSet(rs);
+                ACLogger.info("Loaded " + homes.size() + " homes!");
+            } catch (SQLException ex) {
+                ACLogger.severe("Error loading the homes", ex);
+            }
         }
     }
 
@@ -187,7 +168,7 @@ public class HomeManager {
                 try {
                     PreparedStatement ps = DatabaseFactory.getDatabase().getPreparedStatement("UPDATE " + DatabaseFactory.HOME_TABLE + " SET location = ? WHERE id = ?;");
                     ps.setString(1, home.getLocation().toString());
-                    ps.setInt(2, home.getID());
+                    ps.setInt(2, home.ID());
                     ps.executeUpdate();
                     DatabaseFactory.getDatabase().closeStatement(ps);
                     saved++;

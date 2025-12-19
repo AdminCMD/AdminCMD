@@ -18,7 +18,6 @@
  */
 package com.admincmd.player;
 
-import com.admincmd.Main;
 import com.admincmd.database.Database;
 import com.admincmd.database.DatabaseFactory;
 import com.admincmd.utils.ACLogger;
@@ -213,20 +212,15 @@ public class SQLPlayer implements ACPlayer {
 
     @Override
     public void setLastMSGFrom(final int userID) {
-        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    PreparedStatement st = DatabaseFactory.getDatabase().getPreparedStatement("UPDATE " + DatabaseFactory.PLAYER_TABLE + " SET lastmsgfrom = ? WHERE id = ?;");
-                    st.setInt(1, userID);
-                    st.setInt(2, id);
-                    st.executeUpdate();
-                    DatabaseFactory.getDatabase().closeStatement(st);
-                } catch (SQLException ex) {
-                    ACLogger.severe(ex);
-                }
-            }
-        });
+        try {
+            PreparedStatement st = DatabaseFactory.getDatabase().getPreparedStatement("UPDATE " + DatabaseFactory.PLAYER_TABLE + " SET lastmsgfrom = ? WHERE id = ?;");
+            st.setInt(1, userID);
+            st.setInt(2, id);
+            st.executeUpdate();
+            DatabaseFactory.getDatabase().closeStatement(st);
+        } catch (SQLException ex) {
+            ACLogger.severe(ex);
+        }
     }
 
     private boolean getFromDB(String value) {
@@ -251,20 +245,15 @@ public class SQLPlayer implements ACPlayer {
     }
 
     private void setInDB(final String key, final boolean value) {
-        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    PreparedStatement st = DatabaseFactory.getDatabase().getPreparedStatement("UPDATE " + DatabaseFactory.PLAYER_TABLE + " SET " + key + " = ? WHERE id = ?;");
-                    st.setBoolean(1, value);
-                    st.setInt(2, id);
-                    st.executeUpdate();
-                    DatabaseFactory.getDatabase().closeStatement(st);
-                } catch (SQLException ex) {
-                    ACLogger.severe(ex);
-                }
-            }
-        });
+        try {
+            PreparedStatement st = DatabaseFactory.getDatabase().getPreparedStatement("UPDATE " + DatabaseFactory.PLAYER_TABLE + " SET " + key + " = ? WHERE id = ?;");
+            st.setBoolean(1, value);
+            st.setInt(2, id);
+            st.executeUpdate();
+            DatabaseFactory.getDatabase().closeStatement(st);
+        } catch (SQLException ex) {
+            ACLogger.severe(ex);
+        }
     }
 
     @Override
@@ -315,21 +304,16 @@ public class SQLPlayer implements ACPlayer {
 
     @Override
     public void setLastLoc(final MultiServerLocation loc) {
-        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    PreparedStatement st = DatabaseFactory.getDatabase().getPreparedStatement("UPDATE " + DatabaseFactory.PLAYER_TABLE + " SET lastloc = ? WHERE id = ?;");
-                    st.setString(1, loc.toString());
-                    st.setInt(2, id);
-                    st.executeUpdate();
-                    DatabaseFactory.getDatabase().closeStatement(st);
-                    ACLogger.debug("Location set to: " + loc);
-                } catch (SQLException ex) {
-                    ACLogger.severe(ex);
-                }
-            }
-        });
+        try {
+            PreparedStatement st = DatabaseFactory.getDatabase().getPreparedStatement("UPDATE " + DatabaseFactory.PLAYER_TABLE + " SET lastloc = ? WHERE id = ?;");
+            st.setString(1, loc.toString());
+            st.setInt(2, id);
+            st.executeUpdate();
+            DatabaseFactory.getDatabase().closeStatement(st);
+            ACLogger.debug("Location set to: " + loc);
+        } catch (SQLException ex) {
+            ACLogger.severe(ex);
+        }
     }
 
     @Override

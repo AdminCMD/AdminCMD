@@ -45,26 +45,28 @@ public class StoredHome implements ACHome {
         try {
 
             PreparedStatement st = DatabaseFactory.getDatabase().getPreparedStatement("INSERT INTO " + DatabaseFactory.HOME_TABLE + "(playerid, location, name) VALUES (?, ?, ?);", Statement.RETURN_GENERATED_KEYS);
-            st.setInt(1, owner.getID());
-            st.setString(2, owner.getLocation().toString());
-            st.setString(3, name);
+            if (st != null) {
+                st.setInt(1, owner.getID());
+                st.setString(2, owner.getLocation().toString());
+                st.setString(3, name);
 
-            int affectedRows = st.executeUpdate();
+                int affectedRows = st.executeUpdate();
 
-            if (affectedRows == 0) {
-                throw new SQLException("Creating home failed, no rows affected.");
+                if (affectedRows == 0) {
+                    throw new SQLException("Creating home failed, no rows affected.");
+                }
+
+                ResultSet generatedKeys = st.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    this.id = generatedKeys.getInt(1);
+                } else {
+                    String sql = Config.MYSQL_USE.getBoolean() ? "MySQL" : "SQLite";
+                    throw new SQLException("Creating Home failed, no ID obtained. SQL type: " + sql);
+                }
+
+                DatabaseFactory.getDatabase().closeResultSet(generatedKeys);
+                DatabaseFactory.getDatabase().closeStatement(st);
             }
-
-            ResultSet generatedKeys = st.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                this.id = generatedKeys.getInt(1);
-            } else {
-                String sql = Config.MYSQL_USE.getBoolean() ? "MySQL" : "SQLite";
-                throw new SQLException("Creating Home failed, no ID obtained. SQL type: " + sql);
-            }
-
-            DatabaseFactory.getDatabase().closeResultSet(generatedKeys);
-            DatabaseFactory.getDatabase().closeStatement(st);
         } catch (SQLException ex) {
             ACLogger.severe("Error putting new home in database!", ex);
         }
@@ -78,7 +80,7 @@ public class StoredHome implements ACHome {
     }
 
     @Override
-    public int getID() {
+    public int ID() {
         return id;
     }
 

@@ -18,29 +18,17 @@
  */
 package com.admincmd.home;
 
-import com.admincmd.Main;
 import com.admincmd.database.DatabaseFactory;
 import com.admincmd.player.ACPlayer;
 import com.admincmd.player.PlayerManager;
+import com.admincmd.utils.ACLogger;
 import com.admincmd.utils.MultiServerLocation;
-import org.bukkit.Bukkit;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class SQLHome implements ACHome {
-
-    private final int ID;
-
-    public SQLHome(int id) {
-        this.ID = id;
-    }
-
-    @Override
-    public int getID() {
-        return this.ID;
-    }
+public record SQLHome(int ID) implements ACHome {
 
     @Override
     public String getName() {
@@ -59,7 +47,7 @@ public class SQLHome implements ACHome {
             DatabaseFactory.getDatabase().closeResultSet(rs);
             return ret;
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            ACLogger.severe(ex);
             return null;
         }
     }
@@ -81,27 +69,22 @@ public class SQLHome implements ACHome {
             DatabaseFactory.getDatabase().closeResultSet(rs);
             return ret;
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            ACLogger.severe(ex);
             return null;
         }
     }
 
     @Override
     public void setLocation(final MultiServerLocation newLoc) {
-        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    PreparedStatement st = DatabaseFactory.getDatabase().getPreparedStatement("UPDATE " + DatabaseFactory.HOME_TABLE + " SET location = ? WHERE id = ?;");
-                    st.setString(1, newLoc.toString());
-                    st.setInt(2, ID);
-                    st.executeUpdate();
-                    DatabaseFactory.getDatabase().closeStatement(st);
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        });
+        try {
+            PreparedStatement st = DatabaseFactory.getDatabase().getPreparedStatement("UPDATE " + DatabaseFactory.HOME_TABLE + " SET location = ? WHERE id = ?;");
+            st.setString(1, newLoc.toString());
+            st.setInt(2, ID);
+            st.executeUpdate();
+            DatabaseFactory.getDatabase().closeStatement(st);
+        } catch (SQLException ex) {
+            ACLogger.severe(ex);
+        }
     }
 
     @Override
@@ -121,7 +104,7 @@ public class SQLHome implements ACHome {
             DatabaseFactory.getDatabase().closeResultSet(rs);
             return owner;
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            ACLogger.severe(ex);
             return null;
         }
     }

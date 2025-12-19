@@ -19,19 +19,17 @@
 package com.admincmd.world;
 
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 
-public class ResetTime implements Runnable {
-
-    private final ACWorld w;
-
-    public ResetTime(ACWorld w) {
-        this.w = w;
-    }
+public record ResetTime(ACWorld w) implements Runnable {
 
     @Override
     public void run() {
         if (w.isPaused() && w.isOnThisServer()) {
-            Bukkit.getWorld(w.getName()).setTime(w.getPausedTime());
+            World bw = Bukkit.getWorld(w.name());
+            if (bw != null) {
+                bw.setTime(w.getPausedTime());
+            }
         }
     }
 

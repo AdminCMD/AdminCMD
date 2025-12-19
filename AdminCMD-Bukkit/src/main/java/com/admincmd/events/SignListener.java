@@ -27,6 +27,7 @@ import com.admincmd.utils.Utils;
 import com.admincmd.warp.ACWarp;
 import com.admincmd.warp.WarpManager;
 import org.bukkit.ChatColor;
+import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
@@ -130,11 +131,11 @@ public class SignListener extends BukkitListener {
         if (e.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
-        if (!(e.getClickedBlock().getState() instanceof Sign)) {
+
+        Block b = e.getClickedBlock();
+        if (b == null || !(b.getState() instanceof Sign s)) {
             return;
         }
-
-        final Sign s = (Sign) e.getClickedBlock().getState();
 
         ACPlayer acp = PlayerManager.getPlayer(e.getPlayer());
 

@@ -82,7 +82,7 @@ public final class HelpPage {
      * Prepares the help message
      */
     public void prepare() {
-        if (helpPages == null || helpPages.isEmpty()) {
+        if (helpPages.isEmpty()) {
             return;
         }
         HELP_TEXT.add("§a------------------------§1" + Locales.HELP.getString() + "§a-------------------------");

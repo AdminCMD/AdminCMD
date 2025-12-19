@@ -20,6 +20,7 @@ package com.admincmd.commandapi;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,7 @@ public class BukkitCommand extends Command {
     }
 
     @Override
-    public boolean execute(CommandSender sender, String commandLabel, String[] args) {
+    public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
         if (exe != null) {
             exe.onCommand(sender, this, commandLabel, args);
         }
@@ -47,15 +48,15 @@ public class BukkitCommand extends Command {
     }
 
     @Override
-    public List<String> tabComplete(CommandSender sender, String alais, String[] args) {
+    public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) {
         if (this.exe != null) {
-            return exe.onTabComplete(sender, this, alais, args);
+            return exe.onTabComplete(sender, this, alias, args);
         }
         return new ArrayList<>();
     }
 
     @Override
-    public List<String> getAliases() {
+    public @NotNull List<String> getAliases() {
         return aliases;
     }
 

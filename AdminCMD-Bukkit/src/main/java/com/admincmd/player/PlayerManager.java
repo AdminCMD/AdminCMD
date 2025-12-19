@@ -203,13 +203,7 @@ public class PlayerManager {
         if (loc.isOnThisServer()) {
             final Location targetLoc = loc.getBukkitLocation();
             final Player targetPlayer = acp.getPlayer();
-            Bukkit.getScheduler().runTask(Main.getInstance(), new Runnable() {
-                @Override
-                public void run() {
-                    targetPlayer.teleport(targetLoc);
-                }
-            });
-
+            targetPlayer.teleport(targetLoc);
         } else {
             BungeeCordMessageManager mgr = Main.getInstance().getMessageManager();
             mgr.sendMessage(acp, Channel.NONE, MessageCommand.SWITCH_SERVER, loc.getServername());
@@ -221,12 +215,7 @@ public class PlayerManager {
         if (PlayerManager.isOnThisServer(target) && PlayerManager.isOnThisServer(toTP)) {
             final Player toTPbukkit = toTP.getPlayer();
             final Player targetBukkit = target.getPlayer();
-            Bukkit.getScheduler().runTask(Main.getInstance(), new Runnable() {
-                @Override
-                public void run() {
-                    toTPbukkit.teleport(targetBukkit);
-                }
-            });
+            toTPbukkit.teleport(targetBukkit);
         } else {
             BungeeCordMessageManager mgr = Main.getInstance().getMessageManager();
             mgr.sendMessage(toTP, Channel.NONE, MessageCommand.SWITCH_SERVER, target.getServer());

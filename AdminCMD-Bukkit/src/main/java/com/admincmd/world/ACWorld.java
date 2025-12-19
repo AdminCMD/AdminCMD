@@ -28,9 +28,9 @@ public interface ACWorld {
 
     void setPaused(boolean pause);
 
-    String getServer();
+    String server();
 
-    String getName();
+    String name();
 
     boolean isOnThisServer();
 

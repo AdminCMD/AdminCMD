@@ -39,7 +39,7 @@ public class KillallCommand {
 
     @BaseCommand(command = "killall", sender = Sender.PLAYER, permission = "admincmd.mob.killall", helpArguments = {"<-w world>", "<-t [monsters|animals|all]"})
     public CommandResult executeKillall(final Player sender, CommandArgs args) {
-        ACWorld target = WorldManager.getWorld(sender.getWorld());
+        ACWorld target;
         final ACPlayer acp = PlayerManager.getPlayer(sender);
         if (args.hasFlag("w")) {
             CommandArgs.Flag f = args.getFlag("w");
@@ -52,6 +52,12 @@ public class KillallCommand {
             }
 
             target = f.getWorld();
+        } else {
+            target = WorldManager.getWorld(sender.getWorld());
+        }
+
+        if (target == null) {
+            return CommandResult.NOT_A_WORLD;
         }
 
         final MobType mobtype;
@@ -68,52 +74,49 @@ public class KillallCommand {
         }
 
         if (target.isOnThisServer()) {
-            final World ta = Bukkit.getWorld(target.getName());
+            final World ta = Bukkit.getWorld(target.name());
+            if (ta == null) {
+                return CommandResult.NOT_A_WORLD;
+            }
 
-            Bukkit.getScheduler().runTask(Main.getInstance(), new Runnable() {
-                @Override
-                public void run() {
-                    int killed = 0;
-                    for (Entity e : ta.getEntities()) {
-                        if (e instanceof Player) {
-                            continue;
-                        }
-
-                        if (mobtype != MobType.ALL) {
-                            if (e instanceof Creature) {
-                                if (e instanceof Monster && mobtype == MobType.MONSTER) {
-                                    LivingEntity l = (LivingEntity) e;
-                                    l.setHealth(0.0);
-                                    killed++;
-                                } else if (e instanceof Animals && mobtype == MobType.ANIMAL) {
-                                    LivingEntity l = (LivingEntity) e;
-                                    l.setHealth(0.0);
-                                    killed++;
-                                }
-                            }
-                        } else {
-                            if (e instanceof LivingEntity) {
-                                LivingEntity l = (LivingEntity) e;
-                                l.setHealth(0.0);
-                            } else {
-                                e.remove();
-                            }
-                            killed++;
-                        }
+            Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
+                int killed = 0;
+                for (Entity e : ta.getEntities()) {
+                    if (e instanceof Player) {
+                        continue;
                     }
-                    String msg = Locales.MOB_KILLALL.getString().replaceAll("%num%", killed + "").replaceAll("%world%", ta.getName());
-                    Messager.sendMessage(acp, msg, Messager.MessageType.INFO);
+
+                    if (mobtype != MobType.ALL) {
+                        if (e instanceof Creature) {
+                            if (e instanceof Monster l && mobtype == MobType.MONSTER) {
+                                l.setHealth(0.0);
+                                killed++;
+                            } else if (e instanceof Animals l && mobtype == MobType.ANIMAL) {
+                                l.setHealth(0.0);
+                                killed++;
+                            }
+                        }
+                    } else {
+                        if (e instanceof LivingEntity l) {
+                            l.setHealth(0.0);
+                        } else {
+                            e.remove();
+                        }
+                        killed++;
+                    }
                 }
+                String msg = Locales.MOB_KILLALL.getString().replaceAll("%num%", killed + "").replaceAll("%world%", ta.getName());
+                Messager.sendMessage(acp, msg, Messager.MessageType.INFO);
             });
             return CommandResult.SUCCESS;
         } else {
             String msg;
             if (Config.BUNGEECORD.getBoolean()) {
-                msg = Locales.MOB_KILLALL.getString().replaceAll("%world%", target.getServer() + ":" + target.getName()).replaceAll("%num%", "unknown");
+                msg = Locales.MOB_KILLALL.getString().replaceAll("%world%", target.server() + ":" + target.name()).replaceAll("%num%", "unknown");
             } else {
-                msg = Locales.MOB_KILLALL.getString().replaceAll("%world%", target.getName()).replaceAll("%num%", "unknown");
+                msg = Locales.MOB_KILLALL.getString().replaceAll("%world%", target.name()).replaceAll("%num%", "unknown");
             }
-            BungeeCordMessageManager.getInstance().sendMessage(PlayerManager.getPlayer(sender), Channel.KILL_MOBS, MessageCommand.FORWARD, target.getServer() + ":" + target.getName() + ":" + mobtype);
+            BungeeCordMessageManager.getInstance().sendMessage(PlayerManager.getPlayer(sender), Channel.KILL_MOBS, MessageCommand.FORWARD, target.server() + ":" + target.name() + ":" + mobtype);
             return Messager.sendMessage(acp, msg, Messager.MessageType.INFO);
         }
     }

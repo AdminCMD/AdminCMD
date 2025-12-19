@@ -21,16 +21,19 @@ package com.admincmd.communication;
 import com.admincmd.Main;
 import com.admincmd.player.ACPlayer;
 import com.admincmd.player.PlayerManager;
+import com.admincmd.utils.ACLogger;
 import com.admincmd.utils.MultiServerLocation;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Objects;
 
 public class PlayerMessageHandler {
 
@@ -44,8 +47,8 @@ public class PlayerMessageHandler {
         DataOutputStream msgout = new DataOutputStream(msgbytes);
         try {
             msgout.writeUTF(message);
-        } catch (IOException exception) {
-            exception.printStackTrace();
+        } catch (IOException ex) {
+            ACLogger.severe(ex);
         }
         out.writeShort(msgbytes.toByteArray().length);
         out.write(msgbytes.toByteArray());
@@ -62,8 +65,8 @@ public class PlayerMessageHandler {
         DataOutputStream msgout = new DataOutputStream(msgbytes);
         try {
             msgout.writeUTF(message);
-        } catch (IOException exception) {
-            exception.printStackTrace();
+        } catch (IOException ex) {
+            ACLogger.severe(ex);
         }
         out.writeShort(msgbytes.toByteArray().length);
         out.write(msgbytes.toByteArray());
@@ -80,8 +83,8 @@ public class PlayerMessageHandler {
         DataOutputStream msgout = new DataOutputStream(msgbytes);
         try {
             msgout.writeUTF(message);
-        } catch (IOException exception) {
-            exception.printStackTrace();
+        } catch (IOException ex) {
+            ACLogger.severe(ex);
         }
         out.writeShort(msgbytes.toByteArray().length);
         out.write(msgbytes.toByteArray());
@@ -98,8 +101,8 @@ public class PlayerMessageHandler {
         DataOutputStream msgout = new DataOutputStream(msgbytes);
         try {
             msgout.writeUTF(message);
-        } catch (IOException exception) {
-            exception.printStackTrace();
+        } catch (IOException ex) {
+            ACLogger.severe(ex);
         }
         out.writeShort(msgbytes.toByteArray().length);
         out.write(msgbytes.toByteArray());
@@ -116,8 +119,8 @@ public class PlayerMessageHandler {
         DataOutputStream msgout = new DataOutputStream(msgbytes);
         try {
             msgout.writeUTF(message);
-        } catch (IOException exception) {
-            exception.printStackTrace();
+        } catch (IOException ex) {
+            ACLogger.severe(ex);
         }
         out.writeShort(msgbytes.toByteArray().length);
         out.write(msgbytes.toByteArray());
@@ -134,8 +137,8 @@ public class PlayerMessageHandler {
         DataOutputStream msgout = new DataOutputStream(msgbytes);
         try {
             msgout.writeUTF(message);
-        } catch (IOException exception) {
-            exception.printStackTrace();
+        } catch (IOException ex) {
+            ACLogger.severe(ex);
         }
         out.writeShort(msgbytes.toByteArray().length);
         out.write(msgbytes.toByteArray());
@@ -152,8 +155,8 @@ public class PlayerMessageHandler {
         DataOutputStream msgout = new DataOutputStream(msgbytes);
         try {
             msgout.writeUTF(message);
-        } catch (IOException exception) {
-            exception.printStackTrace();
+        } catch (IOException ex) {
+            ACLogger.severe(ex);
         }
         out.writeShort(msgbytes.toByteArray().length);
         out.write(msgbytes.toByteArray());
@@ -171,8 +174,8 @@ public class PlayerMessageHandler {
         DataOutputStream msgout = new DataOutputStream(msgbytes);
         try {
             msgout.writeUTF(message);
-        } catch (IOException exception) {
-            exception.printStackTrace();
+        } catch (IOException ex) {
+            ACLogger.severe(ex);
         }
         out.writeShort(msgbytes.toByteArray().length);
         out.write(msgbytes.toByteArray());
@@ -189,8 +192,8 @@ public class PlayerMessageHandler {
         DataOutputStream msgout = new DataOutputStream(msgbytes);
         try {
             msgout.writeUTF(message);
-        } catch (IOException exception) {
-            exception.printStackTrace();
+        } catch (IOException ex) {
+            ACLogger.severe(ex);
         }
         out.writeShort(msgbytes.toByteArray().length);
         out.write(msgbytes.toByteArray());
@@ -199,41 +202,37 @@ public class PlayerMessageHandler {
 
     protected static void reactTeleport(String msg) {
         String[] split = msg.split("_");
-        final int ID = Integer.valueOf(split[0]);
+        final int ID = Integer.parseInt(split[0]);
         final MultiServerLocation loc = MultiServerLocation.fromString(split[1]);
-        Bukkit.getScheduler().runTaskLaterAsynchronously(Main.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                final ACPlayer acp = PlayerManager.getPlayer(ID);
-                PlayerManager.teleport(loc, acp);
-            }
+        Bukkit.getScheduler().runTaskLaterAsynchronously(Main.getInstance(), () -> {
+            final ACPlayer acp = PlayerManager.getPlayer(ID);
+            PlayerManager.teleport(loc, acp);
         }, 10);
     }
 
     protected static void reactTeleportToPlayer(String msg) {
         String[] split = msg.split("_");
-        final int from = Integer.valueOf(split[0]);
-        final int to = Integer.valueOf(split[1]);
-        Bukkit.getScheduler().runTaskLaterAsynchronously(Main.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                final ACPlayer acfrom = PlayerManager.getPlayer(from);
-                final ACPlayer acto = PlayerManager.getPlayer(to);
-                PlayerManager.teleport(acto, acfrom);
-            }
+        final int from = Integer.parseInt(split[0]);
+        final int to = Integer.parseInt(split[1]);
+        Bukkit.getScheduler().runTaskLaterAsynchronously(Main.getInstance(), () -> {
+            final ACPlayer acfrom = PlayerManager.getPlayer(from);
+            final ACPlayer acto = PlayerManager.getPlayer(to);
+            PlayerManager.teleport(acto, acfrom);
         }, 10);
     }
 
     protected static void reactClearInventory(String msg) {
-        int targetID = Integer.valueOf(msg);
+        int targetID = Integer.parseInt(msg);
         ACPlayer target = PlayerManager.getPlayer(targetID);
-        target.getPlayer().getInventory().clear();
+        if (target != null)
+            target.getPlayer().getInventory().clear();
     }
 
     protected static void reactPlayerFeed(String msg) {
-        int targetID = Integer.valueOf(msg);
+        int targetID = Integer.parseInt(msg);
         ACPlayer target = PlayerManager.getPlayer(targetID);
-        target.getPlayer().setFoodLevel(15);
+        if (target != null)
+            target.getPlayer().setFoodLevel(15);
     }
 
     protected static void reactPlayerHeal(String msg) {
@@ -242,37 +241,34 @@ public class PlayerMessageHandler {
         if (target != null) {
             Player p = target.getPlayer();
             p.setFoodLevel(15);
-            p.setHealth(p.getAttribute(Attribute.MAX_HEALTH).getValue());
+            p.setHealth(Objects.requireNonNull(p.getAttribute(Attribute.MAX_HEALTH)).getValue());
         }
     }
 
     protected static void reactPlayerFly(String msg) {
         String[] split = msg.split(":");
-        int targetID = Integer.valueOf(split[0]);
-        boolean fly = Boolean.valueOf(split[1]);
+        int targetID = Integer.parseInt(split[0]);
+        boolean fly = Boolean.parseBoolean(split[1]);
         ACPlayer target = PlayerManager.getPlayer(targetID);
-        target.getPlayer().setAllowFlight(fly);
+        if (target != null)
+            target.getPlayer().setAllowFlight(fly);
     }
 
     protected static void reactPlayerKill(String msg) {
-        int targetID = Integer.valueOf(msg);
+        int targetID = Integer.parseInt(msg);
         ACPlayer target = PlayerManager.getPlayer(targetID);
-        final Player p = target.getPlayer();
-        Bukkit.getScheduler().runTask(Main.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                p.setHealth(0);
-            }
-        });
+        if (target != null) {
+            final Player p = target.getPlayer();
+            Bukkit.getScheduler().runTask(Main.getInstance(), () -> p.setHealth(0));
+        }
     }
 
     protected static void reactPlayerVanish(String msg) {
-        int targetID = Integer.valueOf(msg);
+        int targetID = Integer.parseInt(msg);
         final ACPlayer target = PlayerManager.getPlayer(targetID);
-        final Player p = target.getPlayer();
-        Bukkit.getScheduler().runTask(Main.getInstance(), new Runnable() {
-            @Override
-            public void run() {
+        if (target != null) {
+            final Player p = target.getPlayer();
+            Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
                 if (target.isInvisible()) {
                     for (Player op : Bukkit.getOnlinePlayers()) {
                         op.hidePlayer(Main.getInstance(), p);
@@ -282,21 +278,18 @@ public class PlayerMessageHandler {
                         op.showPlayer(Main.getInstance(), p);
                     }
                 }
-            }
-        });
+            });
+        }
     }
 
     protected static void reactPlayerGamemode(String msg) {
         String[] split = msg.split(":");
-        int targetID = Integer.valueOf(split[0]);
+        int targetID = Integer.parseInt(split[0]);
         final GameMode gm = GameMode.valueOf(split[1]);
         ACPlayer target = PlayerManager.getPlayer(targetID);
-        final Player targetBukkit = target.getPlayer();
-        Bukkit.getScheduler().runTask(Main.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                targetBukkit.setGameMode(gm);
-            }
-        });
+        if (target != null) {
+            final Player targetBukkit = target.getPlayer();
+            Bukkit.getScheduler().runTask(Main.getInstance(), () -> targetBukkit.setGameMode(gm));
+        }
     }
 }

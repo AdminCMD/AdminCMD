@@ -21,6 +21,7 @@ package com.admincmd.commandapi;
 import com.admincmd.communication.BungeeCordMessageManager;
 import com.admincmd.player.ACPlayer;
 import com.admincmd.player.PlayerManager;
+import com.admincmd.utils.ACLogger;
 import com.admincmd.utils.Config;
 import com.admincmd.world.ACWorld;
 import com.admincmd.world.StoredWorld;
@@ -64,6 +65,7 @@ public class CommandArgs {
                         flags.put(character, flag);
                     }
                 } catch (ArrayIndexOutOfBoundsException ex) {
+                    ACLogger.severe(ex);
                 }
             }
         }
@@ -114,7 +116,7 @@ public class CommandArgs {
      * @return the argument as int
      */
     public int getInt(int index) {
-        return Integer.valueOf(args.get(index));
+        return Integer.parseInt(args.get(index));
     }
 
     /**
@@ -124,7 +126,7 @@ public class CommandArgs {
      * @return the argument as double
      */
     public double getDouble(int index) {
-        return Double.valueOf(args.get(index));
+        return Double.parseDouble(args.get(index));
     }
 
     /**
@@ -163,15 +165,12 @@ public class CommandArgs {
     }
 
     public GameMode getGameMode(int index) {
-        GameMode ret = null;
         try {
             String gm = args.get(index);
-            ret = GameMode.valueOf(gm.toUpperCase());
+            return GameMode.valueOf(gm.toUpperCase());
         } catch (IllegalArgumentException ex) {
-            return ret;
+            return null;
         }
-
-        return ret;
     }
 
     /**
@@ -364,15 +363,12 @@ public class CommandArgs {
         }
 
         public GameMode getGameMode() {
-            GameMode ret = null;
             try {
                 String gm = getString();
-                ret = GameMode.valueOf(gm.toUpperCase());
+                return GameMode.valueOf(gm.toUpperCase());
             } catch (IllegalArgumentException ex) {
-                return ret;
+                return null;
             }
-
-            return ret;
         }
 
         /**

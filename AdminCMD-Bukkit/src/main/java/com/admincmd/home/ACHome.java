@@ -23,7 +23,7 @@ import com.admincmd.utils.MultiServerLocation;
 
 public interface ACHome {
 
-    int getID();
+    int ID();
 
     String getName();
 

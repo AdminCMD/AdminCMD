@@ -29,6 +29,8 @@ import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
+import java.util.Objects;
+
 @CommandHandler
 public class TopCommand {
 
@@ -46,7 +48,7 @@ public class TopCommand {
             boolean air = (overHead.getBlock().getType() == Material.AIR);
 
             if (air) {
-                for (int y = overHead.getBlockY(); y <= loc.getWorld().getMaxHeight(); y++) {
+                for (int y = overHead.getBlockY(); y <= Objects.requireNonNull(loc.getWorld()).getMaxHeight(); y++) {
                     target.setY(y + 1);
                     target2.setY(y + 2);
                     Location target3 = target2.clone();
@@ -58,7 +60,7 @@ public class TopCommand {
                     }
                 }
             } else {
-                for (int y = overHead.getBlockY(); y <= loc.getWorld().getMaxHeight(); y++) {
+                for (int y = overHead.getBlockY(); y <= Objects.requireNonNull(loc.getWorld()).getMaxHeight(); y++) {
                     target.setY(y);
                     target2.setY(y + 1);
 
@@ -96,7 +98,7 @@ public class TopCommand {
                 boolean air = (overHead.getBlock().getType() == Material.AIR);
 
                 if (air) {
-                    for (int y = overHead.getBlockY(); y <= loc.getWorld().getMaxHeight(); y++) {
+                    for (int y = overHead.getBlockY(); y <= Objects.requireNonNull(loc.getWorld()).getMaxHeight(); y++) {
                         target.setY(y + 1);
                         target2.setY(y + 2);
                         Location target3 = target2.clone();
@@ -108,7 +110,7 @@ public class TopCommand {
                         }
                     }
                 } else {
-                    for (int y = overHead.getBlockY(); y <= loc.getWorld().getMaxHeight(); y++) {
+                    for (int y = overHead.getBlockY(); y <= Objects.requireNonNull(loc.getWorld()).getMaxHeight(); y++) {
                         target.setY(y);
                         target2.setY(y + 1);
 

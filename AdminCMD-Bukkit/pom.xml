@@ -2,7 +2,6 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.admincmd</groupId>
     <artifactId>AdminCMD-Bukkit</artifactId>
     <version>10.0.1</version>
     <packaging>jar</packaging>
@@ -86,6 +85,12 @@
             <groupId>com.github.TheJeterLP</groupId>
             <artifactId>Spigot-Updatechecker</artifactId>
             <version>2.0.6</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>RELEASE</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

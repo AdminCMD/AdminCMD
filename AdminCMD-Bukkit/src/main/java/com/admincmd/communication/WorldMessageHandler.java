@@ -20,6 +20,7 @@ package com.admincmd.communication;
 
 import com.admincmd.Main;
 import com.admincmd.commands.mob.KillallCommand;
+import com.admincmd.utils.ACLogger;
 import com.admincmd.world.ACWorld;
 import com.admincmd.world.WorldManager;
 import com.google.common.io.ByteArrayDataOutput;
@@ -47,7 +48,7 @@ public class WorldMessageHandler {
         try {
             msgout.writeUTF(message);
         } catch (IOException exception) {
-            exception.printStackTrace();
+            ACLogger.severe(exception);
         }
         out.writeShort(msgbytes.toByteArray().length);
         out.write(msgbytes.toByteArray());
@@ -67,7 +68,7 @@ public class WorldMessageHandler {
         try {
             msgout.writeUTF(message);
         } catch (IOException exception) {
-            exception.printStackTrace();
+            ACLogger.severe(exception);
         }
         out.writeShort(msgbytes.toByteArray().length);
         out.write(msgbytes.toByteArray());
@@ -87,7 +88,7 @@ public class WorldMessageHandler {
         try {
             msgout.writeUTF(message);
         } catch (IOException exception) {
-            exception.printStackTrace();
+            ACLogger.severe(exception);
         }
         out.writeShort(msgbytes.toByteArray().length);
         out.write(msgbytes.toByteArray());
@@ -107,7 +108,7 @@ public class WorldMessageHandler {
         try {
             msgout.writeUTF(message);
         } catch (IOException exception) {
-            exception.printStackTrace();
+            ACLogger.severe(exception);
         }
         out.writeShort(msgbytes.toByteArray().length);
         out.write(msgbytes.toByteArray());
@@ -118,7 +119,7 @@ public class WorldMessageHandler {
     protected static void reactTimeSet(String msg) {
         String[] split = msg.split(":");
         String worldName = split[0];
-        long timeToSet = Long.valueOf(split[1]);
+        long timeToSet = Long.parseLong(split[1]);
         ACWorld w = WorldManager.getWorld(worldName, BungeeCordMessageManager.getServerName());
         if (w != null) {
             WorldManager.setTime(w, timeToSet);
@@ -128,7 +129,7 @@ public class WorldMessageHandler {
     protected static void reactTimePause(String msg) {
         String[] split = msg.split(":");
         String worldName = split[0];
-        boolean pause = Boolean.valueOf(split[1]);
+        boolean pause = Boolean.parseBoolean(split[1]);
         ACWorld target = WorldManager.getWorld(worldName, BungeeCordMessageManager.getServerName());
 
         if (target != null) {
@@ -139,9 +140,11 @@ public class WorldMessageHandler {
     protected static void reactWeatherSet(String msg) {
         ACWorld target = WorldManager.getWorld(msg, BungeeCordMessageManager.getServerName());
         if (target != null) {
-            World bukkitWorld = Bukkit.getWorld(target.getName());
-            bukkitWorld.setStorm(false);
-            bukkitWorld.setThundering(false);
+            World bukkitWorld = Bukkit.getWorld(target.name());
+            if (bukkitWorld != null) {
+                bukkitWorld.setStorm(false);
+                bukkitWorld.setThundering(false);
+            }
         }
     }
 
@@ -155,27 +158,25 @@ public class WorldMessageHandler {
             return;
         }
 
-        World bukkitWorld = Bukkit.getWorld(target.getName());
-        for (Entity e : bukkitWorld.getEntities()) {
-            if (e instanceof Player) {
-                continue;
-            }
-
-            if (type != KillallCommand.MobType.ALL) {
-                if (e instanceof Creature) {
-                    if (e instanceof Monster && type == KillallCommand.MobType.MONSTER) {
-                        LivingEntity l = (LivingEntity) e;
-                        l.setHealth(0.0);
-                    } else if (e instanceof Animals && type == KillallCommand.MobType.ANIMAL) {
-                        LivingEntity l = (LivingEntity) e;
-                        l.setHealth(0.0);
-                    }
+        World bukkitWorld = Bukkit.getWorld(target.name());
+        if (bukkitWorld != null) {
+            for (Entity e : bukkitWorld.getEntities()) {
+                if (e instanceof Player) {
+                    continue;
                 }
-            } else {
-                e.remove();
+
+                if (type != KillallCommand.MobType.ALL) {
+                    if (e instanceof Creature) {
+                        if (e instanceof Monster l && type == KillallCommand.MobType.MONSTER) {
+                            l.setHealth(0.0);
+                        } else if (e instanceof Animals l && type == KillallCommand.MobType.ANIMAL) {
+                            l.setHealth(0.0);
+                        }
+                    }
+                } else {
+                    e.remove();
+                }
             }
         }
-
     }
-
 }

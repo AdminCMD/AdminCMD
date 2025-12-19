@@ -24,7 +24,7 @@ public interface ACWarp {
 
     int getID();
 
-    String getName();
+    String name();
 
     MultiServerLocation getLocation();
 
