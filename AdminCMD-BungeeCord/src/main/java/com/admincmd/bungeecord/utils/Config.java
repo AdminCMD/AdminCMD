@@ -48,6 +48,7 @@ public enum Config {
     private static Configuration cfg;
     private final Object value;
     private final String path;
+
     private Config(String path, Object val) {
         this.path = path;
         this.value = val;

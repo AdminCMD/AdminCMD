@@ -26,7 +26,6 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 
 import java.io.ByteArrayOutputStream;
