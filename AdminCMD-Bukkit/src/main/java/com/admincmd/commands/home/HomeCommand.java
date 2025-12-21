@@ -31,7 +31,7 @@ import org.bukkit.entity.Player;
 @CommandHandler
 public class HomeCommand {
 
-    @BaseCommand(command = "home", sender = Sender.PLAYER, permission = "admincmd.home.tp", helpArguments = {"", "<name>"}, async = true)
+    @BaseCommand(command = "home", sender = Sender.PLAYER, permission = "admincmd.home.tp", helpArguments = {"", "<name>"})
     public CommandResult executeHome(Player p, CommandArgs args) {
         if (args.getLength() > 1) {
             return CommandResult.ERROR;

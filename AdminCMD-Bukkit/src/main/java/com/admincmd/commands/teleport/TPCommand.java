@@ -31,7 +31,7 @@ import org.bukkit.entity.Player;
 @CommandHandler
 public class TPCommand {
 
-    @BaseCommand(command = "tp", sender = Sender.PLAYER, aliases = "teleport", helpArguments = {"<x y z>", "<world> <x y z>", "<player>", "<player> <player>"}, permission = "admincmd.tp.teleport", async = true)
+    @BaseCommand(command = "tp", sender = Sender.PLAYER, aliases = "teleport", helpArguments = {"<x y z>", "<world> <x y z>", "<player>", "<player> <player>"}, permission = "admincmd.tp.teleport")
     public CommandResult executeTp(Player sender, CommandArgs args) {
         if (args.isEmpty()) {
             return CommandResult.ERROR;
@@ -94,7 +94,7 @@ public class TPCommand {
         }
     }
 
-    @BaseCommand(command = "tphere", sender = Sender.PLAYER, helpArguments = {"<player>"}, permission = "admincmd.tp.teleport", async = true)
+    @BaseCommand(command = "tphere", sender = Sender.PLAYER, helpArguments = {"<player>"}, permission = "admincmd.tp.teleport")
     public CommandResult executeTpHere(Player sender, CommandArgs args) {
         if (args.getLength() != 1) {
             return CommandResult.ERROR;

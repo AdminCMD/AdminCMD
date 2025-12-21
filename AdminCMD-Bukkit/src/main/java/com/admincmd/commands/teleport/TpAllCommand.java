@@ -28,7 +28,7 @@ import org.bukkit.entity.Player;
 @CommandHandler
 public class TpAllCommand {
 
-    @BaseCommand(command = "tpall", sender = Sender.PLAYER, permission = "admincmd.teleport.all", helpArguments = {"", "<-p player>"}, async = true)
+    @BaseCommand(command = "tpall", sender = Sender.PLAYER, permission = "admincmd.teleport.all", helpArguments = {"", "<-p player>"})
     public CommandResult executeTpAll(Player sender, CommandArgs args) {
         ACPlayer se = PlayerManager.getPlayer(sender);
         if (args.isEmpty()) {

@@ -1,6 +1,6 @@
 /*
  * This file is part of AdminCMD
- * Copyright (C) 2020 AdminCMD Team
+ * Copyright (C) 2015 AdminCMD Team
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,11 +16,28 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-package com.admincmd.teleport;
+package com.admincmd.chestsigns.inventorysigns;
 
 import com.admincmd.player.ACPlayer;
+import com.admincmd.utils.MultiServerLocation;
+import org.bukkit.block.Container;
+import org.bukkit.inventory.Inventory;
 
-public record StoredRequest(ACPlayer requester, ACPlayer receiver, RequestType type) implements ACTeleportRequest {
+import java.util.List;
 
+public interface InventorySign {
 
+    MultiServerLocation getLocation();
+
+    int getID();
+
+    ACPlayer getOwner();
+
+    List<Container> getConnectingChests();
+
+    boolean exists();
+
+    boolean isValid();
+
+    Inventory getConnectingInventory();
 }

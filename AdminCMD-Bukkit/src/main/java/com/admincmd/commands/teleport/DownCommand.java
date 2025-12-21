@@ -32,7 +32,7 @@ import org.bukkit.entity.Player;
 @CommandHandler
 public class DownCommand {
 
-    @BaseCommand(command = "down", sender = Sender.PLAYER, permission = "admincmd.tp.down", aliases = "tpdown", helpArguments = {"", "<-p player>"}, async = true)
+    @BaseCommand(command = "down", sender = Sender.PLAYER, permission = "admincmd.tp.down", aliases = "tpdown", helpArguments = {"", "<-p player>"})
     public CommandResult executeDown(Player sender, CommandArgs args) {
         ACPlayer se = PlayerManager.getPlayer(sender);
         if (args.isEmpty()) {

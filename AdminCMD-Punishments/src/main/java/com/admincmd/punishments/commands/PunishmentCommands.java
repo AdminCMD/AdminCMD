@@ -164,7 +164,6 @@ public class PunishmentCommands {
             sender.sendMessage(Config.MESSAGE_CREATOR_KICK.replace(target, pu));
             return CommandResult.SUCCESS;
         } else {
-
             List<String> reason = args.getArgs().subList(1, args.getArgs().size());
             StringBuilder reasonMsg = new StringBuilder();
             for (String arg : reason) {

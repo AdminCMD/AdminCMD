@@ -33,7 +33,7 @@ import org.bukkit.entity.Player;
 @CommandHandler
 public class GamemodeCommand {
 
-    @BaseCommand(command = "gamemode", sender = Sender.PLAYER, permission = "admincmd.player.gamemode", aliases = "gm", helpArguments = {"", "<0|1|2|3>", "<-p player> <0|1|2|3>"}, async = true)
+    @BaseCommand(command = "gamemode", sender = Sender.PLAYER, permission = "admincmd.player.gamemode", aliases = "gm", helpArguments = {"", "<MODE>", "<-p player> <MODE>"})
     public CommandResult executeGamemode(final Player sender, CommandArgs args) {
         if (args.isEmpty()) {
             GameMode gm = sender.getGameMode() == GameMode.SURVIVAL ? GameMode.CREATIVE : GameMode.SURVIVAL;

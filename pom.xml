@@ -39,6 +39,7 @@
         <module>AdminCMD-Kits</module>
         <module>AdminCMD-Punishments</module>
         <module>AdminCMD-VirtualChest</module>
+        <module>AdminCMD-ChestSigns</module>
     </modules>
 
     <build>
