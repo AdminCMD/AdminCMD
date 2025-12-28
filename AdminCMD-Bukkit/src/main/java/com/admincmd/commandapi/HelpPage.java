@@ -27,6 +27,10 @@ import java.util.List;
 public final class HelpPage {
 
     private final List<CommandHelp> helpPages = new ArrayList<>();
+
+    public List<CommandHelp> getHelpPages() {
+        return helpPages;
+    }
     private final List<String> HELP_TEXT = new ArrayList<>();
     private final String command;
 
@@ -43,7 +47,7 @@ public final class HelpPage {
      * Automatically gets all help texts from the given arguments of the
      * {@link com.admincmd.utils.Locales} and prepares the message.
      *
-     * @param command   the command this HelpPage is for
+     * @param command the command this HelpPage is for
      * @param arguments the arguments to search for
      */
     public HelpPage(String command, String... arguments) {
@@ -95,7 +99,7 @@ public final class HelpPage {
     /**
      * Manually add a message to a given argument.
      *
-     * @param argument    the argument the message is for
+     * @param argument the argument the message is for
      * @param description the message
      */
     public void addPage(String argument, String description) {
@@ -106,7 +110,7 @@ public final class HelpPage {
      * Checks if the sender wants to see the help by typing /command help or
      * /command ? and sends the text if he did.
      *
-     * @param s    the commandsender
+     * @param s the commandsender
      * @param args the arguments
      * @return true if helptext was sent
      */

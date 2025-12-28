@@ -24,7 +24,9 @@ import com.admincmd.player.PlayerManager;
 import com.admincmd.utils.Locales;
 import com.admincmd.utils.Messager;
 import com.admincmd.utils.Utils;
+import java.util.List;
 import org.bukkit.World;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
@@ -32,7 +34,7 @@ import org.bukkit.entity.Player;
 public class SpawnmobCommand {
 
     @BaseCommand(command = "spawnmob", sender = Sender.PLAYER, permission = "admincmd.mob.spawnmob", helpArguments = "mobtype amount")
-    public CommandResult executeSpawnmob(final Player sender, final CommandArgs args) {
+    public CommandResult executeSpawnmob(Player sender, CommandArgs args) {
         if (args.getLength() != 2 || !args.isInteger(1)) {
             return CommandResult.ERROR;
         }
@@ -61,6 +63,16 @@ public class SpawnmobCommand {
         String msg = Locales.MOB_SPAWNED.getString().replaceAll("%num%", amount + "");
         Messager.sendMessage(acp, msg, Messager.MessageType.INFO);
         return CommandResult.SUCCESS;
+    }
+
+    @TabComplete(command = "spawnmob")
+    public List<String> onTabComplete(CommandSender sender, CommandArgs args, List<String> tabs) {
+        for (EntityType e : EntityType.values()) {
+            if (e.isSpawnable()) {
+                tabs.add(e.toString().toLowerCase());
+            }
+        }
+        return tabs;
     }
 
 }

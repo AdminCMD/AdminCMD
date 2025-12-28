@@ -40,15 +40,7 @@ public class KillCommand {
         }
 
         if (args.hasFlag("p")) {
-            if (!sender.hasPermission("admincmd.player.kill.other")) {
-                return CommandResult.NO_PERMISSION_OTHER;
-            }
-
             CommandArgs.Flag flag = args.getFlag("p");
-            if (!flag.isRegisteredPlayer()) {
-                return CommandResult.NOT_A_PLAYER;
-            }
-
             final ACPlayer target = flag.getPlayer();
 
             if (PlayerManager.isOnThisServer(target)) {

@@ -43,10 +43,6 @@ public class LocationCommand {
         }
 
         if (args.hasFlag("p")) {
-            if (!sender.hasPermission("admincmd.player.loc.other")) {
-                return CommandResult.NO_PERMISSION_OTHER;
-            }
-
             CommandArgs.Flag flag = args.getFlag("p");
             if (!flag.isPlayerOnThisServer()) {
                 return CommandResult.NOT_ONLINE;

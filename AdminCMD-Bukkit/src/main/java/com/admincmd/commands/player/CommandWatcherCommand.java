@@ -24,6 +24,9 @@ import com.admincmd.player.PlayerManager;
 import com.admincmd.utils.Locales;
 import com.admincmd.utils.Messager;
 import com.admincmd.utils.Utils;
+import java.util.ArrayList;
+import java.util.List;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 @CommandHandler
@@ -40,15 +43,8 @@ public class CommandWatcherCommand {
             return Messager.sendMessage(p, msg, Messager.MessageType.INFO);
         }
 
-        if (args.hasFlag("p")) {
-            if (!sender.hasPermission("admincmd.player.cw.other")) {
-                return CommandResult.NO_PERMISSION_OTHER;
-            }
-            CommandArgs.Flag flag = args.getFlag("p");
-            if (!flag.isRegisteredPlayer()) {
-                return CommandResult.NOT_A_PLAYER;
-            }
-
+        if (args.hasFlag("p")) {           
+            CommandArgs.Flag flag = args.getFlag("p");           
             ACPlayer target = flag.getPlayer();
             boolean status = !target.isCMDWatcher();
             target.setCMDWatcher(status);
@@ -58,9 +54,13 @@ public class CommandWatcherCommand {
             Messager.sendMessage(target, msg2, Messager.MessageType.INFO);
             return Messager.sendMessage(p, msg, Messager.MessageType.INFO);
         }
-
         return CommandResult.ERROR;
+    }
 
+    @TabComplete(command = "cw")
+    public List<String> onTabComplete(CommandSender sender, CommandArgs args, List<String> tabs) {
+        tabs.add("test");
+        return tabs;
     }
 
 }

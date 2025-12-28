@@ -56,15 +56,7 @@ public class VanishCommand {
         }
 
         if (args.hasFlag("p")) {
-            if (!sender.hasPermission("admincmd.player.vanish.other")) {
-                return CommandResult.NO_PERMISSION_OTHER;
-            }
-
             CommandArgs.Flag flag = args.getFlag("p");
-            if (!flag.isRegisteredPlayer()) {
-                return CommandResult.NOT_A_PLAYER;
-            }
-
             final ACPlayer p = flag.getPlayer();
             final boolean value = !p.isInvisible();
             p.setInvisible(value);

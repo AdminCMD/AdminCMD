@@ -32,10 +32,6 @@ public class OpeninvCommand {
         }
 
         if (args.hasFlag("p")) {
-            if (!sender.hasPermission("admincmd.player.openinv.other")) {
-                return CommandResult.NO_PERMISSION_OTHER;
-            }
-
             CommandArgs.Flag flag = args.getFlag("p");
             if (!flag.isPlayerOnThisServer()) {
                 return CommandResult.NOT_ONLINE;

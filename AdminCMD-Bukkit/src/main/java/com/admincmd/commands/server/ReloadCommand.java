@@ -22,8 +22,11 @@ import com.admincmd.Main;
 import com.admincmd.commandapi.*;
 import com.admincmd.utils.Locales;
 import com.admincmd.utils.Messager.MessageType;
+import java.util.List;
+import org.bukkit.GameMode;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 
 @CommandHandler
 public class ReloadCommand {
@@ -40,14 +43,25 @@ public class ReloadCommand {
             return CommandResult.ERROR;
         }
 
-        Plugin pl = Main.getInstance().getServer().getPluginManager().getPlugin(args.getString(0));
+        PluginManager pMan = Main.getInstance().getServer().getPluginManager();
+
+        Plugin pl = pMan.getPlugin(args.getString(0));
         if (pl == null) {
             sender.sendMessage(MessageType.ERROR.getPrefix() + Locales.SERVER_RELOAD_NOT_FOUND.getString());
             return CommandResult.SUCCESS;
         }
-        Main.getInstance().getServer().getPluginManager().disablePlugin(pl);
-        Main.getInstance().getServer().getPluginManager().enablePlugin(pl);
+
+        pMan.disablePlugin(pl);
+        pMan.enablePlugin(pl);
         sender.sendMessage(MessageType.INFO.getPrefix() + Locales.SERVER_RELOAD_SINGLE.getString());
         return CommandResult.SUCCESS;
+    }
+
+    @TabComplete(command = "acreload")
+    public List<String> onTabComplete(CommandSender sender, CommandArgs args, List<String> tabs) {
+        for (Plugin pl : Main.getInstance().getServer().getPluginManager().getPlugins()) {
+            tabs.add(pl.getName());
+        }
+        return tabs;
     }
 }

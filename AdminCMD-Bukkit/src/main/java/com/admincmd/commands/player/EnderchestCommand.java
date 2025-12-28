@@ -32,10 +32,7 @@ public class EnderchestCommand {
             return CommandResult.SUCCESS;
         }
 
-        if (args.hasFlag("p")) {
-            if (!sender.hasPermission("admincmd.player.enderchest.other")) {
-                return CommandResult.NO_PERMISSION_OTHER;
-            }
+        if (args.hasFlag("p")) {            
             CommandArgs.Flag flag = args.getFlag("p");
             if (!flag.isPlayerOnThisServer()) {
                 return CommandResult.NOT_ONLINE;

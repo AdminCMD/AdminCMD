@@ -25,7 +25,9 @@ import com.admincmd.utils.Locales;
 import com.admincmd.utils.Messager;
 import com.admincmd.utils.MultiServerLocation;
 import com.admincmd.world.ACWorld;
+import java.util.List;
 import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 @CommandHandler
@@ -112,6 +114,22 @@ public class TPCommand {
         PlayerManager.teleport(s, target);
         Messager.sendMessage(s, Locales.TELEPORT_TPA_ACCEPT_TARGET.replacePlayer(target.getOfflinePlayer()), Messager.MessageType.INFO);
         return CommandResult.SUCCESS;
+    }
+
+    @TabComplete(command = "tp")
+    public List<String> onTabComplete(CommandSender sender, CommandArgs args, List<String> tabs) {
+        for (ACPlayer p : PlayerManager.getOnlinePlayers()) {
+            tabs.add(p.getName());
+        }
+        return tabs;
+    }
+
+    @TabComplete(command = "tphere")
+    public List<String> onTabCompleteHere(CommandSender sender, CommandArgs args, List<String> tabs) {
+        for (ACPlayer p : PlayerManager.getOnlinePlayers()) {
+            tabs.add(p.getName());
+        }
+        return tabs;
     }
 
 }

@@ -80,14 +80,6 @@ public class WhoisCommand {
         }
 
         Flag f = args.getFlag("p");
-        if (!f.isRegisteredPlayer()) {
-            return CommandResult.NOT_A_PLAYER;
-        }
-
-        if (!sender.hasPermission("admincmd.player.whois.other")) {
-            return CommandResult.NO_PERMISSION_OTHER;
-        }
-
         ACPlayer s = f.getPlayer();
         List<String> text = new ArrayList<>();
         text.add("&a---------- " + Utils.replacePlayerPlaceholders(s.getOfflinePlayer()) + " &a----------");

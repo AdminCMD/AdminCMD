@@ -25,6 +25,8 @@ import com.admincmd.utils.Locales;
 import com.admincmd.utils.Messager;
 import com.admincmd.warp.ACWarp;
 import com.admincmd.warp.WarpManager;
+import java.util.List;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 @CommandHandler
@@ -45,6 +47,12 @@ public class DelWarpCommand {
         WarpManager.deleteWarp(w);
         String msg = Locales.WARP_DELETED.getString().replaceAll("%warp%", w.name());
         return Messager.sendMessage(se, msg, Messager.MessageType.INFO);
+    }
+    
+    @TabComplete(command = "delwarp")
+    public List<String> onTabComplete(CommandSender sender, CommandArgs args, List<String> tabs) {
+        tabs.addAll(WarpManager.getWarps());
+        return tabs;
     }
 
 }

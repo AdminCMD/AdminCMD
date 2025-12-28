@@ -22,7 +22,11 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
 
-public record MethodContainer(HashMap<Sender, Method> methods) {
+public record MethodContainer(HashMap<Sender, Method> methods, Method tabComplete) {
+
+    Method getTabcomplete() {
+        return tabComplete;
+    }
 
     Method getMethod(Sender s) {
         return methods.get(s);
@@ -36,5 +40,14 @@ public record MethodContainer(HashMap<Sender, Method> methods) {
         return methods;
     }
 
+    @Override
+    public String toString() {
+        String ret = "";
+        for (Sender s : methods.keySet()) {
+            Method m = methods.get(s);
+            ret += ("Sender: " + s + " Method: " + m.getName() + " Class: " + m.getDeclaringClass().getName() + "\n");
+        }
+        return ret;
+    }
 
 }

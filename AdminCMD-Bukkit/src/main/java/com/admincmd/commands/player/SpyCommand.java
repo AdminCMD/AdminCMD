@@ -40,15 +40,7 @@ public class SpyCommand {
         }
 
         if (args.hasFlag("p")) {
-            if (!sender.hasPermission("admincmd.player.spy.other")) {
-                return CommandResult.NO_PERMISSION_OTHER;
-            }
-
             CommandArgs.Flag flag = args.getFlag("p");
-            if (!flag.isRegisteredPlayer()) {
-                return CommandResult.NOT_A_PLAYER;
-            }
-
             ACPlayer p = flag.getPlayer();
             p.setSpy(!p.isSpy());
             String s = p.isSpy() ? Locales.COMMAND_MESSAGES_ENABLED.getString() : Locales.COMMAND_MESSAGES_DISABLED.getString();

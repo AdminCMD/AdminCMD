@@ -27,7 +27,10 @@ import com.admincmd.player.PlayerManager;
 import com.admincmd.utils.Locales;
 import com.admincmd.utils.Messager;
 import com.admincmd.utils.Utils;
+import java.util.List;
 import org.bukkit.GameMode;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 @CommandHandler
@@ -44,13 +47,7 @@ public class GamemodeCommand {
         }
 
         if (args.hasFlag("p")) {
-            if (!sender.hasPermission("admincmd.player.gamemode.other")) {
-                return CommandResult.NO_PERMISSION_OTHER;
-            }
             CommandArgs.Flag flag = args.getFlag("p");
-            if (!flag.isRegisteredPlayer()) {
-                return CommandResult.NOT_A_PLAYER;
-            }
             final ACPlayer actarget = flag.getPlayer();
 
             if (!actarget.isOnline()) {
@@ -93,6 +90,14 @@ public class GamemodeCommand {
         }
 
         return CommandResult.ERROR;
+    }
+
+    @TabComplete(command = "gamemode")
+    public List<String> onTabComplete(CommandSender sender, CommandArgs args, List<String> tabs) {
+        for (GameMode gm : GameMode.values()) {
+            tabs.add(gm.toString());
+        }
+        return tabs;
     }
 
 }

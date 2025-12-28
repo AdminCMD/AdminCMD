@@ -41,15 +41,8 @@ public class GodCommand {
             return Messager.sendMessage(p, msg, Messager.MessageType.INFO);
         }
 
-        if (args.hasFlag("p")) {
-            if (!sender.hasPermission("admincmd.player.god.other")) {
-                return CommandResult.NO_PERMISSION_OTHER;
-            }
-            CommandArgs.Flag flag = args.getFlag("p");
-            if (!flag.isRegisteredPlayer()) {
-                return CommandResult.NOT_A_PLAYER;
-            }
-
+        if (args.hasFlag("p")) {           
+            CommandArgs.Flag flag = args.getFlag("p");           
             ACPlayer p = flag.getPlayer();
             boolean value = !p.isGod();
             p.setGod(value);

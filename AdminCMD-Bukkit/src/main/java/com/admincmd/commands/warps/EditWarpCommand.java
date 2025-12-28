@@ -26,6 +26,8 @@ import com.admincmd.utils.Messager;
 import com.admincmd.utils.MultiServerLocation;
 import com.admincmd.warp.ACWarp;
 import com.admincmd.warp.WarpManager;
+import java.util.List;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 @CommandHandler
@@ -47,6 +49,12 @@ public class EditWarpCommand {
 
         w.setLocation(MultiServerLocation.fromLocation(sender.getLocation()));
         return Messager.sendMessage(se, Locales.WARP_UPDATED, Messager.MessageType.INFO);
+    }
+    
+    @TabComplete(command = "editwarp")
+    public List<String> onTabComplete(CommandSender sender, CommandArgs args, List<String> tabs) {
+        tabs.addAll(WarpManager.getWarps());
+        return tabs;
     }
 
 }

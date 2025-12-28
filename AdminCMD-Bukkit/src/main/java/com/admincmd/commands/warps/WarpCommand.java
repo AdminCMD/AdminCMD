@@ -26,6 +26,8 @@ import com.admincmd.utils.Messager;
 import com.admincmd.warp.ACWarp;
 import com.admincmd.warp.WarpManager;
 import com.google.common.base.Joiner;
+import java.util.List;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 @CommandHandler
@@ -56,6 +58,12 @@ public class WarpCommand {
                 return Messager.sendMessage(se, Locales.WARP_NO_SUCH_WARP, Messager.MessageType.ERROR);
             }
         }
+    }
+    
+    @TabComplete(command = "warp")
+    public List<String> onTabComplete(CommandSender sender, CommandArgs args, List<String> tabs) {
+        tabs.addAll(WarpManager.getWarps());
+        return tabs;
     }
 
 }

@@ -23,9 +23,11 @@ import com.admincmd.commandapi.*;
 import com.admincmd.utils.Config;
 import com.admincmd.utils.Locales;
 import com.admincmd.utils.Messager.MessageType;
+import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 @CommandHandler
 public class MaintenanceCommand {
@@ -75,5 +77,12 @@ public class MaintenanceCommand {
             return CommandResult.SUCCESS;
         }
         return CommandResult.ERROR;
+    }
+
+    @TabComplete(command = "maintenance")
+    public List<String> onTabComplete(CommandSender sender, CommandArgs args, List<String> tabs) {
+        tabs.add("enable");
+        tabs.add("disable");
+        return tabs;
     }
 }

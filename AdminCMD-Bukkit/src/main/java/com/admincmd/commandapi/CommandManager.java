@@ -24,15 +24,12 @@ import com.admincmd.player.ACPlayer;
 import com.admincmd.player.PlayerManager;
 import com.admincmd.utils.ACLogger;
 import com.admincmd.utils.Locales;
-import com.admincmd.warp.WarpManager;
+import com.admincmd.world.WorldManager;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.block.CommandBlock;
 import org.bukkit.command.*;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.minecart.CommandMinecart;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
@@ -74,6 +71,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
             return;
         }
         BukkitCommand cmd = new BukkitCommand(name, aliases);
+
         cmap.register(plugin.getName().toLowerCase(), cmd);
         cmd.setExecutor(this);
     }
@@ -81,48 +79,22 @@ public class CommandManager implements CommandExecutor, TabCompleter {
     private BaseCommand getCommand(Command c, CommandArgs args, Sender sender) {
         BaseCommand ret = null;
         for (BaseCommand bc : cmds.keySet()) {
-            if (bc.sender() == Sender.ALL) {
-                if (bc.command().equalsIgnoreCase(c.getName())) {
-                    if (args.isEmpty() && bc.subCommand().trim().isEmpty()) {
-                        ret = bc;
-                    } else if (!args.isEmpty() && bc.subCommand().equalsIgnoreCase(args.getString(0))) {
-                        ret = bc;
-                    }
-                }
-            } else {
-                if (bc.sender() != sender) {
-                    continue;
-                }
-                if (bc.command().equalsIgnoreCase(c.getName())) {
-                    if (args.isEmpty() && bc.subCommand().trim().isEmpty()) {
-                        ret = bc;
-                    } else if (!args.isEmpty() && bc.subCommand().equalsIgnoreCase(args.getString(0))) {
-                        ret = bc;
-                    }
+            if (!bc.command().equalsIgnoreCase(c.getName())) {
+                continue;
+            }
+            if (bc.sender() == Sender.ALL || bc.sender() == sender) {
+                if (bc.subCommand().isBlank() || args.isEmpty() || bc.subCommand().equalsIgnoreCase(args.getString(0))) {
+                    ret = bc;
                 }
             }
         }
         return ret;
     }
 
-    private Object getCommandObject(Command c, Sender sender, CommandArgs args) throws Exception {
-        BaseCommand bcmd = getCommand(c, args, sender);
-        if (bcmd == null) {
-            for (BaseCommand bc : cmds.keySet()) {
-                if (bc.command().equalsIgnoreCase(c.getName()) && bc.subCommand().trim().isEmpty()) {
-                    bcmd = bc;
-                    break;
-                }
-            }
-        }
-
-        if (bcmd != null) {
-            MethodContainer container = cmds.get(bcmd);
-            Method me = container.getMethod(bcmd.sender());
-            return me.getDeclaringClass().getDeclaredConstructor().newInstance();
-        } else {
-            return null;
-        }
+    private Object getCommandObject(Command c, Sender sender, CommandArgs args, BaseCommand bcmd) throws Exception {
+        MethodContainer container = cmds.get(bcmd);
+        Method me = container.getMethod(bcmd.sender());
+        return me.getDeclaringClass().getDeclaredConstructor().newInstance();
     }
 
     /**
@@ -139,9 +111,16 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         ACLogger.debug("Registering Command: " + clazz.getName());
 
         HashMap<BaseCommand, HashMap<Sender, Method>> list = new HashMap<>();
+        Method tabCompleteMethod = null;
 
         for (Method m : clazz.getDeclaredMethods()) {
-            if (m.isAnnotationPresent(BaseCommand.class)) {
+            Class<?>[] paramTypes = m.getParameterTypes();
+            if (m.isAnnotationPresent(BaseCommand.class)
+                    && (m.getReturnType() == CommandResult.class)
+                    && (paramTypes.length == 2
+                    && (paramTypes[0] == CommandSender.class || CommandSender.class.isAssignableFrom(paramTypes[0]))
+                    && (paramTypes[1] == CommandArgs.class))) {
+                ACLogger.debug(m.getName() + " Params: " + m.getParameterTypes() + " is valid! Trying to register as command!");
                 BaseCommand bc = m.getAnnotation(BaseCommand.class);
 
                 List<String> aliases = new ArrayList<>();
@@ -152,17 +131,19 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                 }
 
                 registerCommand(bc.command(), aliases);
-
-                if (!list.containsKey(bc)) {
-                    list.put(bc, new HashMap<>());
-                }
-
-                HashMap<Sender, Method> map = list.get(bc);
-
+                HashMap<Sender, Method> map = list.containsKey(bc) ? list.get(bc) : new HashMap<>();
                 map.put(bc.sender(), m);
-
-                list.remove(bc);
                 list.put(bc, map);
+            } else if (m.isAnnotationPresent(TabComplete.class)
+                    && tabCompleteMethod == null
+                    && m.getReturnType() == List.class
+                    && (paramTypes.length == 3 && (paramTypes[0] == CommandSender.class || paramTypes[0].isAssignableFrom(CommandSender.class))
+                    && paramTypes[1] == CommandArgs.class
+                    && paramTypes[2] == List.class)) {
+                ACLogger.debug(m.getName() + " Params: " + m.getParameterTypes() + " is valid! Trying to register as tabcomplete!");
+                tabCompleteMethod = m;
+            } else {
+                ACLogger.debug(m.getName() + " Params: " + m.getParameterTypes() + " is not valid! Skipping!");
             }
         }
 
@@ -175,29 +156,19 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                     Method m = container.getMethod(s);
                     map.put(s, m);
                 }
-                cmds.remove(command);
             }
-            cmds.put(command, new MethodContainer(map));
+            cmds.put(command, new MethodContainer(map, tabCompleteMethod));
         }
     }
 
     private Method getMethod(Command c, Sender sender, CommandArgs args) {
         BaseCommand bcmd = getCommand(c, args, sender);
-        if (bcmd == null) {
-            for (BaseCommand bc : cmds.keySet()) {
-                if (bc.sender() != sender) {
-                    continue;
-                }
-                if (bc.command().equalsIgnoreCase(c.getName()) && bc.subCommand().trim().isEmpty()) {
-                    bcmd = bc;
-                    break;
-                }
-            }
-        }
+        ACLogger.debug("BaseCommand with Sender " + sender + " " + (bcmd == null ? "not found" : "found"));
         MethodContainer container = cmds.get(bcmd);
         if (container == null) {
             return null;
         }
+        ACLogger.debug("MethodContainer was not null! " + container.toString());
         Method m = container.getMethod(sender);
         try {
             return m;
@@ -207,27 +178,55 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         }
     }
 
+    private Method getTabCompleteMethod(Command c, Sender sender, CommandArgs args) {
+        BaseCommand bcmd = getCommand(c, args, sender);
+        MethodContainer container = cmds.get(bcmd);
+        if (container == null) {
+            return null;
+        }
+        Method m = container.getTabcomplete();
+        try {
+            return m;
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "", ex);
+            return null;
+        }
+    }
+
     private void runCommand(BaseCommand bc, Method m, Sender sender, CommandSender s, Command c, CommandArgs a) {
+        ACLogger.debug("RunCommand! Sender: " + sender + " Method: " + m.getName());
         CommandResult cr;
         try {
-            if (bc.permission() != null && !bc.permission().trim().isEmpty()) {
+            Object command = getCommandObject(c, sender, a, bc);
+            if (bc.permission() != null && !bc.permission().trim().isBlank()) {
                 if (!s.hasPermission(bc.permission())) {
                     cr = CommandResult.NO_PERMISSION;
                 } else {
-                    cr = (CommandResult) m.invoke(getCommandObject(c, sender, a), s, a);
-
+                    if (a.hasFlag("p")) {
+                        if (!s.hasPermission(bc.permission() + ".other")) {
+                            cr = CommandResult.NO_PERMISSION_OTHER;
+                        } else if (!a.getFlag("p").isRegisteredPlayer()) {
+                            cr = CommandResult.NOT_A_PLAYER;
+                        } else {
+                            cr = (CommandResult) m.invoke(command, s, a);
+                        }
+                    } else {
+                        cr = (CommandResult) m.invoke(command, s, a);
+                    }
                 }
             } else {
-                cr = (CommandResult) m.invoke(getCommandObject(c, sender, a), s, a);
+                cr = (CommandResult) m.invoke(command, s, a);
             }
-
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "", e);
+            ACLogger.severe(e);
             cr = CommandResult.SUCCESS;
         }
 
         if (cr != null && cr.getMessage() != null) {
             String perm = bc.permission() != null ? bc.permission() : "";
+            if (!perm.isBlank() && a.hasFlag("p")) {
+                perm = perm + ".other";
+            }
             s.sendMessage(cr.getMessage().replace("%cmd%", bc.command()).replace("%perm%", perm));
         }
     }
@@ -247,17 +246,20 @@ public class CommandManager implements CommandExecutor, TabCompleter {
             sender = Sender.OTHER;
         }
 
+        ACLogger.debug("Command " + c.getName() + " ran! Trying to find Method for Sender " + sender);
         Method m = getMethod(c, sender, a);
-
         if (m == null) {
+            ACLogger.debug("Method in First try not found! Trying with Sender.ALL...");
             m = getMethod(c, Sender.ALL, a);
         }
+        ACLogger.debug("Method " + (m == null ? "not found" : ("found! " + m.getName())));
 
         if (m != null) {
+            ACLogger.debug("Method was not null! Executing...");
             m.setAccessible(true);
 
             BaseCommand bc = m.getAnnotation(BaseCommand.class);
-            if (!bc.subCommand().trim().isEmpty() && bc.subCommand().equalsIgnoreCase(a.getString(0))) {
+            if (!bc.subCommand().trim().isBlank() && bc.subCommand().equalsIgnoreCase(a.getString(0))) {
                 a = new CommandArgs(args, 1);
             }
 
@@ -297,69 +299,54 @@ public class CommandManager implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public @NotNull List<String> onTabComplete(@NotNull CommandSender cs, @NotNull Command cmnd, @NotNull String string, String[] strings) {
+    public @NotNull
+    List<String> onTabComplete(@NotNull CommandSender cs, @NotNull Command cmnd, @NotNull String commandLabel, String[] strings) {
+        Sender sender;
+        if (cs instanceof Player) {
+            sender = Sender.PLAYER;
+        } else if (cs instanceof CommandBlock || cs instanceof BlockCommandSender) {
+            sender = Sender.COMMANDBLOCK;
+        } else if (cs instanceof CommandMinecart) {
+            sender = Sender.MINECART;
+        } else if (cs instanceof ConsoleCommandSender) {
+            sender = Sender.CONSOLE;
+        } else {
+            sender = Sender.OTHER;
+        }
+        CommandArgs a = new CommandArgs(strings);
         List<String> ret = new ArrayList<>();
 
-        if (strings.length == 1 && strings[0].isEmpty()) {
+        if (strings.length == 1 && strings[0].isBlank()) {
             ret.add("help");
         }
 
-        boolean pla = false;
-        for (String s : strings) {
-            if (s.equalsIgnoreCase("-p")) {
-                pla = true;
-                break;
-            }
-        }
-        if (pla) {
+        if (a.hasFlag("p")) {
             for (ACPlayer p : PlayerManager.getALLPlayers()) {
                 ret.add(p.getName());
             }
         }
 
-        if (cmnd.getName().equalsIgnoreCase("tp") || cmnd.getName().equalsIgnoreCase("teleport") || cmnd.getName().equalsIgnoreCase("tphere")) {
-            for (ACPlayer p : PlayerManager.getOnlinePlayers()) {
-                ret.add(p.getName());
+        if (a.hasFlag("w")) {
+            ret.addAll(WorldManager.getWorldNames());
+        }
+
+        Method tabCompleteMethod = getTabCompleteMethod(cmnd, sender, a);
+        if (tabCompleteMethod == null) {
+            tabCompleteMethod = getTabCompleteMethod(cmnd, Sender.ALL, a);
+        }
+
+        if (tabCompleteMethod != null) {
+            try {
+                tabCompleteMethod.setAccessible(true);
+                ret = (List<String>) tabCompleteMethod.invoke(tabCompleteMethod.getDeclaringClass().getDeclaredConstructor().newInstance(), cs, a, ret);
+
+                BaseCommand bcmd = getCommand(cmnd, a, sender);
+                HelpPage help = new HelpPage(bcmd.command(), bcmd.helpArguments());
+                //TODO: AutoAdd Help stuff
+            } catch (Exception e) {
+                ACLogger.severe(e);
             }
         }
-
-        if (cmnd.getName().contains("home") || cmnd.getName().equalsIgnoreCase("sh")) {
-            if (cs instanceof Player) {
-                ACPlayer acplayer = PlayerManager.getPlayer((Player) cs);
-                ret.addAll(HomeManager.getHomes(acplayer));
-            }
-        }
-
-        if (cmnd.getName().contains("warp")) {
-            ret.addAll(WarpManager.getWarps());
-        }
-
-        if (cmnd.getName().equalsIgnoreCase("maintenance")) {
-            ret.add("enable");
-            ret.add("disable");
-        }
-
-        if (cmnd.getName().equalsIgnoreCase("spawnmob")) {
-            for (EntityType e : EntityType.values()) {
-                if (e.isSpawnable()) {
-                    ret.add(e.toString().toLowerCase());
-                }
-            }
-        }
-
-        if (cmnd.getName().equalsIgnoreCase("gamemode") || cmnd.getName().equalsIgnoreCase("gm")) {
-            for (GameMode gm : GameMode.values()) {
-                ret.add(gm.toString());
-            }
-
-        }
-
-        if (cmnd.getName().equalsIgnoreCase("acreload") || cmnd.getName().equalsIgnoreCase("reload")) {
-            for (Plugin pl : plugin.getServer().getPluginManager().getPlugins()) {
-                ret.add(pl.getName());
-            }
-        }
-
         return ret;
     }
 }
