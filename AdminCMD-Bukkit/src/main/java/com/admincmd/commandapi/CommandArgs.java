@@ -65,9 +65,12 @@ public class CommandArgs {
                 if (arg.charAt(0) == '-' && arg.length() > 1 && arg.matches("-[a-zA-Z]")) {
                     String character = arg.replaceFirst("-", "");
                     try {
-                        if (args.length >  (i+1) && args[i + 1] != null) {
+                        if (args.length > (i + 1) && args[i + 1] != null) {
                             String value = args[i + 1];
                             Flag flag = new Flag(value, character);
+                            flags.put(character, flag);
+                        } else {
+                            Flag flag = new Flag("", character);
                             flags.put(character, flag);
                         }
                     } catch (ArrayIndexOutOfBoundsException ex) {

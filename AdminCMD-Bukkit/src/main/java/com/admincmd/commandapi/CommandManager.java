@@ -19,6 +19,7 @@
 package com.admincmd.commandapi;
 
 import com.admincmd.Main;
+import com.admincmd.commandapi.CommandArgs.Flag;
 import com.admincmd.home.HomeManager;
 import com.admincmd.player.ACPlayer;
 import com.admincmd.player.PlayerManager;
@@ -321,13 +322,20 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         }
 
         if (a.hasFlag("p")) {
-            for (ACPlayer p : PlayerManager.getALLPlayers()) {
-                ret.add(p.getName());
+            Flag f = a.getFlag("p");
+            if (f.getString() == null || f.getString().isBlank()) {
+                for (ACPlayer p : PlayerManager.getALLPlayers()) {
+                    ret.add(p.getName());
+                }
             }
+
         }
 
         if (a.hasFlag("w")) {
-            ret.addAll(WorldManager.getWorldNames());
+            Flag f = a.getFlag("w");
+            if (f.getString() == null || f.getString().isBlank()) {
+                ret.addAll(WorldManager.getWorldNames());
+            }
         }
 
         Method tabCompleteMethod = getTabCompleteMethod(cmnd, sender, a);

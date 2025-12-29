@@ -35,18 +35,6 @@ import org.bukkit.event.player.PlayerLoginEvent;
 
 public class PlayerJoinListener extends BukkitListener {
 
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onLogin(PlayerLoginEvent event) {
-        if (!Config.MAINTENANCE_ENABLE.getBoolean()) {
-            return;
-        }
-
-        if (!event.getPlayer().hasPermission("admincmd.maintenance.bypass")) {
-            String msg = Locales.MESSAGE_PREFIX_ERROR.getString() + Locales.MAINTENANCE_KICK.getString().replaceAll("%perm%", "admincmd.maintenance.bypass");
-            event.disallow(PlayerLoginEvent.Result.KICK_OTHER, msg);
-        }
-    }
-
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(PlayerJoinEvent e) {
         if (Config.MAINTENANCE_ENABLE.getBoolean()) {

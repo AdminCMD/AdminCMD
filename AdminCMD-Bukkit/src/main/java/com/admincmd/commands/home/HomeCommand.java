@@ -33,11 +33,11 @@ import org.bukkit.entity.Player;
 
 @CommandHandler
 public class HomeCommand {
-    
+
     @BaseCommand(command = "home", sender = Sender.PLAYER, permission = "admincmd.home.tp", helpArguments = {"", "<name>", "<-p player>", "<-p player> <-h home>"})
     public CommandResult executeHome(Player p, CommandArgs args) {
         ACPlayer acp = PlayerManager.getPlayer(p);
-        
+
         if (args.isEmpty()) {
             //List own homes
             String homes = Locales.HOME_HOME.getString() + " (" + HomeManager.getHomes(acp).size() + "): §6" + Joiner.on(", ").join(HomeManager.getHomes(acp));
@@ -49,16 +49,9 @@ public class HomeCommand {
                 PlayerManager.teleport(target.getLocation(), acp);
                 return CommandResult.SUCCESS;
             } else {
-                if (!p.hasPermission("admincmd.home.tp.other")) {
-                    return CommandResult.NO_PERMISSION_OTHER;
-                }
-                
                 Flag playerFlag = args.getFlag("p");
-                if (!playerFlag.isRegisteredPlayer()) {
-                    return CommandResult.NOT_A_PLAYER;
-                }
                 ACPlayer targetPlayer = args.getFlag("p").getPlayer();
-                
+
                 if (!args.hasFlag("h")) {
                     //List homes of other Player
                     List<String> homes = HomeManager.getHomes(targetPlayer);
@@ -78,13 +71,16 @@ public class HomeCommand {
             }
         }
     }
-    
+
     @TabComplete(command = "home")
     public List<String> onTabComplete(CommandSender sender, CommandArgs args, List<String> tabs) {
         if (args.hasFlag("p") && sender.hasPermission("admincmd.home.tp.other")) {
-            Flag player = args.getFlag("p");
-            if (player.isRegisteredPlayer()) {
-                tabs.addAll(HomeManager.getHomes(player.getPlayer()));
+            if (args.hasFlag("h")) {
+                Flag player = args.getFlag("p");
+
+                if (player.isRegisteredPlayer()) {
+                    tabs.addAll(HomeManager.getHomes(player.getPlayer()));
+                }
             }
         } else {
             if (sender instanceof Player) {
@@ -94,5 +90,5 @@ public class HomeCommand {
         }
         return tabs;
     }
-    
+
 }
