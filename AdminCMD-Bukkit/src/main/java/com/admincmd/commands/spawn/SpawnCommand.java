@@ -31,7 +31,7 @@ import org.bukkit.entity.Player;
 @CommandHandler
 public class SpawnCommand {
 
-    @BaseCommand(command = "spawn", sender = Sender.PLAYER, permission = "admincmd.spawn.spawn", helpArguments = {"", "<-p player>"}, async = true)
+    @BaseCommand(command = "spawn", sender = Sender.PLAYER, permission = "admincmd.spawn.spawn", helpArguments = {"", "<-p player>"})
     public CommandResult executeSpawn(Player sender, CommandArgs args) {
         ACPlayer acp = PlayerManager.getPlayer(sender);
         if (args.isEmpty()) {

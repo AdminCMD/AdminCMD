@@ -30,7 +30,6 @@ import com.admincmd.utils.Utils;
 import java.util.List;
 import org.bukkit.GameMode;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 @CommandHandler

@@ -34,7 +34,7 @@ import org.bukkit.entity.Player;
 @CommandHandler
 public class VanishCommand {
 
-    @BaseCommand(command = "vanish", sender = Sender.PLAYER, permission = "admincmd.player.vanish", aliases = "invisible,poof,hide", helpArguments = {"", "<-p player>"}, async = true)
+    @BaseCommand(command = "vanish", sender = Sender.PLAYER, permission = "admincmd.player.vanish", aliases = {"invisible","poof","hide"}, helpArguments = {"", "<-p player>"}, async = true)
     public CommandResult executeVanish(Player sender, CommandArgs args) {
         final ACPlayer se = PlayerManager.getPlayer(sender);
         if (args.isEmpty()) {

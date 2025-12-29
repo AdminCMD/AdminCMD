@@ -38,7 +38,7 @@ public class SunCommand {
             if (sender instanceof Player) {
                 return executeSun((Player) sender, args);
             } else {
-                return CommandResult.WRONG_SENDER;
+                return CommandResult.ERROR;
             }
         }
 

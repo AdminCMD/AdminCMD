@@ -35,7 +35,7 @@ public @interface BaseCommand {
 
     String subCommand() default "";
 
-    String aliases() default "";
+    String[] aliases() default {};
 
     String[] helpArguments() default "addon";
 

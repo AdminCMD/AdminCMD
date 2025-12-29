@@ -32,7 +32,6 @@ import org.jetbrains.annotations.NotNull;
 public abstract class Addon extends JavaPlugin {
 
     private static Addon INSTANCE;
-    private CommandManager cmdManager;
 
     /**
      * Returns an instance of this class.
@@ -67,7 +66,7 @@ public abstract class Addon extends JavaPlugin {
      * @return {@link com.admincmd.commandapi.CommandManager}
      */
     public CommandManager getCommandManager() {
-        return cmdManager;
+        return Main.getInstance().getCommandManager();
     }
 
     /**
@@ -77,7 +76,7 @@ public abstract class Addon extends JavaPlugin {
      */
     @Deprecated
     public void registerCommand(Class<?> clazz) {
-        cmdManager.registerClass(clazz);
+        getCommandManager().registerClass(clazz);
     }
 
     /**
@@ -98,21 +97,19 @@ public abstract class Addon extends JavaPlugin {
 
     public void registerCommands(@NotNull String commandsPath) {
         for (Class<?> clazz : ClassScanner.getClassesFromJarWithAnnotation(commandsPath, CommandHandler.class, INSTANCE.getClass())) {
-            cmdManager.registerClass(clazz);
+            getCommandManager().registerClass(clazz);
         }
     }
 
     @Override
     public void onEnable() {
         INSTANCE = this;
-        cmdManager = new CommandManager(this);
         enable();
     }
 
     @Override
     public void onDisable() {
         disable();
-        cmdManager = null;
         INSTANCE = null;
     }
 

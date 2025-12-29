@@ -20,7 +20,6 @@ package com.admincmd.commandapi;
 
 import com.admincmd.Main;
 import com.admincmd.commandapi.CommandArgs.Flag;
-import com.admincmd.home.HomeManager;
 import com.admincmd.player.ACPlayer;
 import com.admincmd.player.PlayerManager;
 import com.admincmd.utils.ACLogger;
@@ -46,7 +45,7 @@ import java.util.logging.Logger;
 
 public class CommandManager implements CommandExecutor, TabCompleter {
 
-    private final HashMap<BaseCommand, MethodContainer> cmds = new HashMap<>();
+    private final HashMap<String, MethodContainer> cmds = new HashMap<>();
     private final CommandMap cmap;
     private final JavaPlugin plugin;
     private final Logger logger;
@@ -67,35 +66,16 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         cmap = map;
     }
 
-    private void registerCommand(String name, List<String> aliases) {
-        if (cmap.getCommand(name) != null) {
+    private void registerCommand(BaseCommand bcmd) {
+        if (cmap.getCommand(bcmd.command()) != null) {
             return;
         }
-        BukkitCommand cmd = new BukkitCommand(name, aliases);
-
+        BukkitCommand cmd = new BukkitCommand(bcmd.command(), bcmd.aliases());
         cmap.register(plugin.getName().toLowerCase(), cmd);
-        cmd.setExecutor(this);
     }
 
-    private BaseCommand getCommand(Command c, CommandArgs args, Sender sender) {
-        BaseCommand ret = null;
-        for (BaseCommand bc : cmds.keySet()) {
-            if (!bc.command().equalsIgnoreCase(c.getName())) {
-                continue;
-            }
-            if (bc.sender() == Sender.ALL || bc.sender() == sender) {
-                if (bc.subCommand().isBlank() || args.isEmpty() || bc.subCommand().equalsIgnoreCase(args.getString(0))) {
-                    ret = bc;
-                }
-            }
-        }
-        return ret;
-    }
-
-    private Object getCommandObject(Command c, Sender sender, CommandArgs args, BaseCommand bcmd) throws Exception {
-        MethodContainer container = cmds.get(bcmd);
-        Method me = container.getMethod(bcmd.sender());
-        return me.getDeclaringClass().getDeclaredConstructor().newInstance();
+    private Object getCommandObject(Method m) throws Exception {
+        return m.getDeclaringClass().getDeclaredConstructor().newInstance();
     }
 
     /**
@@ -109,49 +89,36 @@ public class CommandManager implements CommandExecutor, TabCompleter {
             return;
         }
 
-        ACLogger.debug("Registering Command: " + clazz.getName());
-
-        HashMap<BaseCommand, HashMap<Sender, Method>> list = new HashMap<>();
+        ACLogger.debug("Registering Command: " + clazz.getName() + " Already registered commands: " + cmds.size());
+        HashMap<String, HashMap<Sender, Method>> list = new HashMap<>();
         Method tabCompleteMethod = null;
 
         for (Method m : clazz.getDeclaredMethods()) {
-            Class<?>[] paramTypes = m.getParameterTypes();
-            if (m.isAnnotationPresent(BaseCommand.class)
-                    && (m.getReturnType() == CommandResult.class)
-                    && (paramTypes.length == 2
-                    && (paramTypes[0] == CommandSender.class || CommandSender.class.isAssignableFrom(paramTypes[0]))
-                    && (paramTypes[1] == CommandArgs.class))) {
-                ACLogger.debug(m.getName() + " Params: " + m.getParameterTypes() + " is valid! Trying to register as command!");
+            m.setAccessible(true);
+            if (isBaseCommandMethod(m)) {
+                ACLogger.debug(m.getName() + " Params: " + Arrays.toString(m.getParameterTypes()) + " is valid! Trying to register as command!");
                 BaseCommand bc = m.getAnnotation(BaseCommand.class);
+                registerCommand(bc);
 
-                List<String> aliases = new ArrayList<>();
-                if (bc.aliases().contains(",")) {
-                    aliases.addAll(Arrays.asList(bc.aliases().split(",")));
-                } else if (!bc.aliases().isEmpty()) {
-                    aliases.add(bc.aliases());
-                }
-
-                registerCommand(bc.command(), aliases);
-                HashMap<Sender, Method> map = list.containsKey(bc) ? list.get(bc) : new HashMap<>();
+                HashMap<Sender, Method> map = (list.containsKey(bc.command()) ? list.get(bc.command()) : new HashMap<>());
                 map.put(bc.sender(), m);
-                list.put(bc, map);
-            } else if (m.isAnnotationPresent(TabComplete.class)
-                    && tabCompleteMethod == null
-                    && m.getReturnType() == List.class
-                    && (paramTypes.length == 3 && (paramTypes[0] == CommandSender.class || paramTypes[0].isAssignableFrom(CommandSender.class))
-                    && paramTypes[1] == CommandArgs.class
-                    && paramTypes[2] == List.class)) {
-                ACLogger.debug(m.getName() + " Params: " + m.getParameterTypes() + " is valid! Trying to register as tabcomplete!");
+
+                list.put(bc.command(), map);
+            } else if (isTabCompleteMethod(m)) {
+                ACLogger.debug(m.getName() + " Params: " + Arrays.toString(m.getParameterTypes()) + " is valid! Trying to register as tabcomplete!");
                 tabCompleteMethod = m;
             } else {
-                ACLogger.debug(m.getName() + " Params: " + m.getParameterTypes() + " is not valid! Skipping!");
+                ACLogger.debug(m.getName() + " Params: " + Arrays.toString(m.getParameterTypes()) + " is not valid! Skipping!");
             }
         }
 
-        for (BaseCommand command : list.keySet()) {
+        for (String command : list.keySet()) {
+            ACLogger.debug("Registering command " + command);
             HashMap<Sender, Method> map = list.get(command);
+            ACLogger.debug("Methods found for Command: " + map.toString());
 
             if (cmds.containsKey(command)) {
+                ACLogger.debug("Map already contains a key for the command " + command);
                 MethodContainer container = cmds.get(command);
                 for (Sender s : container.getMethodMap().keySet()) {
                     Method m = container.getMethod(s);
@@ -162,43 +129,32 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         }
     }
 
-    private Method getMethod(Command c, Sender sender, CommandArgs args) {
-        BaseCommand bcmd = getCommand(c, args, sender);
-        ACLogger.debug("BaseCommand with Sender " + sender + " " + (bcmd == null ? "not found" : "found"));
-        MethodContainer container = cmds.get(bcmd);
-        if (container == null) {
+    private Method getMethod(Command c, Sender sender) {
+        if (!cmds.containsKey(c.getName())) {
+            ACLogger.debug("Cmds does not contain a key for " + c.getName() + " ! " + cmds.toString());
             return null;
         }
+        MethodContainer container = cmds.get(c.getName());
         ACLogger.debug("MethodContainer was not null! " + container.toString());
-        Method m = container.getMethod(sender);
-        try {
-            return m;
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, "", ex);
-            return null;
-        }
+        Method m = container.methods().containsKey(sender) ? container.getMethod(sender) : container.getMethod(Sender.ALL);
+        return m;
     }
 
-    private Method getTabCompleteMethod(Command c, Sender sender, CommandArgs args) {
-        BaseCommand bcmd = getCommand(c, args, sender);
-        MethodContainer container = cmds.get(bcmd);
-        if (container == null) {
+    private Method getTabCompleteMethod(Command c) {
+        if (!cmds.containsKey(c.getName())) {
             return null;
         }
+        MethodContainer container = cmds.get(c.getName());
         Method m = container.getTabcomplete();
-        try {
-            return m;
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, "", ex);
-            return null;
-        }
+        return m;
     }
 
-    private void runCommand(BaseCommand bc, Method m, Sender sender, CommandSender s, Command c, CommandArgs a) {
-        ACLogger.debug("RunCommand! Sender: " + sender + " Method: " + m.getName());
+    private void runCommand(Method m, CommandSender s, CommandArgs a) {
+        ACLogger.debug("RunCommand! Method: " + m.getName());
+        BaseCommand bc = m.getAnnotation(BaseCommand.class);
         CommandResult cr;
         try {
-            Object command = getCommandObject(c, sender, a, bc);
+            Object command = getCommandObject(m);
             if (bc.permission() != null && !bc.permission().trim().isBlank()) {
                 if (!s.hasPermission(bc.permission())) {
                     cr = CommandResult.NO_PERMISSION;
@@ -232,7 +188,12 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         }
     }
 
-    private void executeCommand(Command c, CommandSender s, String[] args) {
+    /*
+     * Bukkit method, just ignore it.
+     * Commands will be executed by itself.
+     */
+    @Override
+    public boolean onCommand(final CommandSender s, final Command c, final String string, final String[] args) {
         CommandArgs a = new CommandArgs(args);
         Sender sender;
         if (s instanceof Player) {
@@ -248,16 +209,11 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         }
 
         ACLogger.debug("Command " + c.getName() + " ran! Trying to find Method for Sender " + sender);
-        Method m = getMethod(c, sender, a);
-        if (m == null) {
-            ACLogger.debug("Method in First try not found! Trying with Sender.ALL...");
-            m = getMethod(c, Sender.ALL, a);
-        }
+        Method m = getMethod(c, sender);
         ACLogger.debug("Method " + (m == null ? "not found" : ("found! " + m.getName())));
 
         if (m != null) {
             ACLogger.debug("Method was not null! Executing...");
-            m.setAccessible(true);
 
             BaseCommand bc = m.getAnnotation(BaseCommand.class);
             if (!bc.subCommand().trim().isBlank() && bc.subCommand().equalsIgnoreCase(a.getString(0))) {
@@ -267,53 +223,31 @@ public class CommandManager implements CommandExecutor, TabCompleter {
             HelpPage help = new HelpPage(bc.command(), bc.helpArguments());
             if (!bc.helpArguments()[0].equalsIgnoreCase("addon")) {
                 if (help.sendHelp(s, a)) {
-                    return;
+                    return true;
                 }
             }
 
-            Method finalM = m;
-            CommandArgs finalA = a;
-
             if (!bc.async()) {
-                runCommand(bc, finalM, sender, s, c, finalA);
+                runCommand(m, s, a);
             } else {
+                final Method finalM = m;
+                final CommandArgs finalA = a;
                 new BukkitRunnable() {
                     @Override
                     public void run() {
-                        runCommand(bc, finalM, sender, s, c, finalA);
+                        runCommand(finalM, s, finalA);
                     }
                 }.runTaskAsynchronously(Main.getInstance());
             }
         } else {
             s.sendMessage(Locales.COMMAND_MESSAGES_WRONG_SENDER_TYPE.getString());
         }
-    }
-
-    /*
-     * Bukkit method, just ignore it.
-     * Commands will be executed by itself.
-     */
-    @Override
-    public boolean onCommand(final @NotNull CommandSender cs, final @NotNull Command cmnd, final @NotNull String string, final String[] strings) {
-        executeCommand(cmnd, cs, strings);
         return true;
     }
 
     @Override
     public @NotNull
-    List<String> onTabComplete(@NotNull CommandSender cs, @NotNull Command cmnd, @NotNull String commandLabel, String[] strings) {
-        Sender sender;
-        if (cs instanceof Player) {
-            sender = Sender.PLAYER;
-        } else if (cs instanceof CommandBlock || cs instanceof BlockCommandSender) {
-            sender = Sender.COMMANDBLOCK;
-        } else if (cs instanceof CommandMinecart) {
-            sender = Sender.MINECART;
-        } else if (cs instanceof ConsoleCommandSender) {
-            sender = Sender.CONSOLE;
-        } else {
-            sender = Sender.OTHER;
-        }
+    List<String> onTabComplete(CommandSender cs, Command cmnd, String commandLabel, String[] strings) {
         CommandArgs a = new CommandArgs(strings);
         List<String> ret = new ArrayList<>();
 
@@ -338,23 +272,38 @@ public class CommandManager implements CommandExecutor, TabCompleter {
             }
         }
 
-        Method tabCompleteMethod = getTabCompleteMethod(cmnd, sender, a);
+        Method tabCompleteMethod = getTabCompleteMethod(cmnd);
         if (tabCompleteMethod == null) {
-            tabCompleteMethod = getTabCompleteMethod(cmnd, Sender.ALL, a);
+            tabCompleteMethod = getTabCompleteMethod(cmnd);
         }
 
         if (tabCompleteMethod != null) {
             try {
                 tabCompleteMethod.setAccessible(true);
                 ret = (List<String>) tabCompleteMethod.invoke(tabCompleteMethod.getDeclaringClass().getDeclaredConstructor().newInstance(), cs, a, ret);
-
-                BaseCommand bcmd = getCommand(cmnd, a, sender);
-                HelpPage help = new HelpPage(bcmd.command(), bcmd.helpArguments());
-                //TODO: AutoAdd Help stuff
             } catch (Exception e) {
                 ACLogger.severe(e);
             }
         }
         return ret;
+    }
+
+    private final boolean isBaseCommandMethod(Method m) {
+        Class<?>[] paramTypes = m.getParameterTypes();
+        return m.isAnnotationPresent(BaseCommand.class)
+                && (m.getReturnType() == CommandResult.class)
+                && (m.getParameterCount() == 2
+                && (paramTypes[0] == CommandSender.class || CommandSender.class.isAssignableFrom(paramTypes[0]))
+                && (paramTypes[1] == CommandArgs.class));
+    }
+
+    private final boolean isTabCompleteMethod(Method m) {
+        Class<?>[] paramTypes = m.getParameterTypes();
+        return (m.isAnnotationPresent(TabComplete.class)
+                && m.getReturnType() == List.class
+                && m.getParameterCount() == 3
+                && (paramTypes[0] == CommandSender.class || CommandSender.class.isAssignableFrom(paramTypes[0]))
+                && paramTypes[1] == CommandArgs.class
+                && paramTypes[2] == List.class);
     }
 }

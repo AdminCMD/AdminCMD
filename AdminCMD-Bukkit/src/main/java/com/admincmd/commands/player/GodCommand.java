@@ -29,7 +29,7 @@ import org.bukkit.entity.Player;
 @CommandHandler
 public class GodCommand {
 
-    @BaseCommand(command = "god", sender = Sender.PLAYER, permission = "admincmd.player.god", aliases = "g,gg", helpArguments = {"", "<-p player>"}, async = true)
+    @BaseCommand(command = "god", sender = Sender.PLAYER, permission = "admincmd.player.god", aliases = {"g", "gg"}, helpArguments = {"", "<-p player>"}, async = true)
     public CommandResult executeGod(Player sender, CommandArgs args) {
         if (args.isEmpty()) {
             ACPlayer p = PlayerManager.getPlayer(sender);
@@ -41,8 +41,8 @@ public class GodCommand {
             return Messager.sendMessage(p, msg, Messager.MessageType.INFO);
         }
 
-        if (args.hasFlag("p")) {           
-            CommandArgs.Flag flag = args.getFlag("p");           
+        if (args.hasFlag("p")) {
+            CommandArgs.Flag flag = args.getFlag("p");
             ACPlayer p = flag.getPlayer();
             boolean value = !p.isGod();
             p.setGod(value);

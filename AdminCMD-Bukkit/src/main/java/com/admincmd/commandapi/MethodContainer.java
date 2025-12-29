@@ -19,7 +19,6 @@
 package com.admincmd.commandapi;
 
 import java.lang.reflect.Method;
-import java.util.Collection;
 import java.util.HashMap;
 
 public record MethodContainer(HashMap<Sender, Method> methods, Method tabComplete) {
@@ -30,10 +29,6 @@ public record MethodContainer(HashMap<Sender, Method> methods, Method tabComplet
 
     Method getMethod(Sender s) {
         return methods.get(s);
-    }
-
-    private Collection<Method> getMethods() {
-        return methods.values();
     }
 
     HashMap<Sender, Method> getMethodMap() {

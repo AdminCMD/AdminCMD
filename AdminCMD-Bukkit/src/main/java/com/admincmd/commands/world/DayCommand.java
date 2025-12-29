@@ -38,7 +38,7 @@ public class DayCommand {
             if (sender instanceof Player) {
                 return executeDay((Player) sender, args);
             } else {
-                return CommandResult.WRONG_SENDER;
+                return CommandResult.ERROR;
             }
         }
 

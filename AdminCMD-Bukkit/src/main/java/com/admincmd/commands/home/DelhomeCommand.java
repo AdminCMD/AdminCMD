@@ -30,7 +30,7 @@ import org.bukkit.entity.Player;
 @CommandHandler
 public class DelhomeCommand {
 
-    @BaseCommand(command = "delhome", sender = Sender.PLAYER, permission = "admincmd.home.delete", helpArguments = "<name>", aliases = "rmhome", async = true)
+    @BaseCommand(command = "delhome", sender = Sender.PLAYER, permission = "admincmd.home.delete", helpArguments = "<name>", aliases = {"rmhome"}, async = true)
     public CommandResult executeRemovehome(Player sender, CommandArgs args) {
         if (args.getLength() != 1) {
             return CommandResult.ERROR;

@@ -24,8 +24,8 @@ import org.bukkit.entity.Player;
 @CommandHandler
 public class OpeninvCommand {
 
-    @BaseCommand(command = "openinv", sender = Sender.PLAYER, permission = "admincmd.player.openinv", aliases = "invsee,oi", helpArguments = {"", "<-p player>"})
-    public CommandResult executeOpenInv(final Player sender, CommandArgs args) {
+    @BaseCommand(command = "openinv", sender = Sender.PLAYER, permission = "admincmd.player.openinv", aliases = {"invsee", "oi"}, helpArguments = {"", "<-p player>"})
+    public CommandResult executeOpenInv(Player sender, CommandArgs args) {
         if (args.isEmpty()) {
             sender.openInventory(sender.getInventory());
             return CommandResult.SUCCESS;

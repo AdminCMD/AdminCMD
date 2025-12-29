@@ -18,45 +18,35 @@
  */
 package com.admincmd.commandapi;
 
+import com.admincmd.Main;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class BukkitCommand extends Command {
 
-    private final List<String> aliases;
-    private CommandManager exe = null;
+    private final List<String> aliases = new ArrayList<>();
 
-    protected BukkitCommand(String name, List<String> aliases) {
+    protected BukkitCommand(String name, String[] aliasArr) {
         super(name);
-        this.aliases = aliases;
-    }
-
-    @Override
-    public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
-        if (exe != null) {
-            exe.onCommand(sender, this, commandLabel, args);
+        for (String alias : aliasArr) {
+            aliases.add(alias);
         }
-        return false;
-    }
-
-    public void setExecutor(CommandManager exe) {
-        this.exe = exe;
     }
 
     @Override
-    public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) {
-        if (this.exe != null) {
-            return exe.onTabComplete(sender, this, alias, args);
-        }
-        return new ArrayList<>();
+    public boolean execute(CommandSender sender, String commandLabel, String[] args) {
+        return Main.getInstance().getCommandManager().onCommand(sender, this, commandLabel, args);
     }
 
     @Override
-    public @NotNull List<String> getAliases() {
+    public List<String> tabComplete(CommandSender sender, String alias, String[] args) {
+        return Main.getInstance().getCommandManager().onTabComplete(sender, this, alias, args);
+    }
+
+    @Override
+    public List<String> getAliases() {
         return aliases;
     }
 

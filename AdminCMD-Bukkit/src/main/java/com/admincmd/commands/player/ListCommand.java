@@ -31,7 +31,7 @@ import org.bukkit.entity.Player;
 @CommandHandler
 public class ListCommand {
 
-    @BaseCommand(command = "who", sender = Sender.PLAYER, permission = "admincmd.player.list", aliases = "plist,online,list", helpArguments = "", async = true)
+    @BaseCommand(command = "who", sender = Sender.PLAYER, permission = "admincmd.player.list", aliases = {"plist", "online", "list"}, helpArguments = "", async = true)
     public CommandResult executeList(Player sender, CommandArgs args) {
         ACPlayer se = PlayerManager.getPlayer(sender);
         if (args.isEmpty()) {
@@ -47,7 +47,7 @@ public class ListCommand {
         return CommandResult.ERROR;
     }
 
-    @BaseCommand(command = "who", sender = Sender.CONSOLE, permission = "admincmd.player.list", aliases = "plist,online,list", helpArguments = "", async = true)
+    @BaseCommand(command = "who", sender = Sender.CONSOLE, permission = "admincmd.player.list", aliases = {"plist", "online", "list"}, helpArguments = "", async = true)
     public CommandResult executeListConsole(CommandSender sender, CommandArgs args) {
         if (args.isEmpty()) {
             StringBuilder playerList = new StringBuilder();

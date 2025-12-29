@@ -29,7 +29,7 @@ import org.bukkit.entity.Player;
 @CommandHandler
 public class MsgCommand {
 
-    @BaseCommand(command = "msg", sender = Sender.PLAYER, permission = "admincmd.player.msg", aliases = "pm,message", helpArguments = {"<player> <message>"}, async = true)
+    @BaseCommand(command = "msg", sender = Sender.PLAYER, permission = "admincmd.player.msg", aliases = {"pm","message"}, helpArguments = {"<player> <message>"}, async = true)
     public CommandResult executeMsg(Player sender, CommandArgs args) {
         if (args.getLength() >= 2) {
             if (!args.isRegisteredPlayer(0)) {

@@ -38,7 +38,7 @@ public class NightCommand {
             if (sender instanceof Player) {
                 return executeNight((Player) sender, args);
             } else {
-                return CommandResult.WRONG_SENDER;
+                return CommandResult.ERROR;
             }
         }
 

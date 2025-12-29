@@ -78,7 +78,6 @@ public class Main extends JavaPlugin {
             updatechecker = new SpigotUpdateChecker(this, 75678);
         }
 
-
         if (Config.ENABLE_METRICS.getBoolean()) {
             Metrics metrics = new Metrics(this, 7742);
             getLogger().info("Thanks for using bstats, it was enabled!");
@@ -170,6 +169,10 @@ public class Main extends JavaPlugin {
         for (Class<? extends BukkitListener> clazz : ClassScanner.getClassesThatExtendClass("com.admincmd.events", BukkitListener.class)) {
             EventManager.registerEvent(clazz);
         }
+    }
+
+    public CommandManager getCommandManager() {
+        return manager;
     }
 
 }

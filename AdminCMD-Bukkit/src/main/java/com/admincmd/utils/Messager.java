@@ -21,6 +21,7 @@ package com.admincmd.utils;
 import com.admincmd.commandapi.CommandResult;
 import com.admincmd.player.ACPlayer;
 import com.admincmd.player.PlayerManager;
+import org.bukkit.command.CommandSender;
 
 public class Messager {
 
@@ -31,6 +32,16 @@ public class Messager {
 
     public static CommandResult sendMessage(ACPlayer s, Locales message, MessageType type) {
         PlayerManager.sendMessage(s, type.getPrefix() + message.getString());
+        return CommandResult.SUCCESS;
+    }
+
+    public static CommandResult sendMessage(CommandSender sender, String message, MessageType type) {
+        sender.sendMessage(type.getPrefix() + message);
+        return CommandResult.SUCCESS;
+    }
+
+    public static CommandResult sendMessage(CommandSender sender, Locales message, MessageType type) {
+        sender.sendMessage(type.getPrefix() + message.getString());
         return CommandResult.SUCCESS;
     }
 

@@ -19,34 +19,29 @@
 package com.admincmd.commands.warps;
 
 import com.admincmd.commandapi.*;
-import com.admincmd.player.ACPlayer;
-import com.admincmd.player.PlayerManager;
 import com.admincmd.utils.Locales;
 import com.admincmd.utils.Messager;
 import com.admincmd.warp.ACWarp;
 import com.admincmd.warp.WarpManager;
 import java.util.List;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 @CommandHandler
 public class DelWarpCommand {
 
-    @BaseCommand(command = "delwarp", sender = Sender.PLAYER, permission = "admincmd.warp.delete", aliases = "rmwarp", helpArguments = "<name>", async = true)
-    public CommandResult executeRemovewarp(Player sender, CommandArgs args) {
+    @BaseCommand(command = "delwarp", sender = Sender.ALL, permission = "admincmd.warp.delete", aliases = "rmwarp", helpArguments = "<name>", async = true)
+    public CommandResult executeRemovewarp(CommandSender sender, CommandArgs args) {
         if (args.getLength() != 1) {
             return CommandResult.ERROR;
         }
 
-        ACPlayer se = PlayerManager.getPlayer(sender);
-
         ACWarp w = WarpManager.getWarp(args.getString(0));
         if (w == null) {
-            return Messager.sendMessage(se, Locales.WARP_NO_SUCH_WARP, Messager.MessageType.ERROR);
+            return Messager.sendMessage(sender, Locales.WARP_NO_SUCH_WARP, Messager.MessageType.ERROR);
         }
         WarpManager.deleteWarp(w);
         String msg = Locales.WARP_DELETED.getString().replaceAll("%warp%", w.name());
-        return Messager.sendMessage(se, msg, Messager.MessageType.INFO);
+        return Messager.sendMessage(sender, msg, Messager.MessageType.INFO);
     }
     
     @TabComplete(command = "delwarp")
