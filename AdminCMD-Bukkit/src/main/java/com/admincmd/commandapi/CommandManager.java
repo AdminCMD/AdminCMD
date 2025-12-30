@@ -25,7 +25,6 @@ import com.admincmd.player.PlayerManager;
 import com.admincmd.utils.ACLogger;
 import com.admincmd.utils.Locales;
 import com.admincmd.world.WorldManager;
-import org.bukkit.Bukkit;
 import org.bukkit.block.CommandBlock;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
@@ -55,9 +54,9 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         this.logger = plugin.getLogger();
         CommandMap map;
         try {
-            final Field f = Bukkit.getServer().getClass().getDeclaredField("commandMap");
+            final Field f = plugin.getServer().getClass().getDeclaredField("commandMap");
             f.setAccessible(true);
-            map = (CommandMap) f.get(Bukkit.getServer());
+            map = (CommandMap) f.get(plugin.getServer());
         } catch (Exception ex) {
             map = null;
             logger.log(Level.SEVERE, "", ex);
@@ -70,7 +69,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         if (cmap.getCommand(bcmd.command()) != null) {
             return;
         }
-        BukkitCommand cmd = new BukkitCommand(bcmd.command(), bcmd.aliases());
+        BukkitCommand cmd = new BukkitCommand(bcmd.command(), bcmd.aliases(), this);
         cmap.register(plugin.getName().toLowerCase(), cmd);
     }
 

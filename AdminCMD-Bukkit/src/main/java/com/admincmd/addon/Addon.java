@@ -27,11 +27,11 @@ import com.admincmd.utils.BukkitListener;
 import com.admincmd.utils.ClassScanner;
 import com.admincmd.utils.EventManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 
 public abstract class Addon extends JavaPlugin {
 
     private static Addon INSTANCE;
+    private static CommandManager cmdManager;
 
     /**
      * Returns an instance of this class.
@@ -66,7 +66,7 @@ public abstract class Addon extends JavaPlugin {
      * @return {@link com.admincmd.commandapi.CommandManager}
      */
     public CommandManager getCommandManager() {
-        return Main.getInstance().getCommandManager();
+        return cmdManager;
     }
 
     /**
@@ -89,13 +89,13 @@ public abstract class Addon extends JavaPlugin {
         EventManager.registerEvent(clazz, this);
     }
 
-    public void registerEventListener(@NotNull String eventsPath) {
+    public void registerEventListener(String eventsPath) {
         for (Class<? extends BukkitListener> clazz : ClassScanner.getClassesThatExtendClass(eventsPath, BukkitListener.class, INSTANCE.getClass())) {
             EventManager.registerEvent(clazz, this);
         }
     }
 
-    public void registerCommands(@NotNull String commandsPath) {
+    public void registerCommands(String commandsPath) {
         for (Class<?> clazz : ClassScanner.getClassesFromJarWithAnnotation(commandsPath, CommandHandler.class, INSTANCE.getClass())) {
             getCommandManager().registerClass(clazz);
         }
@@ -104,6 +104,7 @@ public abstract class Addon extends JavaPlugin {
     @Override
     public void onEnable() {
         INSTANCE = this;
+        cmdManager = new CommandManager(this);
         enable();
     }
 

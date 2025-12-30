@@ -29,6 +29,7 @@ import com.admincmd.virtualchest.chest.ChestManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 
 @CommandHandler
 public class ChestCommands {
@@ -46,7 +47,7 @@ public class ChestCommands {
         clearchest.prepare();
     }
 
-    @BaseCommand(command = "clearchest", sender = Sender.PLAYER, permission = "admincmd.virtualchest.clearchest", aliases = "cc")
+    @BaseCommand(command = "clearchest", sender = Sender.PLAYER, permission = "admincmd.virtualchest.clearchest", aliases = {"cc"})
     public CommandResult executeClearChest(Player sender, CommandArgs args) {
         if (clearchest.sendHelp(sender, args)) {
             return CommandResult.SUCCESS;
@@ -81,7 +82,7 @@ public class ChestCommands {
         return CommandResult.ERROR;
     }
 
-    @BaseCommand(command = "chest", sender = Sender.PLAYER, permission = "admincmd.virtualchest.chest", aliases = "vc")
+    @BaseCommand(command = "chest", sender = Sender.PLAYER, permission = "admincmd.virtualchest.chest", aliases = {"vc"})
     public CommandResult executeChest(final Player sender, CommandArgs args) {
         if (chest.sendHelp(sender, args)) {
             return CommandResult.SUCCESS;
@@ -93,6 +94,7 @@ public class ChestCommands {
             ACChest c = ChestManager.getChest(se);
             if (c != null) {
                 final Inventory inv = c.getInventory();
+                
                 Bukkit.getScheduler().runTask(Main.getInstance(), () -> sender.openInventory(inv));
             }
             return CommandResult.SUCCESS;

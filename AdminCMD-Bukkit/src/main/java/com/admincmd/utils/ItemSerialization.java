@@ -18,71 +18,38 @@
  */
 package com.admincmd.utils;
 
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
-
+@Deprecated
+/**
+ * Legacy Class for Serializing Ivnentories.
+ *
+ * @deprecated Use {@link com.admincmd.utils.ItemSerializationJson}
+ */
 public class ItemSerialization {
 
+    /**
+     *
+     * @param inventory
+     * @return
+     * @deprecated use
+     * {@link com.admincmd.utils.ItemSerializationJson#saveInventory(org.bukkit.inventory.Inventory)}
+     */
+    @Deprecated
     public static String saveInventory(Inventory inventory) {
-        YamlConfiguration config = new YamlConfiguration();
-
-        // Save every element in the list
-        saveInventory(inventory, config);
-        return config.saveToString();
+        return ItemSerializationJson.saveInventory(inventory);
     }
 
-    private static void saveInventory(Inventory inventory, ConfigurationSection destination) {
-        // Save every element in the list
-        for (int i = 0; i < inventory.getSize(); i++) {
-            ItemStack item = inventory.getItem(i);
-
-            // Don't store NULL entries
-            if (item != null) {
-                destination.set(Integer.toString(i), item);
-            }
-        }
+    /**
+     *
+     * @param data
+     * @return
+     * @deprecated use
+     * {@link com.admincmd.utils.ItemSerializationJson#loadInventory(java.lang.String)}
+     */
+    @Deprecated
+    public static ItemStack[] loadInventory(String data) {       
+        return ItemSerializationJson.loadInventory(data);
     }
-
-    public static ItemStack[] loadInventory(String data) {
-        try {
-            YamlConfiguration config = new YamlConfiguration();
-
-            // Load the string
-            config.loadFromString(data);
-            return loadInventory(config);
-        } catch (InvalidConfigurationException ex) {
-            ACLogger.severe(ex);
-            return new ItemStack[]{};
-        }
-    }
-
-    private static ItemStack[] loadInventory(ConfigurationSection source) throws InvalidConfigurationException {
-        List<ItemStack> stacks = new ArrayList<>();
-
-        try {
-            // Try to parse this inventory
-            for (String key : source.getKeys(false)) {
-                int number = Integer.parseInt(key);
-
-                // Size should always be bigger
-                while (stacks.size() <= number) {
-                    stacks.add(null);
-                }
-
-                stacks.set(number, (ItemStack) source.get(key));
-            }
-        } catch (NumberFormatException e) {
-            throw new InvalidConfigurationException("Expected a number.", e);
-        }
-
-        // Return result
-        return stacks.toArray(new ItemStack[0]);
-    }
-
 }

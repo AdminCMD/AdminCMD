@@ -20,58 +20,59 @@ package com.admincmd.virtualchest.chest;
 
 import com.admincmd.player.ACPlayer;
 import com.admincmd.player.PlayerManager;
-import com.admincmd.utils.ItemSerialization;
+import com.admincmd.utils.ACLogger;
+import com.admincmd.utils.ItemSerializationJson;
 import com.admincmd.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public final class StoredChest implements ACChest {
-
+    
     private final Inventory inv;
     private final int owner;
     private final int ID;
-
+    
     public StoredChest(String inventory, int owner, int ID) {
         this.owner = owner;
-        ItemStack[] items = ItemSerialization.loadInventory(inventory);
-        inv = Bukkit.createInventory(null, 54, "§aVirtual Chest of: " + Utils.replacePlayerPlaceholders(getOwner().getOfflinePlayer()));
-
-        for (ItemStack item : items) {
-            if (item != null) {
-                inv.addItem(item);
-            }
+        ItemStack[] items = ItemSerializationJson.loadInventory(inventory);
+        
+        inv = Bukkit.createInventory(new VirtualChestHolder(PlayerManager.getPlayer(owner)), 54, "§aVirtual Chest of: " + Utils.replacePlayerPlaceholders(getOwner().getOfflinePlayer()));
+        
+        for (int i = 0; i < items.length; i++) {
+            inv.setItem(i, items[i]);
         }
-
+        
         this.ID = ID;
     }
-
+    
     @Override
     public int getID() {
         return ID;
     }
-
+    
     @Override
     public Inventory getInventory() {
         return inv;
     }
-
+    
     @Override
     public String getString() {
-        return ItemSerialization.saveInventory(inv);
+        return ItemSerializationJson.saveInventory(inv);
     }
-
+    
     @Override
     public void clear() {
         inv.clear();
     }
-
+    
     @Override
     public ACPlayer getOwner() {
         return PlayerManager.getPlayer(owner);
     }
-
+    
     @Override
     public void update(Inventory newInv) {
+        ACLogger.debug("VirtualChest Update fired!");
     }
 }

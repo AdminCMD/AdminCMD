@@ -83,8 +83,8 @@ public class SignCommands {
         return CommandResult.ERROR;
     }
 
-    @BaseCommand(command = "invsign", sender = Sender.PLAYER, permission = "admincmd.inventorysign.open", aliases = "is")
-    public CommandResult executeChest(final Player sender, CommandArgs args) {
+    @BaseCommand(command = "invsign", sender = Sender.PLAYER, permission = "admincmd.inventorysign.open", aliases = {"is"})
+    public CommandResult executeChest(Player sender, CommandArgs args) {
         if (invsign.sendHelp(sender, args)) {
             return CommandResult.SUCCESS;
         }
@@ -100,16 +100,8 @@ public class SignCommands {
                 Bukkit.getScheduler().runTask(Main.getInstance(), () -> sender.openInventory(inv));
             return CommandResult.SUCCESS;
         } else {
-            if (args.hasFlag("p")) {
-                if (!sender.hasPermission("admincmd.virtualchest.chest.other")) {
-                    return CommandResult.NO_PERMISSION_OTHER;
-                }
-
+            if (args.hasFlag("p")) {               
                 Flag f = args.getFlag("p");
-                if (!f.isRegisteredPlayer()) {
-                    return CommandResult.NOT_A_PLAYER;
-                }
-
                 ACPlayer bp = f.getPlayer();
                 InventorySign sign = SignManager.getSign(bp);
                 if(sign == null || !sign.exists() || !sign.isValid()) {

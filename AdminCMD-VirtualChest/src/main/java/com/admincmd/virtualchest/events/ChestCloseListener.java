@@ -19,27 +19,31 @@
 package com.admincmd.virtualchest.events;
 
 import com.admincmd.player.ACPlayer;
-import com.admincmd.player.PlayerManager;
+import com.admincmd.utils.ACLogger;
+import com.admincmd.utils.BukkitListener;
 import com.admincmd.virtualchest.chest.ACChest;
 import com.admincmd.virtualchest.chest.ChestManager;
+import com.admincmd.virtualchest.chest.VirtualChestHolder;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.inventory.Inventory;
 
-public class ChestCloseListener implements Listener {
-
+public class ChestCloseListener extends BukkitListener {
+    
     @EventHandler
     public void onChestClose(InventoryCloseEvent e) {
-        if (!e.getView().getTitle().contains("Virtual Chest")) {
+        Inventory inv = e.getInventory();
+        ACLogger.debug("InventoryCloseEvent fired!" + inv.getHolder().getClass().getName());
+        
+        if (!(inv.getHolder() instanceof VirtualChestHolder holder)) {
             return;
         }
-
-        String[] split = e.getView().getTitle().split(": ");
-        String owningPlayerName = split[1];
-        ACPlayer owner = PlayerManager.getPlayer(owningPlayerName);
+        
+        ACPlayer owner = holder.getOwner();
         ACChest chest = ChestManager.getChest(owner);
-        if (chest != null)
+        if (chest != null) {
             chest.update(e.getInventory());
+        }
     }
-
+    
 }

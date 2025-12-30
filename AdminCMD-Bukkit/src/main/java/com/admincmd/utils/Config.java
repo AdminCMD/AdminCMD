@@ -39,7 +39,6 @@ public enum Config {
     DEBUG("Options.Debug", false, "Enables debugging chat."),
     CHECK_UPDATE("Options.check-for-updates", true, "Should the plugin check for updates by itself?"),
     ENABLE_METRICS("Options.enable-bstats", true, "Should the plugin pass statistics to bstats?"),
-
     BUNGEECORD("Options.Bungeecord.Enable", false, "This enables the bungeecord mode. In the bungeecord mode everything gets written instantly to the database. makes only sense when using MySQL"),
     BUNGEECORD_SERVERNAME("Options.Bungeecord.Servername", "server1", "If BungeeCord mode is enabled, this has to be the exact same name as in your BungeeCord server configuration!!!"),
     MAINTENANCE_ENABLE("Options.Maintenance.Enable", false, "Enables the maintenance mode. Can alse be enabled by command."),
@@ -48,7 +47,7 @@ public enum Config {
     MAINTENANCE_MOTD_LINE1("Options.Maintenance.Line1", "&c[AdminCMD] Server is in Maintenance", "Message shown in the motd line 1."),
     MAINTENANCE_MOTD_LINE2("Options.Maintenance.Line2", "&eWe are actually working on the server!", "Message shown in the motd line 2."),
     MESSAGE_FORMAT("Player.Format", "%prefix%name%suffix", "Here you can add the prefix or suffixes to playernames."),
-    ;
+    CREEPER_BLOCK_DAMAGE("Options.Mobs.Creeper.DoBlockDamage", true, "Set if Creepers destroy Blocks when they explode or not");
 
     private static final File f = new File(Main.getInstance().getDataFolder(), "config.yml");
     private static YamlConfiguration cfg;

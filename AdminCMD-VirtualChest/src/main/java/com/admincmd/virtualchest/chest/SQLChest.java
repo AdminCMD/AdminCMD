@@ -23,7 +23,7 @@ import com.admincmd.database.DatabaseFactory;
 import com.admincmd.player.ACPlayer;
 import com.admincmd.player.PlayerManager;
 import com.admincmd.utils.ACLogger;
-import com.admincmd.utils.ItemSerialization;
+import com.admincmd.utils.ItemSerializationJson;
 import com.admincmd.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
@@ -45,13 +45,11 @@ public final class SQLChest implements ACChest {
     @Override
     public Inventory getInventory() {
         Inventory inv;
-        ItemStack[] items = ItemSerialization.loadInventory(getString());
+        ItemStack[] items = ItemSerializationJson.loadInventory(getString());
         ACPlayer owner = getOwner();
-        inv = Bukkit.createInventory(null, 54, "§aVirtual Chest of: " + (owner != null ? Utils.replacePlayerPlaceholders(owner.getOfflinePlayer()) : "UNKNOWN"));
-        for (ItemStack item : items) {
-            if (item != null) {
-                inv.addItem(item);
-            }
+        inv = Bukkit.createInventory(new VirtualChestHolder(owner), 54, "§aVirtual Chest of: " + Utils.replacePlayerPlaceholders(owner.getPlayer()));
+        for (int i = 0; i < items.length; i++) {
+            inv.setItem(i, items[i]);
         }
         return inv;
     }
@@ -101,9 +99,10 @@ public final class SQLChest implements ACChest {
 
     @Override
     public void update(Inventory newInv) {
+        ACLogger.debug("VirtualChest Update fired!");
         try {
             PreparedStatement st = db.getPreparedStatement("UPDATE ac_virtualchest SET inventory = ? WHERE ID = ?;");
-            st.setString(1, ItemSerialization.saveInventory(newInv));
+            st.setString(1, ItemSerializationJson.saveInventory(newInv));
             st.setInt(2, ID);
             st.executeUpdate();
             db.closeStatement(st);

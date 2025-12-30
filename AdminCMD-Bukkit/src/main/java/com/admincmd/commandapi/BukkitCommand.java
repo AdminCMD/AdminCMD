@@ -18,7 +18,6 @@
  */
 package com.admincmd.commandapi;
 
-import com.admincmd.Main;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import java.util.ArrayList;
@@ -27,22 +26,24 @@ import java.util.List;
 public class BukkitCommand extends Command {
 
     private final List<String> aliases = new ArrayList<>();
+    private final CommandManager cmdManager;
 
-    protected BukkitCommand(String name, String[] aliasArr) {
+    protected BukkitCommand(String name, String[] aliasArr, CommandManager cmdManager) {
         super(name);
         for (String alias : aliasArr) {
             aliases.add(alias);
         }
+        this.cmdManager = cmdManager;
     }
 
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
-        return Main.getInstance().getCommandManager().onCommand(sender, this, commandLabel, args);
+        return cmdManager.onCommand(sender, this, commandLabel, args);
     }
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args) {
-        return Main.getInstance().getCommandManager().onTabComplete(sender, this, alias, args);
+        return cmdManager.onTabComplete(sender, this, alias, args);
     }
 
     @Override
