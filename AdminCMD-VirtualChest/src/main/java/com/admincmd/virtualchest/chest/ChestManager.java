@@ -37,7 +37,7 @@ public final class ChestManager {
     private static final Database db = VirtualChest.getInstance().getDB();
 
     public static void init() {
-        if (!Config.BUNGEECORD.getBoolean()) {
+        if (!Config.BUNGEECORD.getBoolean() && !Config.DEBUG_FORCE_SQL.getBoolean()) {
             try {
                 PreparedStatement s = db.getPreparedStatement("SELECT * FROM ac_virtualchest");
                 ResultSet rs = s.executeQuery();
@@ -56,7 +56,7 @@ public final class ChestManager {
     }
 
     public static void save() {
-        if (!Config.BUNGEECORD.getBoolean()) {
+        if (!Config.BUNGEECORD.getBoolean() && !Config.DEBUG_FORCE_SQL.getBoolean()) {
             int saved = 0;
             for (StoredChest c : chests.values()) {
                 try {
@@ -74,7 +74,7 @@ public final class ChestManager {
         }
     }
 
-    public static void createChest(ACPlayer p) {
+    private static ACChest createChest(ACPlayer p) {
         try {
             PreparedStatement st = db.getPreparedStatement("INSERT INTO ac_virtualchest (owner, inventory) VALUES (?, ?);", Statement.RETURN_GENERATED_KEYS);
             st.setInt(1, p.getID());
@@ -99,42 +99,46 @@ public final class ChestManager {
             db.closeResultSet(generatedKeys);
             db.closeStatement(st);
 
-            if (!Config.BUNGEECORD.getBoolean()) {
+            if (!Config.BUNGEECORD.getBoolean() && !Config.DEBUG_FORCE_SQL.getBoolean()) {
                 StoredChest chest = new StoredChest("", p.getID(), id);
                 chests.put(p.getID(), chest);
+                return chest;
+            } else {
+                return new SQLChest(id);
             }
         } catch (SQLException ex) {
             ACLogger.severe("Error creating VirtualChest", ex);
+            return null;
         }
     }
 
     public static boolean hasChest(ACPlayer player) {
-        try {
-            PreparedStatement s = db.getPreparedStatement("SELECT ID FROM ac_virtualchest WHERE owner = ?;");
-            s.setInt(1, player.getID());
-            ResultSet rs = s.executeQuery();
-            boolean ret = rs.next();
-            db.closeResultSet(rs);
-            db.closeStatement(s);
-            return ret;
-        } catch (SQLException ex) {
-            ACLogger.severe(ex);
-            return false;
+        if (!Config.BUNGEECORD.getBoolean() && !Config.DEBUG_FORCE_SQL.getBoolean()) {
+            return chests.containsKey(player.getID());
+        } else {
+            try {
+                PreparedStatement s = db.getPreparedStatement("SELECT ID FROM ac_virtualchest WHERE owner = ?;");
+                s.setInt(1, player.getID());
+                ResultSet rs = s.executeQuery();
+                boolean ret = rs.next();
+                db.closeResultSet(rs);
+                db.closeStatement(s);
+                return ret;
+            } catch (SQLException ex) {
+                ACLogger.severe(ex);
+                return false;
+            }
         }
     }
 
     public static ACChest getChest(ACPlayer p) {
-        if (!Config.BUNGEECORD.getBoolean()) {
-            if (!chests.containsKey(p.getID())) {
-                createChest(p);
-            }
+        if (!hasChest(p)) {
+            return createChest(p);
+        }
 
+        if (!Config.BUNGEECORD.getBoolean() && !Config.DEBUG_FORCE_SQL.getBoolean()) {
             return chests.get(p.getID());
         } else {
-            if (!hasChest(p)) {
-                createChest(p);
-            }
-
             int chestID = -1;
 
             try {
@@ -146,14 +150,11 @@ public final class ChestManager {
                 }
                 db.closeResultSet(rs);
                 db.closeStatement(s);
+                return new SQLChest(chestID);
             } catch (SQLException ex) {
                 ACLogger.severe(ex);
-            }
-
-            if (chestID == -1) {
                 return null;
             }
-            return new SQLChest(chestID);
         }
     }
 

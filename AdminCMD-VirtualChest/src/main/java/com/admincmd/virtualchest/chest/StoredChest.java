@@ -74,5 +74,6 @@ public final class StoredChest implements ACChest {
     @Override
     public void update(Inventory newInv) {
         ACLogger.debug("VirtualChest Update fired!");
+        
     }
 }

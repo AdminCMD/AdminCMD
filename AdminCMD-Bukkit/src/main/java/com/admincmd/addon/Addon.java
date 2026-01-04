@@ -30,7 +30,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public abstract class Addon extends JavaPlugin {
 
-    private static Addon INSTANCE;
+    protected static Addon INSTANCE;
     private static CommandManager cmdManager;
 
     /**

@@ -83,7 +83,7 @@ public class ACLogger {
      * @param message The debug message to log
      */
     public static void debug(final String message) {
-        if (!Config.DEBUG.getBoolean()) {
+        if (!Config.DEBUG_LOG.getBoolean()) {
             return;
         }
         logger.log(Level.INFO, "[DEBUG] " + message);
@@ -97,7 +97,7 @@ public class ACLogger {
      * @param ex      The exception to log
      */
     public static void debug(final String message, final Throwable ex) {
-        if (!Config.DEBUG.getBoolean()) {
+        if (!Config.DEBUG_LOG.getBoolean()) {
             return;
         }
         logger.log(Level.INFO, "[DEBUG] " + message);

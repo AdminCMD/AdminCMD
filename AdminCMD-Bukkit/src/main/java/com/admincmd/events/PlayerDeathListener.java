@@ -36,7 +36,7 @@ public class PlayerDeathListener extends BukkitListener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onRespawn(final PlayerRespawnEvent e) {
-        Bukkit.getScheduler().runTaskLaterAsynchronously(Main.getInstance(), () -> {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), () -> {
             final ACPlayer acp = PlayerManager.getPlayer(e.getPlayer());
             MultiServerLocation s = SpawnManager.getSpawn(acp);
             if (s != null) {
@@ -49,7 +49,7 @@ public class PlayerDeathListener extends BukkitListener {
     public void onDeath(final PlayerDeathEvent e) {
         ACPlayer p = PlayerManager.getPlayer(e.getEntity());
         MultiServerLocation loc = MultiServerLocation.fromLocation(e.getEntity().getLocation());
-        Main.getInstance().getServer().getScheduler().runTaskLaterAsynchronously(Main.getInstance(), () -> {
+        Main.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(Main.getInstance(), () -> {
             ACLogger.debug("Player death location set.");
             p.setLastLoc(loc);
         }, 20);

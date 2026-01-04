@@ -47,7 +47,7 @@ public final class SQLChest implements ACChest {
         Inventory inv;
         ItemStack[] items = ItemSerializationJson.loadInventory(getString());
         ACPlayer owner = getOwner();
-        inv = Bukkit.createInventory(new VirtualChestHolder(owner), 54, "§aVirtual Chest of: " + Utils.replacePlayerPlaceholders(owner.getPlayer()));
+        inv = Bukkit.createInventory(new VirtualChestHolder(owner), 54, "§aVirtual Chest of: " + Utils.replacePlayerPlaceholders(owner.getOfflinePlayer()));
         for (int i = 0; i < items.length; i++) {
             inv.setItem(i, items[i]);
         }
@@ -80,6 +80,7 @@ public final class SQLChest implements ACChest {
 
     @Override
     public String getString() {
+        ACLogger.debug("SQLChest, loading Inventory from Database!");
         try {
             PreparedStatement s = db.getPreparedStatement("SELECT inventory FROM ac_virtualchest WHERE ID = ?;");
             s.setInt(1, ID);
@@ -99,7 +100,7 @@ public final class SQLChest implements ACChest {
 
     @Override
     public void update(Inventory newInv) {
-        ACLogger.debug("VirtualChest Update fired!");
+        ACLogger.debug("VirtualChest Update fired! SQLChest, Saving to Database...");
         try {
             PreparedStatement st = db.getPreparedStatement("UPDATE ac_virtualchest SET inventory = ? WHERE ID = ?;");
             st.setString(1, ItemSerializationJson.saveInventory(newInv));
